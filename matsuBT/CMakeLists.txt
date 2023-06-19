@@ -13,7 +13,6 @@ add_executable (
 	"Behavior/Task/Task.cpp"
 	"Behavior/Task/DebugTask.cpp"
 	"Builder/BehaviorTreeBuilder.cpp"
-	"Builder/SelectorBuilder.cpp"
 )
 
 target_include_directories(

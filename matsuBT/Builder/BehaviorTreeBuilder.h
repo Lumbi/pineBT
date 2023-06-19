@@ -1,7 +1,5 @@
 #pragma once
 
-#include "SelectorBuilder.h"
-
 #include <memory>
 #include <stack>
 
@@ -9,17 +7,25 @@ namespace matsuBT
 {
 	class BehaviorTreeBuilder
 	{
-		friend class SelectorBuilder;
-
 	public:
 		BehaviorTreeBuilder();
 
-		SelectorBuilder select();
+		BehaviorTreeBuilder& behavior(std::unique_ptr<class Behavior>);
+
+		BehaviorTreeBuilder& behavior(std::unique_ptr<class Composite>);
+
+		BehaviorTreeBuilder& select();
+
+		BehaviorTreeBuilder& sequence();
+
+		BehaviorTreeBuilder& close();
+
+		BehaviorTreeBuilder& task(std::unique_ptr<class Task> task);
 
 		std::unique_ptr<class BehaviorTree> end();
 
 	private:
-		class BehaviorTree* behaviorTree;
+		std::unique_ptr<class BehaviorTree> behaviorTree;
 		std::stack<class Behavior*> behaviors;
 	};
 }
