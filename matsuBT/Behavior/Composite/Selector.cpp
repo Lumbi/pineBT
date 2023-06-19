@@ -9,7 +9,7 @@ void Selector::onEnter()
     currentChild = children.begin();
 }
 
-Behavior::Result Selector::run()
+Behavior::Result Selector::update()
 {
     assert(currentChild != children.end());
 

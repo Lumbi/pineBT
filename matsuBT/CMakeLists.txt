@@ -5,9 +5,15 @@
 add_executable (
 	${PROJECT_NAME}
 	"matsuBT.cpp"
+	"Behavior.cpp"
 	"BehaviorTree.cpp"
+	"Behavior/Composite/Composite.cpp"
 	"Behavior/Composite/Selector.cpp"
 	"Behavior/Composite/Sequence.cpp"
+	"Behavior/Task/Task.cpp"
+	"Behavior/Task/LogTask.cpp"
+	"Builder/BehaviorTreeBuilder.cpp"
+	"Builder/SelectorBuilder.cpp"
 )
 
 target_include_directories(

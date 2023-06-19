@@ -6,9 +6,10 @@ namespace matsuBT
 {
 	class Selector : public Composite
 	{
+	public:
 		virtual void onEnter() override;
 
-		virtual Result run() override;
+		virtual Result update() override;
 
 	protected:
 		Behaviors::iterator currentChild;

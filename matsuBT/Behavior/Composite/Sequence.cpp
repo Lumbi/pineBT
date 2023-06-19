@@ -9,7 +9,7 @@ void Sequence::onEnter()
 	currentChild = children.begin();
 }
 
-Behavior::Result Sequence::run()
+Behavior::Result Sequence::update()
 {
 	assert(currentChild != children.end());
 
