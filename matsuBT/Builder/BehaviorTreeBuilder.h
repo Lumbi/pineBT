@@ -19,7 +19,7 @@ namespace matsuBT
 		std::unique_ptr<class BehaviorTree> end();
 
 	private:
-		BehaviorTree* behaviorTree;
+		class BehaviorTree* behaviorTree;
 		std::stack<class Behavior*> behaviors;
 	};
 }
