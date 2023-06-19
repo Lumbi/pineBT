@@ -1,10 +1,10 @@
-﻿# CMakeList.txt : CMake project for matsuBT, include source and define
+﻿# CMakeList.txt : CMake project for pineBT, include source and define
 # project specific logic here.
 #
 
 add_executable (
 	${PROJECT_NAME}
-	"matsuBT.cpp"
+	"pineBT.cpp"
 	"Behavior.cpp"
 	"BehaviorTree.cpp"
 	"Behavior/Composite/Composite.cpp"

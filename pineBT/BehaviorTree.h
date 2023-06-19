@@ -5,7 +5,7 @@
 
 #include <memory>
 
-namespace matsuBT
+namespace pineBT
 {
 	class BehaviorTree
 	{

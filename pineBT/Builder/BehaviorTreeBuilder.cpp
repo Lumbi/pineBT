@@ -9,7 +9,7 @@
 
 #include <assert.h>
 
-using namespace matsuBT;
+using namespace pineBT;
 
 BehaviorTreeBuilder::BehaviorTreeBuilder()
 	: behaviorTree(std::make_unique<BehaviorTree>())

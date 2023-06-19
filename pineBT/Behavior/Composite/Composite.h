@@ -4,7 +4,7 @@
 
 #include <memory>
 
-namespace matsuBT
+namespace pineBT
 {
 	class Composite : public Behavior
 	{

@@ -2,7 +2,7 @@
 
 #include "Composite.h"
 
-namespace matsuBT
+namespace pineBT
 {
 	class Sequence : public Composite
 	{
