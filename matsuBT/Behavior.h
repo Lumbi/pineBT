@@ -19,6 +19,12 @@ namespace matsuBT
 	public:
 		Behavior() = default;
 
+		~Behavior() {};
+
+		virtual void onEnter() {};
+
 		virtual Result run() = 0;
+
+		virtual void onExit(Result) {};
 	};
 }

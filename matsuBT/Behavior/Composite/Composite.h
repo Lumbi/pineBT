@@ -9,6 +9,7 @@ namespace matsuBT
 	class Composite : public Behavior
 	{
 	protected:
-		std::vector<std::unique_ptr<Behavior>> children;
+		using Behaviors = std::vector<std::unique_ptr<Behavior>>;
+		Behaviors children;
 	};
 }

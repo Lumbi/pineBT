@@ -2,15 +2,27 @@
 
 using namespace matsuBT;
 
+void Sequence::onEnter()
+{
+	currentChild = children.begin();
+}
+
 Behavior::Result Sequence::run()
 {
-	for (auto&& child : children)
+#if DEBUG
+	if (currentChild == children.end()) { return Result::INVALID; }
+#endif
+
+	while (true)
 	{
-		const Result result = child->run();
-		if (result == Result::SUCCESS)
-			continue;
-		else
+		const Result result = (*currentChild)->run();
+
+		if (result != Result::SUCCESS)
 			return result;
+
+		if (++currentChild == children.end())
+			return Result::SUCCESS;
 	}
-	return Result::SUCCESS;
+
+	return Result::INVALID;
 }
