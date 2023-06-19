@@ -1,5 +1,7 @@
 #include "Selector.h"
 
+#include <assert.h>
+
 using namespace matsuBT;
 
 void Selector::onEnter()
@@ -9,9 +11,7 @@ void Selector::onEnter()
 
 Behavior::Result Selector::run()
 {
-#ifdef DEBUG
-    if (currentChild == children.end()) { return Result::INVALID; }
-#endif
+    assert(currentChild != children.end());
 
     while (true)
     {

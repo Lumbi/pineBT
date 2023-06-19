@@ -1,5 +1,7 @@
 #include "Sequence.h"
 
+#include <assert.h>
+
 using namespace matsuBT;
 
 void Sequence::onEnter()
@@ -9,9 +11,7 @@ void Sequence::onEnter()
 
 Behavior::Result Sequence::run()
 {
-#if DEBUG
-	if (currentChild == children.end()) { return Result::INVALID; }
-#endif
+	assert(currentChild != children.end());
 
 	while (true)
 	{
