@@ -11,7 +11,7 @@ add_executable (
 	"Behavior/Composite/Selector.cpp"
 	"Behavior/Composite/Sequence.cpp"
 	"Behavior/Task/Task.cpp"
-	"Behavior/Task/LogTask.cpp"
+	"Behavior/Task/DebugTask.cpp"
 	"Builder/BehaviorTreeBuilder.cpp"
 	"Builder/SelectorBuilder.cpp"
 )
