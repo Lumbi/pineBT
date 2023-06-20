@@ -14,6 +14,7 @@ add_executable (
 	"Behavior/Decorator/Condition.cpp"
 	"Behavior/Task/Task.cpp"
 	"Behavior/Mock/MockTask.cpp"
+	"Behavior/Mock/MockCondition.cpp"
 	"Builder/BehaviorTreeBuilder.cpp"
 )
 
