@@ -1,13 +1,13 @@
 #pragma once
 
-#include "Task.h"
+#include "Behavior/Task/Task.h"
 
 namespace pineBT
 {
-	class DebugTask : public Task
+	class MockTask : public Task
 	{
 	public:
-		DebugTask(const char* message, Result forceResult = Result::SUCCESS)
+		MockTask(const char* message, Result forceResult = Result::SUCCESS)
 			: message(message), forceResult(forceResult)
 		{};
 

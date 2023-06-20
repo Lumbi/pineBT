@@ -1,14 +1,14 @@
-#include "DebugTask.h"
+#include "MockTask.h"
 
 using namespace pineBT;
 
-Behavior::Result DebugTask::update()
+Behavior::Result MockTask::update()
 {
 	printf("%s\n", message);
 	return forceResult;
 }
 
-void DebugTask::setForceResult(Result forceResult)
+void MockTask::setForceResult(Result forceResult)
 {
 	this->forceResult = forceResult;
 }
