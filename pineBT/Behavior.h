@@ -13,6 +13,7 @@ namespace pineBT
 			RUNNING,
 			FAILURE,
 			SUCCESS,
+			ABORTED,
 			INVALID
 		};
 
@@ -22,6 +23,8 @@ namespace pineBT
 		~Behavior() {}
 
 		Result run();
+
+		void abort();
 
 	protected:
 		virtual void onEnter() {}
