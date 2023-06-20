@@ -13,6 +13,8 @@ namespace pineBT
 
 		virtual Result update() override;
 
+		void setForceResult(Result forceResult);
+
 	private:
 		const char* message;
 		Result forceResult;
