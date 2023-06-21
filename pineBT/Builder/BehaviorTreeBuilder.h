@@ -16,6 +16,8 @@ namespace pineBT
 
 		BehaviorTreeBuilder& select();
 
+		BehaviorTreeBuilder& selectLive();
+
 		BehaviorTreeBuilder& sequence();
 
 		BehaviorTreeBuilder& close();

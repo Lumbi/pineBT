@@ -53,6 +53,11 @@ BehaviorTreeBuilder& BehaviorTreeBuilder::select()
 	return this->behavior(behaviorTree->allocate<Selector>());
 }
 
+BehaviorTreeBuilder& BehaviorTreeBuilder::selectLive()
+{
+	return this->behavior(behaviorTree->allocate<LiveSelector>());
+}
+
 BehaviorTreeBuilder& BehaviorTreeBuilder::sequence()
 {
 	return this->behavior(behaviorTree->allocate<Sequence>());
