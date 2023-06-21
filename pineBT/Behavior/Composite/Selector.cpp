@@ -4,6 +4,8 @@
 
 using namespace pineBT;
 
+// Standard Selector
+
 void Selector::onEnter()
 {
     currentChild = children.begin();
@@ -25,4 +27,27 @@ Behavior::Result Selector::update()
     }
 
     return Result::INVALID;
+}
+
+// Live Selector
+
+void LiveSelector::onEnter()
+{
+    Selector::onEnter();
+}
+
+Behavior::Result LiveSelector::update()
+{
+    assert(!children.empty());
+
+    Behaviors::iterator previousChild = currentChild;
+    currentChild = children.begin();
+    Result result = Selector::update();
+    // Abort previously running child
+    if (previousChild != children.end() && previousChild != currentChild) 
+    {
+        (*previousChild)->abort();
+    }
+
+    return result;
 }

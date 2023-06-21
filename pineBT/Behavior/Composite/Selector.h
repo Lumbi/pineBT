@@ -14,4 +14,14 @@ namespace pineBT
 	protected:
 		Behaviors::iterator currentChild;
 	};
+
+	class LiveSelector : public Selector
+	{
+	public:
+		void onEnter() override;
+
+		Result update() override;
+
+		std::string toString() const override { return std::format("Live Selector [{}]", name(getResult())); }
+	};
 }
