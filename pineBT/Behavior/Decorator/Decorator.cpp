@@ -9,6 +9,11 @@ void Decorator::setChild(Behavior* newChild)
 	this->child = newChild;
 }
 
+Behavior* Decorator::getChild() const
+{
+	return child;
+}
+
 void Decorator::abort()
 {
 	assert(child);

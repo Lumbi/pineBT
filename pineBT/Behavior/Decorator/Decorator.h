@@ -9,6 +9,8 @@ namespace pineBT
 	public:
 		void setChild(Behavior*);
 
+		Behavior* getChild() const;
+
 		std::string toString() const override { return std::format("Decorator [{}]", name(getResult())); }
 
 		virtual void abort() override;
