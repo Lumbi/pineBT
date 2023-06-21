@@ -16,11 +16,21 @@ namespace pineBT
 
 		Behavior* getRoot() const;
 
-		void setRoot(std::unique_ptr<Behavior>);
+		void setRoot(Behavior*);
 
 		void run();
 
+		template<typename BehaviorType, typename... Args>
+		BehaviorType* allocate(Args&&... args)
+		{
+			auto behavior = std::make_unique<BehaviorType>(std::forward<Args>(args)...);
+			BehaviorType* pointer = behavior.get();
+			behaviors.push_back(std::move(behavior));
+			return pointer;
+		}
+
 	private:
-		std::unique_ptr<Behavior> root;
+		Behavior* root;
+		std::vector<std::unique_ptr<Behavior>> behaviors;
 	};
 }

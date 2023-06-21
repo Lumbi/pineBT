@@ -10,9 +10,9 @@ namespace pineBT
 	public:
 		BehaviorTreeBuilder();
 
-		BehaviorTreeBuilder& behavior(std::unique_ptr<class Composite>);
+		BehaviorTreeBuilder& behavior(class Composite*);
 
-		BehaviorTreeBuilder& behavior(std::unique_ptr<class Decorator>);
+		BehaviorTreeBuilder& behavior(class Decorator*);
 
 		BehaviorTreeBuilder& select();
 
@@ -20,12 +20,12 @@ namespace pineBT
 
 		BehaviorTreeBuilder& close();
 
-		BehaviorTreeBuilder& conditon(std::unique_ptr<class Condition>);
+		BehaviorTreeBuilder& conditon(class Condition*);
 
-		BehaviorTreeBuilder& task(std::unique_ptr<class Task> task);
+		BehaviorTreeBuilder& task(class Task*);
 
 		std::unique_ptr<class BehaviorTree> end();
-
+		 
 	private:
 		std::unique_ptr<class BehaviorTree> behaviorTree;
 
@@ -36,7 +36,7 @@ namespace pineBT
 
 			Context(BehaviorTreeBuilder& builder) : builder(builder) {}
 
-			virtual void addChild(std::unique_ptr<class Behavior>) = 0;
+			virtual void addChild(class Behavior*) = 0;
 		};
 
 		struct CompositeContext : public Context
@@ -45,7 +45,7 @@ namespace pineBT
 
 			CompositeContext(BehaviorTreeBuilder& builder, Composite* composite) : Context(builder), composite(composite) {}
 
-			void addChild(std::unique_ptr<class Behavior> child) override;
+			void addChild(class Behavior*) override;
 		};
 
 		struct DecoratorContext : public Context
@@ -54,7 +54,7 @@ namespace pineBT
 
 			DecoratorContext(BehaviorTreeBuilder& builder, Decorator* decorator) : Context(builder), decorator(decorator) {}
 			
-			void addChild(std::unique_ptr<class Behavior>) override;
+			void addChild(class Behavior*) override;
 		};
 
 		std::stack<std::unique_ptr<Context>> context;

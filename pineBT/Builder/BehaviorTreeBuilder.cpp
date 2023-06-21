@@ -18,44 +18,44 @@ BehaviorTreeBuilder::BehaviorTreeBuilder()
 {
 }
 
-BehaviorTreeBuilder& BehaviorTreeBuilder::behavior(std::unique_ptr<Composite> composite)
+BehaviorTreeBuilder& BehaviorTreeBuilder::behavior(Composite* composite)
 {
-	auto nextContext = std::make_unique<CompositeContext>(*this, composite.get());
 	if (context.empty())
 	{
-		behaviorTree->setRoot(std::move(composite));
+		behaviorTree->setRoot(composite);
 	}
 	else
 	{
-		context.top()->addChild(std::move(composite));
+		context.top()->addChild(composite);
 	}
+	auto nextContext = std::make_unique<CompositeContext>(*this, composite);
 	context.push(std::move(nextContext));
 	return *this;
 }
 
-BehaviorTreeBuilder& BehaviorTreeBuilder::behavior(std::unique_ptr<Decorator> decorator)
+BehaviorTreeBuilder& BehaviorTreeBuilder::behavior(Decorator* decorator)
 {
-	auto nextContext = std::make_unique<DecoratorContext>(*this, decorator.get());
 	if (context.empty())
 	{
-		behaviorTree->setRoot(std::move(decorator));
+		behaviorTree->setRoot(decorator);
 	}
 	else
 	{
-		context.top()->addChild(std::move(decorator));
+		context.top()->addChild(decorator);
 	}
+	auto nextContext = std::make_unique<DecoratorContext>(*this, decorator);
 	context.push(std::move(nextContext));
 	return *this;
 }
 
 BehaviorTreeBuilder& BehaviorTreeBuilder::select()
 {
-	return this->behavior(std::make_unique<Selector>());
+	return this->behavior(behaviorTree->allocate<Selector>());
 }
 
 BehaviorTreeBuilder& BehaviorTreeBuilder::sequence()
 {
-	return this->behavior(std::make_unique<Sequence>());
+	return this->behavior(behaviorTree->allocate<Sequence>());
 }
 
 BehaviorTreeBuilder& BehaviorTreeBuilder::close()
@@ -65,15 +65,15 @@ BehaviorTreeBuilder& BehaviorTreeBuilder::close()
 	return *this;
 }
 
-BehaviorTreeBuilder& BehaviorTreeBuilder::conditon(std::unique_ptr<Condition> condition)
+BehaviorTreeBuilder& BehaviorTreeBuilder::conditon(Condition* condition)
 {
-	return this->behavior(std::move(condition));
+	return this->behavior(condition);
 }
 
-BehaviorTreeBuilder& BehaviorTreeBuilder::task(std::unique_ptr<Task> task)
+BehaviorTreeBuilder& BehaviorTreeBuilder::task(Task* task)
 {
 	assert(!context.empty());
-	context.top()->addChild(std::move(task));
+	context.top()->addChild(task);
 	return *this;
 }
 
@@ -85,13 +85,13 @@ std::unique_ptr<BehaviorTree> BehaviorTreeBuilder::end()
 
 // Builder Context
 
-void BehaviorTreeBuilder::CompositeContext::addChild(std::unique_ptr<Behavior> child)
+void BehaviorTreeBuilder::CompositeContext::addChild(Behavior* child)
 {
-	composite->addChild(std::move(child));
+	composite->addChild(child);
 }
 
-void BehaviorTreeBuilder::DecoratorContext::addChild(std::unique_ptr<Behavior> child)
+void BehaviorTreeBuilder::DecoratorContext::addChild(Behavior* child)
 {
-	decorator->setChild(std::move(child));
+	decorator->setChild(child);
 	builder.context.pop();
 }

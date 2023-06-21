@@ -2,7 +2,7 @@
 
 using namespace pineBT;
 
-void Composite::addChild(std::unique_ptr<Behavior> child)
+void Composite::addChild(Behavior* child)
 {
-	children.push_back(std::move(child));
+	children.push_back(child);
 }

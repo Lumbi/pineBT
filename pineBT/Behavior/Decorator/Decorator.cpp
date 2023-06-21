@@ -2,7 +2,7 @@
 
 using namespace pineBT;
 
-void Decorator::setChild(std::unique_ptr<Behavior> newChild)
+void Decorator::setChild(Behavior* newChild)
 {
-	this->child = std::move(newChild);
+	this->child = newChild;
 }

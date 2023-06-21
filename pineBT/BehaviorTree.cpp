@@ -16,14 +16,14 @@ BehaviorTreeBuilder BehaviorTree::build()
 	return BehaviorTreeBuilder();
 }
 
-void BehaviorTree::setRoot(std::unique_ptr<Behavior> newRoot)
+void BehaviorTree::setRoot(Behavior* newRoot)
 {
-	root = std::move(newRoot);
+	root = newRoot;
 }
 
 Behavior* BehaviorTree::getRoot() const
 {
-	return root.get();
+	return root;
 }
 
 void BehaviorTree::run()

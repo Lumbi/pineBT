@@ -2,17 +2,17 @@
 
 #include "Behavior.h"
 
-#include <memory>
+#include <vector>
 
 namespace pineBT
 {
 	class Composite : public Behavior
 	{
 	public:
-		void addChild(std::unique_ptr<Behavior>);
+		void addChild(Behavior*);
 
 	protected:
-		using Behaviors = std::vector<std::unique_ptr<Behavior>>;
+		using Behaviors = std::vector<Behavior*>;
 		Behaviors children;
 	};
 }
