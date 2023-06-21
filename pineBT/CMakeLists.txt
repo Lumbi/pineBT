@@ -4,6 +4,7 @@
 
 add_executable (
 	${PROJECT_NAME}
+	"pineBT.h"
 	"pineBT.cpp"
 	"Behavior.cpp"
 	"BehaviorTree.cpp"
@@ -16,6 +17,7 @@ add_executable (
 	"Behavior/Mock/MockTask.cpp"
 	"Behavior/Mock/MockCondition.cpp"
 	"Builder/BehaviorTreeBuilder.cpp"
+	"Printer/BehaviorTreePrinter.cpp"
 )
 
 target_include_directories(
