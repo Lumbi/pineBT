@@ -9,12 +9,16 @@ namespace pineBT
 	class Composite : public Behavior
 	{
 	public:
+		using Behaviors = std::vector<Behavior*>;
+
+	public:
 		void addChild(Behavior*);
+
+		const Behaviors& getChildren() const { return children; };
 
 		virtual void abort() override;
 
 	protected:
-		using Behaviors = std::vector<Behavior*>;
 		Behaviors children;
 	};
 }
