@@ -1,6 +1,7 @@
 #include "BehaviorTree.h"
 
 #include "Behavior.h"
+#include "Printer/BehaviorTreePrinter.h"
 
 #include <assert.h>
 
@@ -31,4 +32,9 @@ void BehaviorTree::run()
 	assert(root != nullptr);
 
 	root->run();
+}
+
+void BehaviorTree::print()
+{
+	BehaviorTreePrinter(*this).print();
 }

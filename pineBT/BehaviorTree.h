@@ -20,6 +20,8 @@ namespace pineBT
 
 		void run();
 
+		void print();
+
 		template<typename BehaviorType, typename... Args>
 		BehaviorType* allocate(Args&&... args)
 		{
