@@ -11,6 +11,8 @@ namespace pineBT
 
 		std::string toString() const override { return std::format("Decorator [{}]", name(getResult())); }
 
+		virtual void abort() override;
+
 	protected:
 		Behavior* child = nullptr;
 	};

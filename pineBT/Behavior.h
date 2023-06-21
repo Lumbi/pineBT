@@ -29,6 +29,8 @@ namespace pineBT
 
 		Result getResult() const { return result; }
 
+		virtual void abort();
+
 		virtual std::string toString() const { return "Behavior"; }
 
 	protected:

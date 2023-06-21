@@ -11,6 +11,8 @@ namespace pineBT
 	public:
 		void addChild(Behavior*);
 
+		virtual void abort() override;
+
 	protected:
 		using Behaviors = std::vector<Behavior*>;
 		Behaviors children;
