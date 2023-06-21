@@ -11,6 +11,8 @@ namespace pineBT
 
 		virtual Result update() override;
 
+		std::string toString() const override { return std::format("Selector [{}]", name(getResult())); }
+
 	protected:
 		Behaviors::iterator currentChild;
 	};

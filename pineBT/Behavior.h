@@ -3,6 +3,9 @@
 #include <vector>
 #include <memory>
 
+#include <string>
+#include <format>
+
 namespace pineBT
 {
 	class Behavior
@@ -24,7 +27,9 @@ namespace pineBT
 
 		Result run();
 
-		void abort();
+		Result getResult() const { return result; }
+
+		virtual std::string toString() const { return "Behavior"; }
 
 	protected:
 		virtual void onEnter() {}
@@ -36,4 +41,6 @@ namespace pineBT
 	private:
 		Result result = Result::INVALID;
 	};
+	
+	std::string name(Behavior::Result);
 }

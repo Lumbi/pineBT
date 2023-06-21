@@ -9,6 +9,8 @@ namespace pineBT
 	public:
 		void setChild(Behavior*);
 
+		std::string toString() const override { return std::format("Decorator [{}]", name(getResult())); }
+
 	protected:
 		Behavior* child = nullptr;
 	};
