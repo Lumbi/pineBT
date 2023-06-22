@@ -6,15 +6,29 @@ using namespace pineBT;
 
 Behavior::Result Condition::update()
 {
-	assert(child);
+	if (check())
+	{
+		switch (mode)
+		{
+		case Mode::INSTANT: 
+			if (child)
+				return child->run();
+			else
+				return Result::SUCCESS;
+			break;
 
-	if (!check()) 
+		case Mode::CONTINUOUS: 
+			if (child && child->run() != Result::SUCCESS) 
+				return child->getResult();
+			else
+				return Result::RUNNING;
+			break;
+		};
+	}
+	else if (child)
 	{
 		child->abort();
-		return Result::FAILURE;
 	}
-	else
-	{
-		return child->run();
-	}
+
+	return Result::FAILURE;
 }

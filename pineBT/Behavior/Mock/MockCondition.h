@@ -7,7 +7,9 @@ namespace pineBT
 	class MockCondition : public Condition
 	{
 	public:
-		MockCondition(bool forceCheck) : forceCheck(forceCheck) {}
+		MockCondition(bool forceCheck, Condition::Mode mode = Condition::Mode::INSTANT)
+			: Condition(mode), forceCheck(forceCheck) 
+		{}
 
 		void setForceCheck(bool forceCheck) { this->forceCheck = forceCheck; }
 

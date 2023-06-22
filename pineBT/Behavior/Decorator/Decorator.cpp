@@ -16,7 +16,6 @@ Behavior* Decorator::getChild() const
 
 void Decorator::abort()
 {
-	assert(child);
-	child->abort();
+	if (child) child->abort();	
 	Behavior::abort();
 }
