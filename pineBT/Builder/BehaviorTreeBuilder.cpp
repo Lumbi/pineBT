@@ -5,6 +5,7 @@
 #include "Behavior/Composite/Composite.h"
 #include "Behavior/Composite/Selector.h"
 #include "Behavior/Composite/Sequence.h"
+#include "Behavior/Composite/Parallel.h"
 #include "Behavior/Decorator/Decorator.h"
 #include "Behavior/Decorator/Condition.h"
 #include "Behavior/Task/Task.h"
@@ -61,6 +62,13 @@ BehaviorTreeBuilder& BehaviorTreeBuilder::selectLive()
 BehaviorTreeBuilder& BehaviorTreeBuilder::sequence()
 {
 	return this->behavior(behaviorTree->allocate<Sequence>());
+}
+
+ParallelSuccessPolicyBuilder BehaviorTreeBuilder::parallel()
+{
+	Parallel* parallel = behaviorTree->allocate<Parallel>();
+	this->behavior(parallel);
+	return ParallelSuccessPolicyBuilder(*this, parallel);
 }
 
 BehaviorTreeBuilder& BehaviorTreeBuilder::close()

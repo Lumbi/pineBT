@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Builder/ParallelBuilder.h"
+
 #include <memory>
 #include <stack>
 
@@ -19,6 +21,8 @@ namespace pineBT
 		BehaviorTreeBuilder& selectLive();
 
 		BehaviorTreeBuilder& sequence();
+
+		ParallelSuccessPolicyBuilder parallel();
 
 		BehaviorTreeBuilder& close();
 

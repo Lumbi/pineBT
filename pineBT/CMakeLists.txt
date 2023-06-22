@@ -18,6 +18,7 @@ add_executable (
 	"Behavior/Mock/MockTask.cpp"
 	"Behavior/Mock/MockCondition.cpp"
 	"Builder/BehaviorTreeBuilder.cpp"
+	"Builder/ParallelBuilder.cpp"
 	"Printer/BehaviorTreePrinter.cpp"
 )
 
