@@ -78,7 +78,7 @@ BehaviorTreeBuilder& BehaviorTreeBuilder::close()
 	return *this;
 }
 
-BehaviorTreeBuilder& BehaviorTreeBuilder::conditon(Condition* condition)
+BehaviorTreeBuilder& BehaviorTreeBuilder::condition(Condition* condition)
 {
 	return this->behavior(condition);
 }

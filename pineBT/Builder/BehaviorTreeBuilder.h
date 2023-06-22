@@ -26,7 +26,7 @@ namespace pineBT
 
 		BehaviorTreeBuilder& close();
 
-		BehaviorTreeBuilder& conditon(class Condition*);
+		BehaviorTreeBuilder& condition(class Condition*);
 
 		BehaviorTreeBuilder& task(class Task*);
 
