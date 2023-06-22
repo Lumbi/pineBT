@@ -27,6 +27,8 @@ namespace pineBT
 
 		void setFailurePolicy(Policy failurePolicy) { this->failurePolicy = failurePolicy; }
 
+		virtual void addChild(Behavior* child) { Composite::addChild(child); }
+
 	protected:
 		Result update() override;
 
