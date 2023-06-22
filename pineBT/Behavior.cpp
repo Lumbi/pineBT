@@ -10,6 +10,11 @@ Behavior::Result Behavior::run()
 	return result;
 }
 
+bool Behavior::isCompleted() const
+{
+	return result == Result::SUCCESS || result == Result::FAILURE;
+}
+
 void Behavior::abort()
 {
 	if (result == Result::RUNNING) 
