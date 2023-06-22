@@ -6,7 +6,8 @@ using namespace pineBT;
 
 Behavior::Result Condition::update()
 {
-	if (check())
+	const bool expected = static_cast<std::underlying_type<Logic>::type>(logic);
+	if (check() == expected)
 	{
 		switch (mode)
 		{

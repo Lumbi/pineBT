@@ -7,14 +7,12 @@ namespace pineBT
 	class MockCondition : public Condition
 	{
 	public:
-		MockCondition(bool forceCheck, Condition::Mode mode = Condition::Mode::INSTANT)
-			: Condition(mode), forceCheck(forceCheck) 
-		{}
+		using Condition::Condition;
 
 		void setForceCheck(bool forceCheck) { this->forceCheck = forceCheck; }
 
 	private:
-		bool forceCheck;
+		bool forceCheck = false;
 
 		virtual bool check() override;
 	};
