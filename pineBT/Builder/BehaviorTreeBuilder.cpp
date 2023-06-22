@@ -6,6 +6,7 @@
 #include "Behavior/Composite/Selector.h"
 #include "Behavior/Composite/Sequence.h"
 #include "Behavior/Composite/Parallel.h"
+#include "Behavior/Composite/Monitor.h"
 #include "Behavior/Decorator/Decorator.h"
 #include "Behavior/Decorator/Condition.h"
 #include "Behavior/Task/Task.h"
@@ -57,6 +58,13 @@ ParallelSuccessPolicyBuilder BehaviorTreeBuilder::parallel()
 	return ParallelSuccessPolicyBuilder(*this, parallel);
 }
 
+BehaviorTreeBuilder& BehaviorTreeBuilder::monitor()
+{
+	Monitor* monitor = behaviorTree->allocate<Monitor>();
+	this->behavior(monitor);
+	return *this;
+}
+
 BehaviorTreeBuilder& BehaviorTreeBuilder::close()
 {
 	assert(!context.empty());
@@ -85,11 +93,11 @@ std::unique_ptr<BehaviorTree> BehaviorTreeBuilder::end()
 void BehaviorTreeBuilder::addChild(Behavior* child)
 {
 	if (context.empty())
-{
+	{
 		behaviorTree->setRoot(child);
-}
+	}
 	else
-{
+	{
 		context.top()->addChild(child);
 	}
 }

@@ -25,6 +25,8 @@ namespace pineBT
 
 		ParallelSuccessPolicyBuilder parallel();
 
+		BehaviorTreeBuilder& monitor();
+
 		BehaviorTreeBuilder& close();
 
 		BehaviorTreeBuilder& condition(class Condition*);
@@ -32,7 +34,7 @@ namespace pineBT
 		BehaviorTreeBuilder& task(class Task*);
 
 		std::unique_ptr<class BehaviorTree> end();
-		 
+
 	private:
 		std::unique_ptr<class BehaviorTree> behaviorTree;
 		std::stack<std::unique_ptr<BehaviorTreeBuilderContext>> context;
