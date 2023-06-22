@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Builder/BehaviorTreeBuilderContext.h"
 #include "Builder/ParallelBuilder.h"
 
 #include <memory>
@@ -34,35 +35,8 @@ namespace pineBT
 		 
 	private:
 		std::unique_ptr<class BehaviorTree> behaviorTree;
+		std::stack<std::unique_ptr<BehaviorTreeBuilderContext>> context;
 
-	private:
-		struct Context
-		{
-			BehaviorTreeBuilder& builder;
-
-			Context(BehaviorTreeBuilder& builder) : builder(builder) {}
-
-			virtual void addChild(class Behavior*) = 0;
-		};
-
-		struct CompositeContext : public Context
-		{
-			class Composite* composite;
-
-			CompositeContext(BehaviorTreeBuilder& builder, Composite* composite) : Context(builder), composite(composite) {}
-
-			void addChild(class Behavior*) override;
-		};
-
-		struct DecoratorContext : public Context
-		{
-			class Decorator* decorator;
-
-			DecoratorContext(BehaviorTreeBuilder& builder, Decorator* decorator) : Context(builder), decorator(decorator) {}
-			
-			void addChild(class Behavior*) override;
-		};
-
-		std::stack<std::unique_ptr<Context>> context;
+		void addChild(Behavior*);
 	};
 }
