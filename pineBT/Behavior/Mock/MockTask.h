@@ -7,7 +7,7 @@ namespace pineBT
 	class MockTask : public Task
 	{
 	public:
-		MockTask(const char* message, Result forceResult = Result::SUCCESS)
+		MockTask(const char* message, Result forceResult)
 			: message(message), forceResult(forceResult)
 		{};
 
