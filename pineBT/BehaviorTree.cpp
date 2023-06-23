@@ -1,7 +1,11 @@
 #include "BehaviorTree.h"
 
 #include "Behavior.h"
+#include "Behavior/Composite/Composite.h"
+#include "Behavior/Decorator/Decorator.h"
+#include "Builder/BehaviorTreeBuilder.h"
 #include "Printer/BehaviorTreePrinter.h"
+#include "Query/BehaviorTreeQuery.h"
 
 #include <assert.h>
 
@@ -37,6 +41,11 @@ void BehaviorTree::run()
 void BehaviorTree::print()
 {
 	BehaviorTreePrinter(*this).print();
+}
+
+BehaviorTreeQuery BehaviorTree::query()
+{
+	return BehaviorTreeQuery(*this);
 }
 
 // Iterator support

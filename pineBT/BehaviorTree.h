@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Behavior.h"
-#include "Builder/BehaviorTreeBuilder.h"
 
 #include <memory>
 #include <iterator>
@@ -14,7 +13,7 @@ namespace pineBT
 	public:
 		BehaviorTree();
 
-		static BehaviorTreeBuilder build();
+		static struct BehaviorTreeBuilder build();
 
 		Behavior* getRoot() const;
 
@@ -23,6 +22,8 @@ namespace pineBT
 		void run();
 
 		void print();
+
+		struct BehaviorTreeQuery query();
 
 		template<typename BehaviorType, typename... Args>
 		BehaviorType* allocate(Args&&... args)

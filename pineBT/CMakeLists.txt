@@ -22,6 +22,7 @@ add_executable (
 	"Builder/BehaviorTreeBuilderContext.cpp"
 	"Builder/ParallelBuilder.cpp"
 	"Printer/BehaviorTreePrinter.cpp"
+	"Query/BehaviorTreeQuery.cpp"
 )
 
 target_include_directories(
