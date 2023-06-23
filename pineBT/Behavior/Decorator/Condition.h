@@ -7,6 +7,9 @@ namespace pineBT
 	class Condition : public Decorator
 	{
 	public:
+		static BehaviorSchema schema;
+
+	public:
 		enum class Mode
 		{
 			INSTANT,

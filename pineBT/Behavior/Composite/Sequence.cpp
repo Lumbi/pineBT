@@ -4,6 +4,11 @@
 
 using namespace pineBT;
 
+BehaviorSchema Sequence::schema = BehaviorSchema::inherit(
+	"Sequence", 
+	Composite::schema
+);
+
 void Sequence::onEnter()
 {
 	currentChild = children.begin();

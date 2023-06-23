@@ -9,6 +9,9 @@ namespace pineBT
 	class Composite : public Behavior
 	{
 	public:
+		static BehaviorSchema schema;
+
+	public:
 		using Behaviors = std::vector<Behavior*>;
 
 	public:

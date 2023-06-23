@@ -2,9 +2,10 @@
 
 #include <vector>
 #include <memory>
-
 #include <string>
 #include <format>
+
+#include "Behavior/Schema/BehaviorSchema.h"
 
 namespace pineBT
 {

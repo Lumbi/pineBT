@@ -7,6 +7,9 @@ namespace pineBT
 	class MockTask : public Task
 	{
 	public:
+		static BehaviorSchema schema;
+
+	public:
 		MockTask(const char* message, Result forceResult)
 			: message(message), forceResult(forceResult)
 		{};

@@ -7,6 +7,9 @@ namespace pineBT
 	class Decorator : public Behavior
 	{
 	public:
+		static BehaviorSchema schema;
+
+	public:
 		void setChild(Behavior*);
 
 		Behavior* getChild() const;

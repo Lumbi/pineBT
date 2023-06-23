@@ -7,6 +7,9 @@ namespace pineBT
 	class Parallel : public Composite
 	{
 	public:
+		static BehaviorSchema schema;
+
+	public:
 		enum class Policy
 		{
 			ANY,

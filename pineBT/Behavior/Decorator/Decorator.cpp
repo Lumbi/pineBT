@@ -4,6 +4,11 @@
 
 using namespace pineBT;
 
+BehaviorSchema Decorator::schema = {
+	"Decorator",
+	BehaviorSchema::Hierarchy::ONE
+};
+
 void Decorator::setChild(Behavior* newChild)
 {
 	this->child = newChild;

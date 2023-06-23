@@ -4,6 +4,14 @@
 
 using namespace pineBT;
 
+BehaviorSchema Selector::schema = BehaviorSchema::inherit(
+    "Selector",
+    Composite::schema,
+    BehaviorSchema::Options().build()
+        .boolean("live")
+    .end()
+);
+
 // Standard Selector
 
 void Selector::onEnter()

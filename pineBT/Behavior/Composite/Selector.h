@@ -7,6 +7,9 @@ namespace pineBT
 	class Selector : public Composite
 	{
 	public:
+		static BehaviorSchema schema;
+
+	public:
 		virtual void onEnter() override;
 
 		virtual Result update() override;

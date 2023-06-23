@@ -2,6 +2,15 @@
 
 using namespace pineBT;
 
+BehaviorSchema Parallel::schema = BehaviorSchema::inherit(
+	"Parallel",
+	Composite::schema,
+	BehaviorSchema::Options().build()
+		.enumeration("success_policy", { "any", "all" })
+		.enumeration("failure_policy", { "any", "all" })
+	.end()
+);
+
 Behavior::Result Parallel::update()
 {
 	int successCount = 0;

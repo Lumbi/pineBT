@@ -4,6 +4,15 @@
 
 using namespace pineBT;
 
+BehaviorSchema Condition::schema = BehaviorSchema::inherit(
+	"Condition",
+	Decorator::schema,
+	BehaviorSchema::Options().build()
+		.enumeration("mode", { "instant", "continuous" })
+		.boolean("negate")
+	.end()
+);
+
 Behavior::Result Condition::update()
 {
 	const bool expected = static_cast<std::underlying_type<Logic>::type>(logic);
