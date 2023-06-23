@@ -1,5 +1,6 @@
 #include "BehaviorTree.h"
 
+#include "Memory/LinearAllocator.h"
 #include "Behavior.h"
 #include "Behavior/Composite/Composite.h"
 #include "Behavior/Decorator/Decorator.h"
@@ -11,21 +12,9 @@
 
 using namespace pineBT;
 
-BehaviorTree::BehaviorTree(std::size_t maxMemorySize)
-	: root(nullptr),
-	  buffer(new std::byte[maxMemorySize]),
-	  offset(0)
+BehaviorTreeBuilder BehaviorTree::build(LinearAllocator& allocator)
 {
-}
-
-BehaviorTree::~BehaviorTree()
-{
-	delete[] buffer;
-}
-
-BehaviorTreeBuilder BehaviorTree::build()
-{
-	return BehaviorTreeBuilder();
+	return BehaviorTreeBuilder(allocator);
 }
 
 void BehaviorTree::setRoot(Behavior* newRoot)

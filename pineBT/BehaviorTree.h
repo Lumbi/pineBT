@@ -10,15 +10,18 @@ namespace pineBT
 {
 	class BehaviorTree
 	{
-	public:
-		BehaviorTree(std::size_t maxMemorySize = 2048);
+		friend struct BehaviorTreeBuilder;
 
-		~BehaviorTree();
+	public:
+		BehaviorTree(class LinearAllocator& allocator)
+			: root(nullptr),
+			  allocator(allocator)
+		{};
 
 		BehaviorTree(BehaviorTree&) = delete;
 		BehaviorTree& operator=(BehaviorTree) = delete;
 
-		static struct BehaviorTreeBuilder build();
+		static struct BehaviorTreeBuilder build(class LinearAllocator&);
 
 		Behavior* getRoot() const;
 
@@ -30,19 +33,9 @@ namespace pineBT
 
 		struct BehaviorTreeQuery query();
 
-		template<typename Data, typename... Args>
-		Data* allocate(Args&&... args)
-		{
-			Data* data = new ((void*)(buffer + offset)) Data;
-			offset += sizeof(Data);
-			return data;
-		}
-
 	private:
 		Behavior* root;
-		std::byte* buffer;
-		std::size_t offset;
-
+		class LinearAllocator& allocator;
 
 		// Iterator support
 

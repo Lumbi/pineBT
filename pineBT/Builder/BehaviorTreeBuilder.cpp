@@ -1,5 +1,6 @@
 #include "BehaviorTreeBuilder.h"
 
+#include "Memory/LinearAllocator.h"
 #include "BehaviorTree.h"
 #include "Behavior.h"
 #include "Behavior/Composite/Composite.h"
@@ -15,8 +16,8 @@
 
 using namespace pineBT;
 
-BehaviorTreeBuilder::BehaviorTreeBuilder()
-	: behaviorTree(std::make_unique<BehaviorTree>())
+BehaviorTreeBuilder::BehaviorTreeBuilder(LinearAllocator& allocator)
+	: behaviorTree(std::make_unique<BehaviorTree>(allocator))
 {
 }
 
@@ -38,29 +39,29 @@ BehaviorTreeBuilder& BehaviorTreeBuilder::behavior(Decorator* decorator)
 
 BehaviorTreeBuilder& BehaviorTreeBuilder::select()
 {
-	return this->behavior(behaviorTree->allocate<Selector>());
+	return this->behavior(behaviorTree->allocator.allocate<Selector>());
 }
 
 BehaviorTreeBuilder& BehaviorTreeBuilder::selectLive()
 {
-	return this->behavior(behaviorTree->allocate<LiveSelector>());
+	return this->behavior(behaviorTree->allocator.allocate<LiveSelector>());
 }
 
 BehaviorTreeBuilder& BehaviorTreeBuilder::sequence()
 {
-	return this->behavior(behaviorTree->allocate<Sequence>());
+	return this->behavior(behaviorTree->allocator.allocate<Sequence>());
 }
 
 ParallelSuccessPolicyBuilder BehaviorTreeBuilder::parallel()
 {
-	Parallel* parallel = behaviorTree->allocate<Parallel>();
+	Parallel* parallel = behaviorTree->allocator.allocate<Parallel>();
 	this->behavior(parallel);
 	return ParallelSuccessPolicyBuilder(*this, parallel);
 }
 
 BehaviorTreeBuilder& BehaviorTreeBuilder::monitor()
 {
-	Monitor* monitor = behaviorTree->allocate<Monitor>();
+	Monitor* monitor = behaviorTree->allocator.allocate<Monitor>();
 	this->behavior(monitor);
 	return *this;
 }
