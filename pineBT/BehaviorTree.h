@@ -11,7 +11,12 @@ namespace pineBT
 	class BehaviorTree
 	{
 	public:
-		BehaviorTree();
+		BehaviorTree(std::size_t maxMemorySize = 2048);
+
+		~BehaviorTree();
+
+		BehaviorTree(BehaviorTree&) = delete;
+		BehaviorTree& operator=(BehaviorTree) = delete;
 
 		static struct BehaviorTreeBuilder build();
 
@@ -25,18 +30,18 @@ namespace pineBT
 
 		struct BehaviorTreeQuery query();
 
-		template<typename BehaviorType, typename... Args>
-		BehaviorType* allocate(Args&&... args)
+		template<typename Data, typename... Args>
+		Data* allocate(Args&&... args)
 		{
-			auto behavior = std::make_unique<BehaviorType>(std::forward<Args>(args)...);
-			BehaviorType* pointer = behavior.get();
-			behaviors.push_back(std::move(behavior));
-			return pointer;
+			Data* data = new ((void*)(buffer + offset)) Data;
+			offset += sizeof(Data);
+			return data;
 		}
 
 	private:
 		Behavior* root;
-		std::vector<std::unique_ptr<Behavior>> behaviors;
+		std::byte* buffer;
+		std::size_t offset;
 
 
 		// Iterator support

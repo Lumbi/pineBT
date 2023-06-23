@@ -11,9 +11,16 @@
 
 using namespace pineBT;
 
-BehaviorTree::BehaviorTree()
-	: root(nullptr)
+BehaviorTree::BehaviorTree(std::size_t maxMemorySize)
+	: root(nullptr),
+	  buffer(new std::byte[maxMemorySize]),
+	  offset(0)
 {
+}
+
+BehaviorTree::~BehaviorTree()
+{
+	delete[] buffer;
 }
 
 BehaviorTreeBuilder BehaviorTree::build()
