@@ -11,6 +11,8 @@ namespace pineBT
 	class Behavior
 	{
 	public:
+		using ID = uint32_t;
+
 		enum class Result
 		{
 			RUNNING,
@@ -34,6 +36,9 @@ namespace pineBT
 		virtual void abort();
 
 		virtual std::string toString() const { return "Behavior"; }
+
+	public:
+		ID id = 0;
 
 	protected:
 		virtual void onEnter() {}
