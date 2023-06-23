@@ -8,7 +8,7 @@
 
 namespace pineBT
 {
-	class BehaviorTreeBuilder
+	struct BehaviorTreeBuilder
 	{
 	public:
 		BehaviorTreeBuilder();

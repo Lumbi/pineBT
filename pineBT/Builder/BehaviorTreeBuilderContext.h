@@ -4,7 +4,7 @@ namespace pineBT
 {
 	struct BehaviorTreeBuilderContext
 	{
-		class BehaviorTreeBuilder& builder;
+		struct BehaviorTreeBuilder& builder;
 
 		BehaviorTreeBuilderContext(BehaviorTreeBuilder& builder) : builder(builder) {}
 

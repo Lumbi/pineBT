@@ -7,7 +7,7 @@ namespace pineBT
 	struct ParallelBuilder
 	{
 		ParallelBuilder(
-			class BehaviorTreeBuilder& builder,
+			struct BehaviorTreeBuilder& builder,
 			class Parallel* parallel
 		) :
 			builder(builder),

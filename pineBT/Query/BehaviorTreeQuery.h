@@ -6,7 +6,7 @@
 
 namespace pineBT
 {
-	class BehaviorTreeQuery
+	struct BehaviorTreeQuery
 	{
 	public:
 		BehaviorTreeQuery(const class BehaviorTree& tree) : tree(tree) {};
