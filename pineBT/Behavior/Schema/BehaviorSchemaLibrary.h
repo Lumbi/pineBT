@@ -21,6 +21,8 @@ namespace pineBT
 			schemas[name] = BehaviorType::schema;
 		}
 
+		std::string toJSON(int indent = -1) const;
+
 	private:
 		std::unordered_map<std::string, BehaviorSchema> schemas;
 	};
