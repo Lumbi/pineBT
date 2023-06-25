@@ -25,7 +25,8 @@ add_executable (
 	"Builder/ParallelBuilder.cpp"
 	"Printer/BehaviorTreePrinter.cpp"
 	"Query/BehaviorTreeQuery.cpp"
-)
+	"Serialization/JSONSerialization.cpp"
+ )
 
 target_include_directories(
 	${PROJECT_NAME}
