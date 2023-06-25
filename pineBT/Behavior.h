@@ -38,6 +38,8 @@ namespace pineBT
 
 		virtual std::string toString() const { return "Behavior"; }
 
+		virtual void addChild(Behavior*) = 0;
+
 	public:
 		ID id = 0;
 

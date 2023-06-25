@@ -10,6 +10,8 @@ namespace pineBT
 		static BehaviorSchema schema;
 
 	public:
+		virtual void addChild(Behavior*);
+
 		void setChild(Behavior*);
 
 		Behavior* getChild() const;

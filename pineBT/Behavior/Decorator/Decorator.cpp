@@ -9,9 +9,14 @@ BehaviorSchema Decorator::schema = {
 	BehaviorSchema::Hierarchy::ONE
 };
 
-void Decorator::setChild(Behavior* newChild)
+void Decorator::addChild(Behavior* newChild)
 {
 	this->child = newChild;
+}
+
+void Decorator::setChild(Behavior* newChild)
+{
+	addChild(newChild);
 }
 
 Behavior* Decorator::getChild() const

@@ -15,7 +15,7 @@ namespace pineBT
 		using Behaviors = std::vector<Behavior*>;
 
 	public:
-		void addChild(Behavior*);
+		virtual void addChild(Behavior*) override;
 
 		const Behaviors& getChildren() const { return children; };
 

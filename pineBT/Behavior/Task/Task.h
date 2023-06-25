@@ -10,6 +10,8 @@ namespace pineBT
 		static BehaviorSchema schema;
 
 	public:
+		virtual void addChild(Behavior*) {};
+
 		std::string toString() const override { return std::format("Task [{}]", name(getResult())); }
 	};
 }
