@@ -19,6 +19,15 @@ BehaviorSchemaLibrary::BehaviorSchemaLibrary()
 	add<MockTask>();
 }
 
+Behavior* BehaviorSchemaLibrary::create(const std::string& name, BehaviorTree& tree) const
+{
+	if (auto found = creators.find(name); found != creators.end())
+	{
+		return found->second(name, tree);
+	}
+	return nullptr;
+}
+
 #include <nlohmann/json.hpp>
 
 std::string BehaviorSchemaLibrary::toJSON(int indent) const
@@ -29,7 +38,7 @@ std::string BehaviorSchemaLibrary::toJSON(int indent) const
 	json jsonResult;
 	for (auto&& pair : schemas)
 	{
-		auto schema = pair.second;
+		const BehaviorSchema& schema = pair.second;
 
 		json jsonSchema;
 		jsonSchema["name"] = schema.name;
