@@ -12,8 +12,13 @@ BehaviorSchema MockTask::schema = BehaviorSchema::inherit(
 
 Behavior::Result MockTask::update()
 {
-	printf("%s\n", message);
+	printf("%s\n", message.c_str());
 	return forceResult;
+}
+
+void pineBT::MockTask::setMessage(const std::string& message)
+{
+	this->message = message;
 }
 
 void MockTask::setForceResult(Result forceResult)

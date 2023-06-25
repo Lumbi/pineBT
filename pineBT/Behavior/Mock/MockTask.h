@@ -2,6 +2,8 @@
 
 #include "Behavior/Task/Task.h"
 
+#include <string>
+
 namespace pineBT
 {
 	class MockTask : public Task
@@ -10,16 +12,21 @@ namespace pineBT
 		static BehaviorSchema schema;
 
 	public:
-		MockTask(const char* message, Result forceResult)
+		MockTask(
+			const std::string& message = "",
+			Result forceResult = Result::SUCCESS
+		)
 			: message(message), forceResult(forceResult)
 		{};
 
 		virtual Result update() override;
 
+		void setMessage(const std::string& message);
+
 		void setForceResult(Result forceResult);
 
 	private:
-		const char* message;
+		std::string message;
 		Result forceResult;
 	};
 }
