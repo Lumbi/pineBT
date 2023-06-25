@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Behavior.h"
+#include "Memory/LinearAllocator.h"
 
 #include <memory>
 #include <iterator>
@@ -10,10 +11,10 @@ namespace pineBT
 {
 	class BehaviorTree
 	{
-		friend struct BehaviorTreeBuilder;
+		using Allocator = LinearAllocator;
 
 	public:
-		BehaviorTree(class LinearAllocator& allocator)
+		BehaviorTree(Allocator& allocator)
 			: root(nullptr),
 			  allocator(allocator)
 		{};
@@ -21,11 +22,13 @@ namespace pineBT
 		BehaviorTree(BehaviorTree&) = delete;
 		BehaviorTree& operator=(BehaviorTree) = delete;
 
-		static struct BehaviorTreeBuilder build(class LinearAllocator&);
+		static struct BehaviorTreeBuilder build(Allocator&);
 
 		Behavior* getRoot() const;
 
 		void setRoot(Behavior*);
+
+		Allocator& getAllocator() { return allocator; };
 
 		void run();
 
@@ -35,7 +38,7 @@ namespace pineBT
 
 	private:
 		Behavior* root;
-		class LinearAllocator& allocator;
+		Allocator& allocator;
 
 		// Iterator support
 

@@ -39,29 +39,29 @@ BehaviorTreeBuilder& BehaviorTreeBuilder::behavior(Decorator* decorator)
 
 BehaviorTreeBuilder& BehaviorTreeBuilder::select()
 {
-	return this->behavior(behaviorTree->allocator.allocate<Selector>());
+	return this->behavior(behaviorTree->getAllocator().allocate<Selector>());
 }
 
 BehaviorTreeBuilder& BehaviorTreeBuilder::selectLive()
 {
-	return this->behavior(behaviorTree->allocator.allocate<LiveSelector>());
+	return this->behavior(behaviorTree->getAllocator().allocate<LiveSelector>());
 }
 
 BehaviorTreeBuilder& BehaviorTreeBuilder::sequence()
 {
-	return this->behavior(behaviorTree->allocator.allocate<Sequence>());
+	return this->behavior(behaviorTree->getAllocator().allocate<Sequence>());
 }
 
 ParallelSuccessPolicyBuilder BehaviorTreeBuilder::parallel()
 {
-	Parallel* parallel = behaviorTree->allocator.allocate<Parallel>();
+	Parallel* parallel = behaviorTree->getAllocator().allocate<Parallel>();
 	this->behavior(parallel);
 	return ParallelSuccessPolicyBuilder(*this, parallel);
 }
 
 BehaviorTreeBuilder& BehaviorTreeBuilder::monitor()
 {
-	Monitor* monitor = behaviorTree->allocator.allocate<Monitor>();
+	Monitor* monitor = behaviorTree->getAllocator().allocate<Monitor>();
 	this->behavior(monitor);
 	return *this;
 }

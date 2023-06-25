@@ -1,6 +1,5 @@
 #include "BehaviorTree.h"
 
-#include "Memory/LinearAllocator.h"
 #include "Behavior.h"
 #include "Behavior/Composite/Composite.h"
 #include "Behavior/Decorator/Decorator.h"
@@ -12,7 +11,7 @@
 
 using namespace pineBT;
 
-BehaviorTreeBuilder BehaviorTree::build(LinearAllocator& allocator)
+BehaviorTreeBuilder BehaviorTree::build(Allocator& allocator)
 {
 	return BehaviorTreeBuilder(allocator);
 }
