@@ -26,7 +26,9 @@ namespace pineBT
 
 		virtual void configure(const Option&) override;
 
-		std::string toString() const override {  return std::format("Parallel [{}]", name(getResult()));  }
+		std::string toString() const override {
+			return std::format("Parallel #{} [{}]", id, name(getResult()));
+		}
 
 		void setSuccessPolicy(Policy successPolicy) { this->successPolicy = successPolicy; }
 

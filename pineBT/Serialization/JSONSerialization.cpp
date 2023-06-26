@@ -19,6 +19,11 @@ static void JSON_deserializeBehaviorRecursively(
 	Behavior* behavior = library.create(schema, tree);
 	assert(behavior);
 
+	if (blueprint.contains("id"))
+	{
+		behavior->id = blueprint.at("id").get<int>();
+	}
+
 	if (blueprint.contains("options"))
 	{
 		using Option = Behavior::Option;

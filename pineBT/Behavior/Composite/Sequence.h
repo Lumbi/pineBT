@@ -16,7 +16,9 @@ namespace pineBT
 
 		virtual Result update() override;
 
-		std::string toString() const override { return std::format("Sequence [{}]", name(getResult())); }
+		std::string toString() const override { 
+			return std::format("Sequence #{} [{}]", id, name(getResult())); 
+		}
 
 	private:
 		Behaviors::iterator currentChild;

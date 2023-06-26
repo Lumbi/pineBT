@@ -12,6 +12,8 @@ namespace pineBT
 	public:
 		virtual void addChild(Behavior*) {};
 
-		std::string toString() const override { return std::format("Task [{}]", name(getResult())); }
+		std::string toString() const override { 
+			return std::format("Task #{} [{}]", id, name(getResult())); 
+		}
 	};
 }

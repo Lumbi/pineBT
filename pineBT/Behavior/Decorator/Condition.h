@@ -32,7 +32,12 @@ namespace pineBT
 		void setLogic(Logic logic);
 
 		std::string toString() const override {
-			return std::format("{}Condition [{}]", logic == Logic::NEGATE ? "NOT " : "", name(getResult()));
+			return std::format(
+				"{}Condition #{} [{}]", 
+				logic == Logic::NEGATE ? "NOT " : "", 
+				id,
+				name(getResult())
+			);
 		}
 
 	protected:

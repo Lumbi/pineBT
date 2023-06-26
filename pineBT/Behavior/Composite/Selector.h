@@ -20,8 +20,9 @@ namespace pineBT
 
 		std::string toString() const override { 
 			return std::format(
-				"{}Selector [{}]",
+				"{}Selector #{} [{}]",
 				live ? "Live " : "",
+				id,
 				name(getResult())
 			); 
 		}
