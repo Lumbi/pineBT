@@ -44,7 +44,9 @@ BehaviorTreeBuilder& BehaviorTreeBuilder::select()
 
 BehaviorTreeBuilder& BehaviorTreeBuilder::selectLive()
 {
-	return this->behavior(behaviorTree->getAllocator().allocate<LiveSelector>());
+	auto selector = behaviorTree->getAllocator().allocate<Selector>();
+	selector->setLive(true);
+	return this->behavior(selector);
 }
 
 BehaviorTreeBuilder& BehaviorTreeBuilder::sequence()
