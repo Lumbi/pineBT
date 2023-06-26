@@ -15,7 +15,7 @@ Builder& Builder::number(const Options::Key& key) {
 	return *this;
 }
 
-Builder& Builder::enumeration(const Options::Key& key, const std::vector<std::string>& cases)
+Builder& Builder::enumeration(const Options::Key& key, int cases)
 {
 	options.enums[key] = cases;
 	return *this;
@@ -49,10 +49,5 @@ void BehaviorSchema::print() {
 	printf("[%s]\n", name.c_str());
 	for (auto&& option : options.booleans) printf(" - %s : BOOL\n", option.c_str());
 	for (auto&& option : options.numbers) printf(" - %s : NUMBER\n", option.c_str());
-	for (auto&& option : options.enums)
-	{
-		printf(" - %s : ENUM [ ", option.first.c_str());
-		for (auto&& value : option.second) printf("%s ", value.c_str());
-		printf("]\n");
-	}
+	for (auto&& option : options.enums) printf(" - %s : ENUM [ %d ]\n", option.first.c_str(), option.second);
 }

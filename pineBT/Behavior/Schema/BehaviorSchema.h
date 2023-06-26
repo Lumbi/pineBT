@@ -19,7 +19,7 @@ namespace pineBT
 
 			std::vector<Options::Key> booleans;
 			std::vector<Options::Key> numbers;
-			std::unordered_map<Options::Key, std::vector<std::string>> enums;
+			std::unordered_map<Options::Key, int> enums;
 
 			struct Builder
 			{
@@ -27,7 +27,7 @@ namespace pineBT
 
 				Builder& boolean(const Options::Key& key);
 				Builder& number(const Options::Key& key);
-				Builder& enumeration(const Options::Key& key, const std::vector<std::string>& cases);
+				Builder& enumeration(const Options::Key& key, int cases);
 
 				Options& end();
 
