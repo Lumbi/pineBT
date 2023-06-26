@@ -25,6 +25,12 @@ namespace pineBT
 		Condition(Mode mode = Mode::INSTANT, Logic logic = Logic::DEFAULT)
 			: mode(mode), logic(logic) {}
 
+		virtual void configure(const Option&) override;
+
+		void setMode(Mode mode);
+
+		void setLogic(Logic logic);
+
 		std::string toString() const override {
 			return std::format("{}Condition [{}]", logic == Logic::NEGATE ? "NOT " : "", name(getResult()));
 		}

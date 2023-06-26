@@ -4,14 +4,45 @@
 
 using namespace pineBT;
 
+static const char* OPT_MODE = "mode";
+static const int OPT_MODE_COUNT = 2;
+static const char* OPT_NEGATE = "negate";
+
 BehaviorSchema Condition::schema = BehaviorSchema::inherit(
 	"Condition",
 	Decorator::schema,
 	BehaviorSchema::Options().build()
-		.enumeration("mode", { "instant", "continuous" })
-		.boolean("negate")
+		.enumeration(OPT_MODE, OPT_MODE_COUNT)
+		.boolean(OPT_NEGATE)
 	.end()
 );
+
+void Condition::configure(const Option& option)
+{
+	if (option.key == OPT_MODE)
+	{
+		assert(option.value.tag == Option::Value::Type::ENUMERATION);
+		setMode(static_cast<Mode>(option.value.asEnumeration));
+	}
+	else if (option.key == OPT_NEGATE)
+	{
+		assert(option.value.tag == Option::Value::Type::BOOLEAN);
+		if (option.value.asBoolean)
+			setLogic(Logic::NEGATE);
+		else
+			setLogic(Logic::DEFAULT);
+	}
+}
+
+void Condition::setMode(Mode mode)
+{
+	this->mode = mode;
+}
+
+void Condition::setLogic(Logic logic)
+{
+	this->logic = logic;
+}
 
 Behavior::Result Condition::update()
 {
