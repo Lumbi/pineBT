@@ -19,7 +19,22 @@ static void JSON_deserializeBehaviorRecursively(
 	Behavior* behavior = library.create(schema, tree);
 	assert(behavior);
 
-	// TODO: configure
+	if (blueprint.contains("options"))
+	{
+		using Option = Behavior::Option;
+		using Value = Option::Value;
+
+		const json& options = blueprint.at("options");
+		for (auto& [key, value] : options.items())
+		{
+			if (value.is_boolean())
+				behavior->configure(Option::from<Value::Type::BOOLEAN>(key, value.get<bool>()));
+			else if (value.is_number())
+				behavior->configure(Option::from<Value::Type::NUMBER>(key, value.get<float>()));
+			else if (value.contains("case"))
+				behavior->configure(Option::from<Value::Type::CASE>(key, value.at("case").get<int>()));
+		}
+	}
 
 	if (parent == nullptr)
 		tree.setRoot(behavior);

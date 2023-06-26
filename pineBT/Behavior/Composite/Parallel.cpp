@@ -21,13 +21,13 @@ void Parallel::configure(const Option& option)
 {
 	if (option.key == OPT_POLICY_SUCCESS)
 	{
-		assert(option.value.tag == Option::Value::Type::ENUMERATION);
-		successPolicy = static_cast<Policy>(option.value.asEnumeration);
+		assert(option.value.tag == Option::Value::Type::CASE);
+		successPolicy = static_cast<Policy>(option.value.asCase);
 	}
 	else if (option.key == OPT_POLICY_FAILURE)
 	{
-		assert(option.value.tag == Option::Value::Type::ENUMERATION);
-		failurePolicy = static_cast<Policy>(option.value.asEnumeration);
+		assert(option.value.tag == Option::Value::Type::CASE);
+		failurePolicy = static_cast<Policy>(option.value.asCase);
 	}
 }
 

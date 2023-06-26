@@ -21,8 +21,8 @@ void Condition::configure(const Option& option)
 {
 	if (option.key == OPT_MODE)
 	{
-		assert(option.value.tag == Option::Value::Type::ENUMERATION);
-		setMode(static_cast<Mode>(option.value.asEnumeration));
+		assert(option.value.tag == Option::Value::Type::CASE);
+		setMode(static_cast<Mode>(option.value.asCase));
 	}
 	else if (option.key == OPT_NEGATE)
 	{

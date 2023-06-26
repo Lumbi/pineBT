@@ -19,8 +19,8 @@ void MockTask::configure(const Option& option)
 {
 	if (option.key == OPT_FORCE_RESULT)
 	{
-		assert(option.value.tag == Option::Value::Type::ENUMERATION);
-		setForceResult(static_cast<Result>(option.value.asEnumeration));
+		assert(option.value.tag == Option::Value::Type::CASE);
+		setForceResult(static_cast<Result>(option.value.asCase));
 	}
 }
 

@@ -69,19 +69,47 @@ namespace pineBT
 				{
 					BOOLEAN, 
 					NUMBER, 
-					ENUMERATION 
+					CASE
 				} tag;
 
 				union 
 				{
 					bool asBoolean;
 					float asNumber;
-					int asEnumeration;
+					int asCase;
 				};
 			};
 			Value value;
 
-		private:
+			template<Value::Type valueType, typename ValueType>
+			static Option from(const Key& key, ValueType value);
+
+			template<>
+			static Option from<Value::Type::BOOLEAN, bool>(const Key& key, bool value)
+			{
+				Option option { key };
+				option.value.tag = Value::Type::BOOLEAN;
+				option.value.asBoolean = value;
+				return option;
+			}
+
+			template<>
+			static Option from<Value::Type::NUMBER, float>(const Key& key, float value)
+			{
+				Option option { key };
+				option.value.tag = Value::Type::NUMBER;
+				option.value.asNumber = value;
+				return option;
+			}
+
+			template<>
+			static Option from<Value::Type::CASE, int>(const Key& key, int value)
+			{
+				Option option{ key };
+				option.value.tag = Value::Type::CASE;
+				option.value.asCase = value;
+				return option;
+			}
 		};
 	};
 	
