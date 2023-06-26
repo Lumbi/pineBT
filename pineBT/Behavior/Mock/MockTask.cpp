@@ -1,24 +1,32 @@
 #include "MockTask.h"
 
+#include <assert.h>
+
 using namespace pineBT;
+
+static const char* OPT_FORCE_RESULT = "force_result";
+static const int OPT_FORCE_RESULT_COUNT = 4;
 
 BehaviorSchema MockTask::schema = BehaviorSchema::inherit(
 	"MockTask",
 	Task::schema,
 	BehaviorSchema::Options().build()
-		.enumeration("force_result", { "running", "success", "failure", "abort" })
+		.enumeration(OPT_FORCE_RESULT, OPT_FORCE_RESULT_COUNT)
 	.end()
 );
 
-Behavior::Result MockTask::update()
+void MockTask::configure(const Option& option)
 {
-	printf("%s\n", message.c_str());
-	return forceResult;
+	if (option.key == OPT_FORCE_RESULT)
+	{
+		assert(option.value.tag == Option::Value::Type::ENUMERATION);
+		setForceResult(static_cast<Result>(option.value.asEnumeration));
+	}
 }
 
-void pineBT::MockTask::setMessage(const std::string& message)
+Behavior::Result MockTask::update()
 {
-	this->message = message;
+	return forceResult;
 }
 
 void MockTask::setForceResult(Result forceResult)

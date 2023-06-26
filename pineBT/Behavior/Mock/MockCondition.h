@@ -12,6 +12,8 @@ namespace pineBT
 	public:
 		using Condition::Condition;
 
+		virtual void configure(const Option&) override;
+
 		void setForceCheck(bool forceCheck) { this->forceCheck = forceCheck; }
 
 	private:

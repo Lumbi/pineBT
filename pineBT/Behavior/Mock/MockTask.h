@@ -12,21 +12,15 @@ namespace pineBT
 		static BehaviorSchema schema;
 
 	public:
-		MockTask(
-			const std::string& message = "",
-			Result forceResult = Result::SUCCESS
-		)
-			: message(message), forceResult(forceResult)
-		{};
+		MockTask(Result forceResult = Result::SUCCESS) : forceResult(forceResult) {}
+
+		virtual void configure(const Option&) override;
 
 		virtual Result update() override;
-
-		void setMessage(const std::string& message);
 
 		void setForceResult(Result forceResult);
 
 	private:
-		std::string message;
 		Result forceResult;
 	};
 }
