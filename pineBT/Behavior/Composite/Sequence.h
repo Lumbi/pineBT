@@ -10,6 +10,8 @@ namespace pineBT
 		static BehaviorSchema schema;
 
 	public:
+		virtual void configure(const Option&);
+
 		virtual void onEnter() override;
 
 		virtual Result update() override;

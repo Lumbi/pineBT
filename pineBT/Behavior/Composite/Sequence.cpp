@@ -9,6 +9,10 @@ BehaviorSchema Sequence::schema = BehaviorSchema::inherit(
 	Composite::schema
 );
 
+void Sequence::configure(const Option&)
+{
+}
+
 void Sequence::onEnter()
 {
 	currentChild = children.begin();
