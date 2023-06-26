@@ -23,10 +23,14 @@ namespace pineBT
 			INVALID
 		};
 
+		struct Option;
+
 	public:
 		Behavior() = default;
 
 		~Behavior() {}
+
+		virtual void configure(const Option&) = 0;
 
 		Result run();
 
@@ -52,6 +56,33 @@ namespace pineBT
 
 	private:
 		Result result = Result::INVALID;
+
+	public:
+		struct Option
+		{
+			using Key = std::string;
+			Key key;
+
+			struct Value
+			{
+				enum class Type 
+				{
+					BOOLEAN, 
+					NUMBER, 
+					ENUMERATION 
+				} tag;
+
+				union 
+				{
+					bool asBoolean;
+					float asNumber;
+					int asEnumeration;
+				};
+			};
+			Value value;
+
+		private:
+		};
 	};
 	
 	std::string name(Behavior::Result);
