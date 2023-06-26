@@ -10,23 +10,26 @@ namespace pineBT
 		static BehaviorSchema schema;
 
 	public:
+		virtual void configure(const Option&) override;
+
+		void setLive(bool);
+
 		virtual void onEnter() override;
 
 		virtual Result update() override;
 
-		std::string toString() const override { return std::format("Selector [{}]", name(getResult())); }
+		std::string toString() const override { 
+			return std::format(
+				"{}Selector [{}]",
+				live ? "Live " : "",
+				name(getResult())
+			); 
+		}
 
 	protected:
 		Behaviors::iterator currentChild;
-	};
 
-	class LiveSelector : public Selector
-	{
-	public:
-		void onEnter() override;
-
-		Result update() override;
-
-		std::string toString() const override { return std::format("Live Selector [{}]", name(getResult())); }
+	private:
+		bool live;
 	};
 }

@@ -4,15 +4,29 @@
 
 using namespace pineBT;
 
+static const char* OPT_LIVE = "live";
+
 BehaviorSchema Selector::schema = BehaviorSchema::inherit(
     "Selector",
     Composite::schema,
     BehaviorSchema::Options().build()
-        .boolean("live")
+        .boolean(OPT_LIVE)
     .end()
 );
 
-// Standard Selector
+void Selector::configure(const Option& option)
+{
+    if (option.key == OPT_LIVE)
+    {
+        assert(option.value.tag == Option::Value::Type::BOOLEAN);
+        setLive(option.value.asBoolean);
+    }
+}
+
+void Selector::setLive(bool live)
+{
+    this->live = live;
+}
 
 void Selector::onEnter()
 {
@@ -21,41 +35,44 @@ void Selector::onEnter()
 
 Behavior::Result Selector::update()
 {
+    Behaviors::iterator previousChild;
+
+    if (live)
+    {
+        // Reset to first child
+        assert(!children.empty());
+        previousChild = currentChild;
+        currentChild = children.begin();
+    }
+
+    // Normal selector logic
     assert(currentChild != children.end());
+    Result result;
 
     while (true)
     {
-        const Result result = (*currentChild)->run();
+        const Result childResult = (*currentChild)->run();
 
-        if (result != Result::FAILURE)
-            return result;
+        if (childResult != Result::FAILURE)
+        {
+            result = childResult;
+            break;
+        }
 
         if (++currentChild == children.end())
-            return Result::FAILURE;
+        {
+            result = Result::FAILURE;
+            break;
+        }
     }
 
-    return Result::INVALID;
-}
-
-// Live Selector
-
-void LiveSelector::onEnter()
-{
-    Selector::onEnter();
-}
-
-Behavior::Result LiveSelector::update()
-{
-    assert(!children.empty());
-
-    Behaviors::iterator previousChild = currentChild;
-    currentChild = children.begin();
-    Result result = Selector::update();
-    // Abort previously running child
-    if (previousChild != children.end() && previousChild != currentChild) 
-    {
-        (*previousChild)->abort();
+    result = Result::INVALID;
+ 
+    if (live) {
+        // Abort previously running child
+        if (previousChild != children.end() && previousChild != currentChild)
+            (*previousChild)->abort();
     }
-
+    
     return result;
 }
