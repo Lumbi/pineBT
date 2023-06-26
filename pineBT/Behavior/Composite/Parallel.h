@@ -24,6 +24,8 @@ namespace pineBT
 			failurePolicy(failurePolicy)
 		{}
 
+		virtual void configure(const Option&) override;
+
 		std::string toString() const override {  return std::format("Parallel [{}]", name(getResult()));  }
 
 		void setSuccessPolicy(Policy successPolicy) { this->successPolicy = successPolicy; }

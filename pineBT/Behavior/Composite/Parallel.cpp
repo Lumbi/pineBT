@@ -1,15 +1,35 @@
 #include "Parallel.h"
 
+#include <assert.h>
+
 using namespace pineBT;
+
+const char* OPT_POLICY_SUCCESS = "success_policy";
+const char* OPT_POLICY_FAILURE = "failure_policy";
+const static int OPT_POLICY_COUNT = 2;
 
 BehaviorSchema Parallel::schema = BehaviorSchema::inherit(
 	"Parallel",
 	Composite::schema,
 	BehaviorSchema::Options().build()
-		.enumeration("success_policy", { "any", "all" })
-		.enumeration("failure_policy", { "any", "all" })
+		.enumeration(OPT_POLICY_SUCCESS, OPT_POLICY_COUNT)
+		.enumeration(OPT_POLICY_FAILURE, OPT_POLICY_COUNT)
 	.end()
 );
+
+void Parallel::configure(const Option& option)
+{
+	if (option.key == OPT_POLICY_SUCCESS)
+	{
+		assert(option.value.tag == Option::Value::Type::ENUMERATION);
+		successPolicy = static_cast<Policy>(option.value.asEnumeration);
+	}
+	else if (option.key == OPT_POLICY_FAILURE)
+	{
+		assert(option.value.tag == Option::Value::Type::ENUMERATION);
+		failurePolicy = static_cast<Policy>(option.value.asEnumeration);
+	}
+}
 
 Behavior::Result Parallel::update()
 {
