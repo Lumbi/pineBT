@@ -9,7 +9,8 @@ namespace pineBT
 	public:
 		LinearAllocator(std::size_t size) 
 			: buffer(new std::byte[size]),
-			  offset(0)
+			  offset(0),
+			  size(size)
 		{};
 
 		~LinearAllocator()
@@ -23,13 +24,16 @@ namespace pineBT
 		template<typename Data, typename... Args>
 		Data* allocate(Args&&... args)
 		{
+			const std::size_t chunk = sizeof(Data);
+			if (offset + chunk > size) { return nullptr; }
 			Data* data = new ((void*)(buffer + offset)) Data(std::forward<Args>(args)...);
-			offset += sizeof(Data);
+			offset += chunk;
 			return data;
 		}
 
 	private:
 		std::byte* const buffer;
 		std::size_t offset;
+		std::size_t size;
 	};
 }

@@ -1,9 +1,14 @@
-﻿// pineBT.h : Include file for standard system include files,
-// or project specific include files.
-
 #pragma once
 
-#include <iostream>
-
+#include "Memory/LinearAllocator.h"
 #include "BehaviorTree.h"
-#include "Behavior/Task/DebugTask.h"
+#include "Behavior/Composite/Parallel.h"
+#include "Behavior/Composite/Selector.h"
+#include "Behavior/Composite/Sequence.h"
+#include "Behavior/Mock/MockTask.h"
+#include "Behavior/Mock/MockCondition.h"
+#include "Builder/BehaviorTreeBuilder.h"
+#include "Printer/BehaviorTreePrinter.h"
+#include "Query/BehaviorTreeQuery.h"
+#include "Behavior/Schema/BehaviorSchemaLibrary.h"
+#include "Serialization/JSONSerialization.h"

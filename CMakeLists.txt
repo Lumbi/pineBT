@@ -11,5 +11,11 @@ endif()
 
 project ("pineBT")
 
-# Include sub-projects.
+set (CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
+set (CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
+
+set(TARGET_LIB_NAME ${PROJECT_NAME})
+set(TARGET_EXE_NAME ${PROJECT_NAME}cli)
+
 add_subdirectory ("pineBT")
+add_subdirectory ("pineBTcli")

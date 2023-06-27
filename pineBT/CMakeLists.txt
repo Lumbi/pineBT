@@ -1,11 +1,8 @@
-﻿# CMakeList.txt : CMake project for pineBT, include source and define
-# project specific logic here.
-#
+﻿set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
 
-add_executable (
-	${PROJECT_NAME}
-	"pineBT.h"
-	"pineBT.cpp"
+add_library(
+	${TARGET_LIB_NAME}
+	SHARED
 	"Behavior.cpp"
 	"BehaviorTree.cpp"
 	"Behavior/Composite/Composite.cpp"
@@ -26,22 +23,21 @@ add_executable (
 	"Printer/BehaviorTreePrinter.cpp"
 	"Query/BehaviorTreeQuery.cpp"
 	"Serialization/JSONSerialization.cpp"
- )
+	"API.cpp"
+)
 
 target_include_directories(
-	${PROJECT_NAME}
+	${TARGET_LIB_NAME}
 	PUBLIC
 	${CMAKE_CURRENT_SOURCE_DIR}
 )
 
 target_include_directories(
-	${PROJECT_NAME}
+	${TARGET_LIB_NAME}
 	PUBLIC
 	${CMAKE_CURRENT_SOURCE_DIR}/lib
 )
 
 if (CMAKE_VERSION VERSION_GREATER 3.12)
-  set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 20)
+  set_property(TARGET ${TARGET_LIB_NAME} PROPERTY CXX_STANDARD 20)
 endif()
-
-# TODO: Add tests and install targets if needed.
