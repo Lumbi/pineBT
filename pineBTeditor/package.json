@@ -11,5 +11,8 @@
   "license": "MIT",
   "devDependencies": {
     "electron": "^14.2.9"
+  },
+  "dependencies": {
+    "ffi-napi": "^4.0.3"
   }
 }
