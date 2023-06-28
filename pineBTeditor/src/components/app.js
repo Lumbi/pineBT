@@ -50,6 +50,18 @@ export default function App() {
         setDragging(false)
     }
 
+    function updateBehavior(behaviorUpdate) {
+        setBehaviors(
+            behaviors.map(behavior => {
+                if (behavior.id === behaviorUpdate.id) {
+                    return {... behavior, ...behaviorUpdate}
+                } else {
+                    return behavior
+                }
+            })
+        )
+    }
+
     return <>
         <div 
             className='behavior-canvas'
@@ -63,7 +75,11 @@ export default function App() {
             >
             {
                 behaviors.map(behavior =>
-                    <BehaviorCard behavior={behavior}/>
+                    <BehaviorCard 
+                        key={behavior.id}
+                        behavior={behavior}
+                        updateBehavior={updateBehavior}
+                    />
                 )
             }
             </div>
