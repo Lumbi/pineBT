@@ -69,6 +69,7 @@ export default function BehaviorCard(props) {
     return (
         <div 
             ref={self}
+            id={`behavior-card-${behavior.id}`}
             className={bem('behavior-card', null, { grabbing: isDragging })}
         >
             <div 

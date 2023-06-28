@@ -2,12 +2,17 @@ body {
     overflow: hidden;
 }
 
-.behavior-canvas {
+.canvas {
     position: absolute;
-    width: 100%;
-    height: 100%;
-}
+    width: 2048px;
+    height: 2048px;
 
-.behavior-viewport {
-    position: absolute;
+    &__viewport {
+        position: absolute;
+    }
+
+    &__connections {
+        width: 2048px;
+        height: 2048px;
+    }
 }

@@ -1,5 +1,7 @@
 import { useState, useRef, useEffect } from 'react'
 import BehaviorCard from './behavior-card'
+import BehaviorConnection from './behavior-connection'
+import bem from '../bem'
 
 import './app.less'
 
@@ -76,25 +78,36 @@ export default function App() {
 
     return <>
         <div 
-            className='behavior-canvas'
+            className='canvas'
             onMouseDown={handleCanvasOnMouseDown}
             onMouseMove={handleCanvasOnMouseMove}
             onMouseUp={handleCanvasOnMouseUp}
         >
             <div 
-                className='behavior-viewport'
+                className={bem('canvas', 'viewport')}
                 ref={behaviorViewport}
             >
-            {
-                behaviors.map(behavior =>
-                    <BehaviorCard 
-                        key={behavior.id}
-                        behavior={behavior}
-                        updateBehavior={updateBehavior}
-                        connections={connections}
-                    />
-                )
-            }
+                {
+                    behaviors.map(behavior =>
+                        <BehaviorCard 
+                            key={behavior.id}
+                            behavior={behavior}
+                            updateBehavior={updateBehavior}
+                            connections={connections}
+                        />
+                    )
+                }
+                <svg className={bem('canvas', 'connections')}>
+                    {
+                        connections.map(connection => 
+                            <BehaviorConnection
+                                key={`${connection.from}->${connection.to}`}
+                                from={behaviors.find(b => b.id == connection.from)}
+                                to={behaviors.find(b => b.id == connection.to)}
+                            />
+                        )
+                    }
+                </svg>
             </div>
         </div>
     </>
