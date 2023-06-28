@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from 'react'
+import BehaviorCard from './behavior-card'
 
 import './app.less'
 
@@ -62,22 +63,7 @@ export default function App() {
             >
             {
                 behaviors.map(behavior =>
-                    <div 
-                        key={behavior.id}
-                        className='behavior-card'
-                        style={
-                            {
-                                position: 'relative',
-                                left: behavior.position.x,
-                                top: behavior.position.y,
-                                width: 300,
-                                height: 100,
-                            }
-                        }
-                    >
-                        <p>{behavior.schema}</p>
-                        <div className='behavior-card__handle'></div>
-                    </div>
+                    <BehaviorCard behavior={behavior}/>
                 )
             }
             </div>
