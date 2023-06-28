@@ -14,16 +14,23 @@ export default function BehaviorConnection(props) {
     const [toAnchor, setToAnchor] = useState({ x: to.position.x, y: to.position.y })
 
     useEffect(() => {
-        const behaviorCard = document.getElementById(`behavior-card-${from.id}`)
-        const { width, height } = behaviorCard.getBoundingClientRect()
+        const fromBehaviorCard = document.getElementById(`behavior-card-${from.id}`)
+        const fromSize = fromBehaviorCard.getBoundingClientRect()
         setFromAnchor({ 
-            x: from.position.x + width / 2,
-            y: from.position.y + height - 8
+            x: from.position.x + fromSize.width / 2,
+            y: from.position.y + fromSize.height - 8
         })
-        setToAnchor({
-            x: to.position.x + width / 2,
-            y: to.position.y + 8
-        })
+
+        if (to && to.id) {
+            const toBehaviorCard = document.getElementById(`behavior-card-${from.id}`)
+            const toSize = toBehaviorCard.getBoundingClientRect()
+            setToAnchor({
+                x: to.position.x + toSize.width / 2,
+                y: to.position.y + 8
+            })
+        } else {
+            setToAnchor(to.position)
+        }
     }, [from.position, to.position])
 
     return (

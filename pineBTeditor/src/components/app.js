@@ -30,6 +30,8 @@ const testConnections = [
 export default function App() {
     const [behaviors, setBehaviors] = useState(testBehaviors)
     const [connections, setConnections] = useState(testConnections)
+    const [newConnection, setNewConnection] = useState()
+    const [mousePosition, setMousePosition] = useState()
     const [scrollOffset, setScrollOffset] = useState({ x: 0, y: 0 })
 
     const [isDragging, setDragging] = useState(false)
@@ -48,6 +50,8 @@ export default function App() {
     }
 
     function handleCanvasOnMouseMove(event) {
+        setMousePosition({ x: event.clientX, y: event.clientY })
+
         if (isDragging) {
             event.preventDefault()
             setScrollOffset({
@@ -76,6 +80,26 @@ export default function App() {
         )
     }
 
+    function beginNewConnection(from) {
+        setNewConnection({ from })
+    }
+
+    function commitNewConnection(to) {
+        if (newConnection) {
+            const connection = { ...newConnection, to }
+            const alreadyExists = !!connections.find(c => c.from === connection.from && c.to === connection.to)
+            if (!alreadyExists) {
+                setConnections([...connections, connection])
+            }
+        }
+        setNewConnection(undefined)
+    }
+
+    //TODO
+    function cancelNewConnection() {
+        setNewConnection(undefined)
+    }
+
     return <>
         <div 
             className='canvas'
@@ -94,6 +118,9 @@ export default function App() {
                             behavior={behavior}
                             updateBehavior={updateBehavior}
                             connections={connections}
+                            newConnection={newConnection}
+                            beginNewConnection={beginNewConnection}
+                            commitNewConnection={commitNewConnection}
                         />
                     )
                 }
@@ -106,6 +133,14 @@ export default function App() {
                                 to={behaviors.find(b => b.id == connection.to)}
                             />
                         )
+                    }
+                    {
+                        newConnection
+                            ? <BehaviorConnection
+                                from={behaviors.find(b => b.id == newConnection.from)}
+                                to={{ position: mousePosition }}
+                              />
+                            : null
                     }
                 </svg>
             </div>

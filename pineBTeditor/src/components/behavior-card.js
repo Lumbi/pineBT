@@ -7,7 +7,10 @@ export default function BehaviorCard(props) {
     const { 
         behavior,
         updateBehavior,
-        connections
+        connections,
+        newConnection,
+        beginNewConnection,
+        commitNewConnection
     } = props
 
     const self = useRef()
@@ -66,6 +69,22 @@ export default function BehaviorCard(props) {
         }
     }
 
+    function handleParentHandleClick(event) {
+        if (newConnection) {
+            event.preventDefault()
+            event.stopPropagation()
+            commitNewConnection(behavior.id)
+        }
+    }
+
+    function handleChildrenHandleClick(event) {
+        if (!newConnection) {
+            event.preventDefault()
+            event.stopPropagation()
+            beginNewConnection(behavior.id)
+        }
+    }
+
     return (
         <div 
             ref={self}
@@ -82,16 +101,14 @@ export default function BehaviorCard(props) {
             <div className={bem('behavior-card', 'content')}>
                 <div 
                     className={bem('behavior-card', 'parent-handle', { connected: hasParent })}
-                    onClick={(event) => {
-                        event.preventDefault()
-                        event.stopPropagation()
-                    }}
+                    onClick={handleParentHandleClick}
                     onMouseDown={(event) => event.stopPropagation()}
                     onMouseMove={(event) => event.stopPropagation()}
                 />
                 <p>{behavior.schema}</p>
                 <div 
                     className={bem('behavior-card', 'children-handle', { connected: hasChildren })}
+                    onClick={handleChildrenHandleClick}
                     onMouseDown={(event) => event.stopPropagation()}
                     onMouseMove={(event) => event.stopPropagation()}
                 />
