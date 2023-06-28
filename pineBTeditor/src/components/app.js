@@ -13,11 +13,21 @@ const testBehaviors = [
         schema: 'Parallel',
         id: 2,
         position: { x: 0, y: 200 }
+    },
+    {
+        schema: 'Task',
+        id: 3,
+        position: { x: 400, y: 200 }
     }
+]
+
+const testConnections = [
+    { from: 1, to: 2 }
 ]
 
 export default function App() {
     const [behaviors, setBehaviors] = useState(testBehaviors)
+    const [connections, setConnections] = useState(testConnections)
     const [scrollOffset, setScrollOffset] = useState({ x: 0, y: 0 })
 
     const [isDragging, setDragging] = useState(false)
@@ -79,6 +89,7 @@ export default function App() {
                         key={behavior.id}
                         behavior={behavior}
                         updateBehavior={updateBehavior}
+                        connections={connections}
                     />
                 )
             }
