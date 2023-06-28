@@ -13,6 +13,8 @@
     "electron": "^14.2.9"
   },
   "dependencies": {
-    "ffi-napi": "^4.0.3"
+    "ffi-napi": "^4.0.3",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
   }
 }
