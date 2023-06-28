@@ -56,8 +56,10 @@ export default function App() {
     }
 
     function handleCanvasOnMouseUp(event) {
-        event.preventDefault()
-        setDragging(false)
+        if (isDragging) {
+            event.preventDefault()
+            setDragging(false)
+        }
     }
 
     function updateBehavior(behaviorUpdate) {
