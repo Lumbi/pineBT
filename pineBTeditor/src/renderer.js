@@ -1,6 +1,7 @@
 import { createRoot } from 'react-dom/client'
 import App from './components/app'
 
+import 'bootstrap-icons/font/bootstrap-icons.css'
 import './renderer.less'
 
 document.body.innerHTML = '<div id="app"></div>'
