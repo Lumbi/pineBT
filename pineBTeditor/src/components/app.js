@@ -11,7 +11,7 @@ import './app.less'
 const testBehaviors = [
     {
         schema: 'Root',
-        id: 1,
+        id: 0,
         position: { x: 50, y: 50 }
     },
     {
@@ -37,7 +37,7 @@ const testBehaviors = [
 ]
 
 const testConnections = [
-    { from: 1, to: 2 }
+    { from: 0, to: 2 }
 ]
 
 export default function App() {

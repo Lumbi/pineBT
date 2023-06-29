@@ -14,8 +14,8 @@ export default function BehaviorCard(props) {
         beginNewConnection,
         commitNewConnection
     } = props
-
     const self = useRef()
+    const isRoot = behavior.id === 0
     const position = behavior.position;
     const [isDragging, setDragging] = useState(false)
     const [lastMousePosition, setLastMousePosition] = useState({ x: 0, y: 0 })
@@ -31,6 +31,19 @@ export default function BehaviorCard(props) {
 
     function updateLastMousePosition(event) {
         setLastMousePosition({ x: event.screenX, y: event.screenY })
+    }
+
+    function canEdit() {
+        return !isRoot
+    }
+
+    function allowsChildren() {
+        if (!schema || !schema.hierarchy) {
+            return false
+        } else if (schema.hierarchy === "none") {
+            return false
+        }
+        return true
     }
 
     function canAddChild() {
@@ -105,7 +118,9 @@ export default function BehaviorCard(props) {
         <div 
             ref={self}
             id={`behavior-card-${behavior.id}`}
-            className={bem('behavior-card', null, { grabbing: isDragging })}
+            className={bem('behavior-card', null, { 
+                grabbing: isDragging
+            })}
         >
             <div 
                 className={bem('behavior-card', 'background')}
@@ -116,20 +131,26 @@ export default function BehaviorCard(props) {
             />
             <div className={bem('behavior-card', 'content')}>
                 <div 
-                    className={bem('behavior-card', 'parent-handle', { connected: hasParent })}
+                    className={bem('behavior-card', 'parent-handle', { 
+                        connected: hasParent,
+                        hidden: isRoot,
+                    })}
                     onClick={handleParentHandleClick}
                     onMouseDown={(event) => event.stopPropagation()}
                     onMouseMove={(event) => event.stopPropagation()}
                 />
                 <p>{behavior.schema}</p>
                 <div 
-                    className={bem('behavior-card', 'children-handle', { connected: hasChildren })}
+                    className={bem('behavior-card', 'children-handle', { 
+                        connected: hasChildren,
+                        hidden: !allowsChildren(),
+                    })}
                     onClick={handleChildrenHandleClick}
                     onMouseDown={(event) => event.stopPropagation()}
                     onMouseMove={(event) => event.stopPropagation()}
                 />
             </div>
-            <div className={bem('behavior-card', 'edit')}>
+            <div className={bem('behavior-card', 'edit', { hidden: !canEdit() })}>
                 <Button variant='outline-secondary' size='sm'>
                     <i className='bi bi-gear-fill'></i>
                 </Button>

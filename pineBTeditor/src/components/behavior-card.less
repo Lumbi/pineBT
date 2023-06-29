@@ -56,6 +56,10 @@
             background-color: #a6a93b;
             box-shadow: rgba(225, 241, 103, 0.619) 0px -8px 24px 0px;
         }
+
+        &--hidden {
+            display: none !important;
+        }
     }
 
     &__children-handle {
@@ -78,11 +82,19 @@
             background-color: #5689be;
             box-shadow: rgba(50, 217, 243, 0.619) 0px 8px 24px 0px;
         }
+
+        &--hidden {
+            display: none !important;
+        }
     }
 
     &__edit {
         position: absolute;
         top: 8px;
         right: 8px;
+
+        &--hidden {
+            display: none;
+        }
     }
 }
