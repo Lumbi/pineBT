@@ -164,13 +164,8 @@ export default function App() {
                         newConnection
                             ? <BehaviorConnection
                                 from={behaviors.find(b => b.id == newConnection.from)}
-                                to={{ 
-                                    position: {
-                                        x: mousePosition.x - 8,
-                                        y: mousePosition.y - 8
-                                    } 
-                                }}
-                              />
+                                to={{ position: { x: mousePosition.x - 1, y: mousePosition.y - 3 } }}
+                                />
                             : null
                     }
                 </svg>
