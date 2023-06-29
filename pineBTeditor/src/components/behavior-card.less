@@ -4,7 +4,7 @@
     left: 0;
     top: 0;
     width: 200px;
-    height: 150px;
+    height: 100px;
     box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
     cursor: grab;
     user-select: none;
@@ -14,7 +14,7 @@
     }
 
     &__background {
-        background-color: #E4E6EB;
+        background-color: #e7e8ec;
         position: absolute;
         width: 100%;
         height: 100%;
@@ -46,6 +46,11 @@
             background-color: #717342;
             box-shadow: rgba(170, 200, 105, 0.619) 0px 7px 29px 0px;
         }
+
+        &--connected:hover {
+            background-color: #a6a93b;
+            box-shadow: rgba(225, 241, 103, 0.619) 0px 7px 29px 0px;
+        }
     }
 
     &__children-handle {
@@ -62,6 +67,11 @@
         &--connected, &:hover {
             background-color: #425a73;
             box-shadow: rgba(105, 187, 200, 0.619) 0px 7px 29px 0px;
+        }
+
+        &--connected:hover {
+            background-color: #5689be;
+            box-shadow: rgba(50, 217, 243, 0.619) 0px 7px 29px 0px;
         }
     }
 }
