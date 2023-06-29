@@ -128,7 +128,7 @@ export default function App() {
 
     return (<>
         <div 
-            className='canvas'
+            className={bem('canvas', null, { connecting: !!newConnection })}
             onMouseDown={handleCanvasOnMouseDown}
             onMouseMove={handleCanvasOnMouseMove}
             onMouseUp={handleCanvasOnMouseUp}
