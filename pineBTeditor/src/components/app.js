@@ -214,7 +214,6 @@ export default function App() {
             <div 
                 className={bem('canvas', 'viewport')}
             >
-                <div className={bem('canvas', 'content')}>
                 {
                     behaviors.map(behavior =>
                         <BehaviorCard 
@@ -230,7 +229,6 @@ export default function App() {
                         />
                     )
                 }
-                </div>
                 <svg className={bem('canvas', 'connections')}>
                 {
                     connections.map(connection => 
