@@ -1,9 +1,10 @@
-import { useState, useRef, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import BehaviorCard from './behavior-card'
 import BehaviorConnection from './behavior-connection'
-import bem from '../bem'
 import BehaviorDrawer from './behavior-drawer'
+import { BehaviorEdit } from './behavior-edit'
 import { loadBehaviorSchemas } from '../behavior-schema'
+import bem from '../bem'
 
 import 'bootstrap/dist/css/bootstrap.min.css'
 import './app.less'
@@ -49,6 +50,8 @@ export default function App() {
     const [scrollOffset, setScrollOffset] = useState({ x: 0, y: 0 })
     const [isDragging, setDragging] = useState(false)
     const [showBehaviorDrawer, setShowBehaviorDrawer] = useState(false)
+    const [showBehaviorEdit, setShowBehaviorEdit] = useState(true)
+    const [inEditBehavior, setInEditBehavior] = useState(behaviors[1])
 
     useEffect(() => {
         async function loadSchemas() {
@@ -110,6 +113,10 @@ export default function App() {
 
     function beginNewConnection(from) {
         setNewConnection({ from })
+    }
+
+    function schemaForBehavior(behavior) {
+        return schemas.find(s => s.name === behavior.schema)
     }
 
     function childrenOfBehavior(behaviorId) {
@@ -191,6 +198,11 @@ export default function App() {
         }
     }
 
+    function showEditForBehavior(behavior) {
+        setInEditBehavior(behavior)
+        setShowBehaviorEdit(true)
+    }
+
     return (<>
         <div 
             className={bem('canvas', null, { connecting: !!newConnection })}
@@ -212,6 +224,7 @@ export default function App() {
                             newConnection={newConnection}
                             beginNewConnection={beginNewConnection}
                             commitNewConnection={commitNewConnection}
+                            onEdit={() => showEditForBehavior(behavior)}
                         />
                     )
                 }
@@ -242,6 +255,12 @@ export default function App() {
             show={showBehaviorDrawer}
             onHide={hideBehaviorDrawer}
             onSelectSchema={createBehaviorFromSchema}
+        />
+        <BehaviorEdit
+            behavior={inEditBehavior}
+            schema={schemaForBehavior(inEditBehavior)}
+            show={showBehaviorEdit}
+            onHide={() => setShowBehaviorEdit(false)}
         />
     </>)
 }

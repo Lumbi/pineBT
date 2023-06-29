@@ -12,7 +12,8 @@ export default function BehaviorCard(props) {
         connections,
         newConnection,
         beginNewConnection,
-        commitNewConnection
+        commitNewConnection,
+        onEdit,
     } = props
     const self = useRef()
     const isRoot = behavior.id === 0
@@ -151,7 +152,11 @@ export default function BehaviorCard(props) {
                 />
             </div>
             <div className={bem('behavior-card', 'edit', { hidden: !canEdit() })}>
-                <Button variant='outline-secondary' size='sm'>
+                <Button 
+                    variant='outline-secondary' 
+                    size='sm'
+                    onClick={onEdit}
+                >
                     <i className='bi bi-gear-fill'></i>
                 </Button>
             </div>
