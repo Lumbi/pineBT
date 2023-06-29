@@ -136,6 +136,10 @@ export default function App() {
         const behavior = behaviors.filter(b => b.id === behaviorId)[0]
         if (!behavior) { return false }
 
+        if (behavior.id === 0) { // root
+            return childrenOfBehavior(behaviorId).length === 0
+        }
+
         const behaviorSchema = schemas.find(s => s.name === behavior.schema)
         if (!behaviorSchema) { return false }
 

@@ -50,7 +50,10 @@ export default function BehaviorCard(props) {
     }
 
     function canAddChild() {
-        if (!schema || !schema.hierarchy) {
+        if (isRoot) {
+            const hasChild = connections.find(c => c.from === behavior.id)
+            return !hasChild
+        } else if (!schema || !schema.hierarchy) {
             return false
         } else if (schema.hierarchy === "none") {
             return false
