@@ -32,6 +32,10 @@ const config = {
         use: [MiniCssExtractPlugin.loader, "css-loader", "less-loader"],
       },
       {
+        test: /\.css$/i,
+        use: [MiniCssExtractPlugin.loader, "css-loader"],
+      },
+      {
         test: /\.(eot|svg|ttf|woff|woff2|png|jpg|gif)$/i,
         type: "asset",
       },
