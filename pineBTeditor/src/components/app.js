@@ -47,6 +47,9 @@ export default function App() {
     function handleCanvasOnMouseDown(event) {
         event.preventDefault()
         setDragging(true)
+        if (newConnection) {
+            cancelNewConnection()
+        }
     }
 
     function handleCanvasOnMouseMove(event) {
@@ -95,7 +98,6 @@ export default function App() {
         setNewConnection(undefined)
     }
 
-    //TODO
     function cancelNewConnection() {
         setNewConnection(undefined)
     }
