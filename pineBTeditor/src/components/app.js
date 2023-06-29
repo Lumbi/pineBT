@@ -102,6 +102,12 @@ export default function App() {
         setNewConnection(undefined)
     }
 
+    function deleteConnection(from, to) {
+        setConnections(connections.filter(c => {
+            c.from !== from || c.to !== to
+        }))
+    }
+
     return <>
         <div 
             className='canvas'
@@ -133,6 +139,7 @@ export default function App() {
                                 key={`${connection.from}->${connection.to}`}
                                 from={behaviors.find(b => b.id == connection.from)}
                                 to={behaviors.find(b => b.id == connection.to)}
+                                onClick={() => deleteConnection(connection.from, connection.to)}
                             />
                         )
                     }

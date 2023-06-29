@@ -7,7 +7,8 @@ import './behavior-connection.less'
 export default function BehaviorConnection(props) {
     const {
         from,
-        to
+        to,
+        onClick
     } = props
 
     const [fromAnchor, setFromAnchor] = useState({ x: from.position.x, y: from.position.y })
@@ -36,6 +37,7 @@ export default function BehaviorConnection(props) {
     return (
         <line 
             className={bem('behavior-connection', 'line')}
+            onClick={onClick}
             x1={fromAnchor.x}
             y1={fromAnchor.y} 
             x2={toAnchor.x} 
