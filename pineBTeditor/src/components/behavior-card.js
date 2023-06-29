@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from 'react'
+import { Button } from 'react-bootstrap'
 import bem from '../bem'
 
 import './behavior-card.less'
@@ -127,6 +128,11 @@ export default function BehaviorCard(props) {
                     onMouseDown={(event) => event.stopPropagation()}
                     onMouseMove={(event) => event.stopPropagation()}
                 />
+            </div>
+            <div className={bem('behavior-card', 'edit')}>
+                <Button variant='outline-secondary' size='sm'>
+                    <i className='bi bi-gear-fill'></i>
+                </Button>
             </div>
         </div>
     )
