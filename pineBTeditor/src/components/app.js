@@ -101,9 +101,9 @@ export default function App() {
     }
 
     function deleteConnection(from, to) {
-        setConnections(connections.filter(c => {
-            c.from !== from || c.to !== to
-        }))
+        setConnections(
+            connections.filter(c => c.from !== from || c.to !== to)
+        )
     }
 
     return <>
