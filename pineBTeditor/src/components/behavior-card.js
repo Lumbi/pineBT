@@ -39,7 +39,9 @@ export default function BehaviorCard(props) {
     }
 
     function allowsChildren() {
-        if (!schema || !schema.hierarchy) {
+        if (isRoot) {
+            return true
+        } if (!schema || !schema.hierarchy) {
             return false
         } else if (schema.hierarchy === "none") {
             return false
