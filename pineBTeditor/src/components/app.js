@@ -63,7 +63,7 @@ export default function App() {
     }
 
     function handleCanvasOnMouseMove(event) {
-        setMousePosition({ x: event.clientX, y: event.clientY })
+        setMousePosition({ x: event.pageX, y: event.pageY })
 
         if (isDragging) {
             event.preventDefault()
@@ -159,7 +159,12 @@ export default function App() {
                         newConnection
                             ? <BehaviorConnection
                                 from={behaviors.find(b => b.id == newConnection.from)}
-                                to={{ position: mousePosition }}
+                                to={{ 
+                                    position: {
+                                        x: mousePosition.x - 8,
+                                        y: mousePosition.y - 8
+                                    } 
+                                }}
                               />
                             : null
                     }
