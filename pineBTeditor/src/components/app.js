@@ -50,8 +50,8 @@ export default function App() {
     const [scrollOffset, setScrollOffset] = useState({ x: 0, y: 0 })
     const [isDragging, setDragging] = useState(false)
     const [showBehaviorDrawer, setShowBehaviorDrawer] = useState(false)
-    const [showBehaviorEdit, setShowBehaviorEdit] = useState(true)
-    const [inEditBehavior, setInEditBehavior] = useState(behaviors[1])
+    const [showBehaviorEdit, setShowBehaviorEdit] = useState(false)
+    const [inEditBehavior, setInEditBehavior] = useState()
 
     useEffect(() => {
         async function loadSchemas() {
@@ -116,6 +116,7 @@ export default function App() {
     }
 
     function schemaForBehavior(behavior) {
+        if (!behavior) { return undefined }
         return schemas.find(s => s.name === behavior.schema)
     }
 
