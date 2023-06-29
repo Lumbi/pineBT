@@ -9,7 +9,8 @@ import './behavior-drawer.less'
 export default function BehaviorDrawer(props) {
     const {
         show,
-        onHide
+        onHide,
+        onSelectSchema
     } = props
 
     const [schemas, setSchemas] = useState([])
@@ -24,9 +25,13 @@ export default function BehaviorDrawer(props) {
     }, [])
 
     function BehaviorButton(props) {
-        const { schema } = props
+        const { schema, onClick } = props
         return (
-            <Button variant="secondary" size="lg">
+            <Button 
+                variant="secondary" 
+                size="lg"
+                onClick={onClick}
+            >
                 {schema.name}
             </Button>
         )
@@ -44,6 +49,10 @@ export default function BehaviorDrawer(props) {
                         <BehaviorButton
                             key={schema.name}
                             schema={schema}
+                            onClick={() => {
+                                onSelectSchema(schema)
+                                onHide()
+                            }}
                         />
                     )
                 }

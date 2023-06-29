@@ -61,7 +61,6 @@ export default function App() {
         setDragging(true)
 
         if (newConnection) {
-            cancelNewConnection()
             setShowBehaviorDrawer(true)
             setDragging(false)
         }
@@ -126,6 +125,28 @@ export default function App() {
         )
     }
 
+    function hideBehaviorDrawer() {
+        cancelNewConnection()
+        setShowBehaviorDrawer(false)
+    }
+
+    function createBehaviorFromSchema(schema) {
+        const maxBehaviorId = behaviors.map(b => b.id).sort().slice(-1)[0]
+        const nextBehaviorId = maxBehaviorId + 1
+
+        const newBehavior = {
+            schema: schema.name,
+            id: nextBehaviorId,
+            position: mousePosition
+        }
+
+        setBehaviors([...behaviors, newBehavior])
+
+        if (newConnection) {
+            commitNewConnection(newBehavior.id)
+        }
+    }
+
     return (<>
         <div 
             className={bem('canvas', null, { connecting: !!newConnection })}
@@ -173,7 +194,8 @@ export default function App() {
         </div>
         <BehaviorDrawer
             show={showBehaviorDrawer}
-            onHide={() => setShowBehaviorDrawer(false)}
+            onHide={hideBehaviorDrawer}
+            onSelectSchema={createBehaviorFromSchema}
         />
     </>)
 }
