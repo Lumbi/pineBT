@@ -17,9 +17,24 @@ const testBehaviors = [
         position: { x: 0, y: 200 }
     },
     {
+        schema: 'Selector',
+        id: 100,
+        position: { x: 0, y: 400 }
+    },
+    {
         schema: 'Task',
         id: 3,
         position: { x: 400, y: 200 }
+    },
+    {
+        schema: 'Task',
+        id: 4,
+        position: { x: 600, y: 200 }
+    },
+    {
+        schema: 'Task',
+        id: 5,
+        position: { x: 800, y: 200 }
     }
 ]
 
