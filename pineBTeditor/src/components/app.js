@@ -2,24 +2,26 @@ import { useState, useRef, useEffect } from 'react'
 import BehaviorCard from './behavior-card'
 import BehaviorConnection from './behavior-connection'
 import bem from '../bem'
+import BehaviorDrawer from './behavior-drawer'
 
+import 'bootstrap/dist/css/bootstrap.min.css'
 import './app.less'
 
 const testBehaviors = [
     {
         schema: 'Root',
         id: 1,
-        position: { x: 0, y: 0 }
+        position: { x: 50, y: 50 }
     },
     {
         schema: 'Parallel',
         id: 2,
-        position: { x: 0, y: 200 }
+        position: { x: 50, y: 200 }
     },
     {
         schema: 'Selector',
         id: 100,
-        position: { x: 0, y: 400 }
+        position: { x: 50, y: 400 }
     },
     {
         schema: 'Task',
@@ -29,12 +31,7 @@ const testBehaviors = [
     {
         schema: 'Task',
         id: 4,
-        position: { x: 600, y: 200 }
-    },
-    {
-        schema: 'Task',
-        id: 5,
-        position: { x: 800, y: 200 }
+        position: { x: 400, y: 400 }
     }
 ]
 
@@ -49,16 +46,24 @@ export default function App() {
     const [mousePosition, setMousePosition] = useState()
     const [scrollOffset, setScrollOffset] = useState({ x: 0, y: 0 })
     const [isDragging, setDragging] = useState(false)
+    const [showBehaviorDrawer, setShowBehaviorDrawer] = useState(false)
 
     useEffect(() => {
-        window.scrollTo(-scrollOffset.x, -scrollOffset.y)
+        window.scrollTo({
+            left: -scrollOffset.x, 
+            top: -scrollOffset.y,
+            behavior: 'instant'
+        })
     }, [scrollOffset])
 
     function handleCanvasOnMouseDown(event) {
         event.preventDefault()
         setDragging(true)
+
         if (newConnection) {
             cancelNewConnection()
+            setShowBehaviorDrawer(true)
+            setDragging(false)
         }
     }
 
@@ -121,7 +126,7 @@ export default function App() {
         )
     }
 
-    return <>
+    return (<>
         <div 
             className='canvas'
             onMouseDown={handleCanvasOnMouseDown}
@@ -171,5 +176,9 @@ export default function App() {
                 </svg>
             </div>
         </div>
-    </>
+        <BehaviorDrawer
+            show={showBehaviorDrawer}
+            onHide={() => setShowBehaviorDrawer(false)}
+        />
+    </>)
 }
