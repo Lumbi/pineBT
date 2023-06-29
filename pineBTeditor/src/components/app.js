@@ -213,6 +213,7 @@ export default function App() {
             <div 
                 className={bem('canvas', 'viewport')}
             >
+                <div className={bem('canvas', 'content')}>
                 {
                     behaviors.map(behavior =>
                         <BehaviorCard 
@@ -228,25 +229,26 @@ export default function App() {
                         />
                     )
                 }
+                </div>
                 <svg className={bem('canvas', 'connections')}>
-                    {
-                        connections.map(connection => 
-                            <BehaviorConnection
-                                key={`${connection.from}->${connection.to}`}
-                                from={behaviors.find(b => b.id == connection.from)}
-                                to={behaviors.find(b => b.id == connection.to)}
-                                onClick={() => deleteConnection(connection.from, connection.to)}
+                {
+                    connections.map(connection => 
+                        <BehaviorConnection
+                            key={`${connection.from}->${connection.to}`}
+                            from={behaviors.find(b => b.id == connection.from)}
+                            to={behaviors.find(b => b.id == connection.to)}
+                            onClick={() => deleteConnection(connection.from, connection.to)}
+                        />
+                    )
+                }
+                {
+                    newConnection
+                        ? <BehaviorConnection
+                            from={behaviors.find(b => b.id == newConnection.from)}
+                            to={{ position: { x: mousePosition.x - 1, y: mousePosition.y - 3 } }}
                             />
-                        )
-                    }
-                    {
-                        newConnection
-                            ? <BehaviorConnection
-                                from={behaviors.find(b => b.id == newConnection.from)}
-                                to={{ position: { x: mousePosition.x - 1, y: mousePosition.y - 3 } }}
-                                />
-                            : null
-                    }
+                        : null
+                }
                 </svg>
             </div>
         </div>
