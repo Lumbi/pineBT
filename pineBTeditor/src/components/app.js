@@ -3,6 +3,7 @@ import BehaviorCard from './behavior-card'
 import BehaviorConnection from './behavior-connection'
 import bem from '../bem'
 import BehaviorDrawer from './behavior-drawer'
+import { loadBehaviorSchemas } from '../behavior-schema'
 
 import 'bootstrap/dist/css/bootstrap.min.css'
 import './app.less'
@@ -24,12 +25,12 @@ const testBehaviors = [
         position: { x: 50, y: 400 }
     },
     {
-        schema: 'Task',
+        schema: 'MockTask',
         id: 3,
         position: { x: 400, y: 200 }
     },
     {
-        schema: 'Task',
+        schema: 'MockTask',
         id: 4,
         position: { x: 400, y: 400 }
     }
@@ -40,6 +41,7 @@ const testConnections = [
 ]
 
 export default function App() {
+    const [schemas, setSchemas] = useState([])
     const [behaviors, setBehaviors] = useState(testBehaviors)
     const [connections, setConnections] = useState(testConnections)
     const [newConnection, setNewConnection] = useState()
@@ -47,6 +49,15 @@ export default function App() {
     const [scrollOffset, setScrollOffset] = useState({ x: 0, y: 0 })
     const [isDragging, setDragging] = useState(false)
     const [showBehaviorDrawer, setShowBehaviorDrawer] = useState(false)
+
+    useEffect(() => {
+        async function loadSchemas() {
+            setSchemas(await loadBehaviorSchemas())
+        }
+
+        loadSchemas()
+            .catch(console.error)
+    }, [])
 
     useEffect(() => {
         window.scrollTo({
@@ -101,13 +112,46 @@ export default function App() {
         setNewConnection({ from })
     }
 
+    function childrenOfBehavior(behaviorId) {
+        const behavior = behaviors.filter(b => b.id === behaviorId)[0]
+        if (!behavior) { return [] }
+
+        const childConnections = connections.filter(c => c.from === behaviorId)
+        const childBehaviors = childConnections
+            .map(c => c.to)
+            .flatMap(to => behaviors.filter(b => b.id === to))
+
+        return childBehaviors
+    }
+
+    function canBehaviorAddChild(behaviorId) {
+        const behavior = behaviors.filter(b => b.id === behaviorId)[0]
+        if (!behavior) { return false }
+
+        const behaviorSchema = schemas.find(s => s.name === behavior.schema)
+        if (!behaviorSchema) { return false }
+
+        if (behaviorSchema.hierarchy === "none") {
+            return false
+        } else if (behaviorSchema.hierarchy === "one") {
+            return childrenOfBehavior(behaviorId).length === 0
+        } else if (behaviorSchema.hierarchy === "many") {
+            return true
+        }
+
+        return false
+    }
+
     function commitNewConnection(to) {
         if (newConnection) {
             const connection = { ...newConnection, to }
             const alreadyExists = !!connections.find(c => c.from === connection.from && c.to === connection.to)
             const connectionToSelf = connection.from === connection.to
             const alreadyHasParent = !!connections.find(c => c.to === connection.to)
-            const isValid = !alreadyExists && !connectionToSelf && !alreadyHasParent
+            const isValid = !alreadyExists && 
+                            !connectionToSelf && 
+                            !alreadyHasParent &&
+                            canBehaviorAddChild(connection.from)
             if (isValid) {
                 setConnections([...connections, connection])
             }
@@ -162,6 +206,7 @@ export default function App() {
                         <BehaviorCard 
                             key={behavior.id}
                             behavior={behavior}
+                            schema={schemas.find(s => s.name === behavior.schema)}
                             updateBehavior={updateBehavior}
                             connections={connections}
                             newConnection={newConnection}
@@ -193,6 +238,7 @@ export default function App() {
             </div>
         </div>
         <BehaviorDrawer
+            schemas={schemas}
             show={showBehaviorDrawer}
             onHide={hideBehaviorDrawer}
             onSelectSchema={createBehaviorFromSchema}

@@ -6,6 +6,7 @@ import './behavior-card.less'
 export default function BehaviorCard(props) {
     const { 
         behavior,
+        schema,
         updateBehavior,
         connections,
         newConnection,
@@ -29,6 +30,20 @@ export default function BehaviorCard(props) {
 
     function updateLastMousePosition(event) {
         setLastMousePosition({ x: event.screenX, y: event.screenY })
+    }
+
+    function canAddChild() {
+        if (!schema || !schema.hierarchy) {
+            return false
+        } else if (schema.hierarchy === "none") {
+            return false
+        } else if (schema.hierarchy === "one") {
+            const hasChild = connections.find(c => c.from === behavior.id)
+            return !hasChild
+        } else if (schema.hierarchy === "many") {
+            return true
+        }
+        return false
     }
 
     function handleMouseDown(event) {
@@ -78,7 +93,7 @@ export default function BehaviorCard(props) {
     }
 
     function handleChildrenHandleClick(event) {
-        if (!newConnection) {
+        if (!newConnection && canAddChild()) {
             event.preventDefault()
             event.stopPropagation()
             beginNewConnection(behavior.id)
