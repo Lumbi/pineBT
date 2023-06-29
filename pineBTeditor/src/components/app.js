@@ -86,7 +86,10 @@ export default function App() {
         if (newConnection) {
             const connection = { ...newConnection, to }
             const alreadyExists = !!connections.find(c => c.from === connection.from && c.to === connection.to)
-            if (!alreadyExists) {
+            const connectionToSelf = connection.from === connection.to
+            const alreadyHasParent = !!connections.find(c => c.to === connection.to)
+            const isValid = !alreadyExists && !connectionToSelf && !alreadyHasParent
+            if (isValid) {
                 setConnections([...connections, connection])
             }
         }
