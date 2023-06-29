@@ -33,15 +33,10 @@ export default function App() {
     const [newConnection, setNewConnection] = useState()
     const [mousePosition, setMousePosition] = useState()
     const [scrollOffset, setScrollOffset] = useState({ x: 0, y: 0 })
-
     const [isDragging, setDragging] = useState(false)
 
-    const behaviorViewport = useRef()
-
     useEffect(() => {
-      if (behaviorViewport.current) {
-        behaviorViewport.current.style.transform = `translate(${scrollOffset.x}px, ${scrollOffset.y}px)`
-      }
+        window.scrollTo(-scrollOffset.x, -scrollOffset.y)
     }, [scrollOffset])
 
     function handleCanvasOnMouseDown(event) {
@@ -117,7 +112,6 @@ export default function App() {
         >
             <div 
                 className={bem('canvas', 'viewport')}
-                ref={behaviorViewport}
             >
                 {
                     behaviors.map(behavior =>
