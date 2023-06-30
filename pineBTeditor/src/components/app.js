@@ -50,6 +50,28 @@ const testConnections = [
     { from: 0, to: 2 }
 ]
 
+function toBlueprint(behaviors, connections) {
+    const entryConnection = connections.find(c => c.from === 0)
+    if (!entryConnection) return undefined
+    const entryBehavior= behaviors.find(b => b.id === entryConnection.to)
+    if (!entryBehavior) return undefined
+
+    function recursively(behavior) {
+        const childConnections = connections.filter(c => c.from === behavior.id)
+        const childBehaviors = childConnections.map(c => behaviors.find(b => b.id === c.to))
+        return {
+            id: behavior.id,
+            schema: behavior.schema,
+            options: behavior.options,
+            children: childBehaviors.map(recursively)
+        }
+    }
+
+    return {
+        root: recursively(entryBehavior)
+    }
+}
+
 export default function App() {
     const [schemas, setSchemas] = useState([])
     const [behaviors, setBehaviors] = useState(testBehaviors)
@@ -78,6 +100,10 @@ export default function App() {
             behavior: 'instant'
         })
     }, [scrollOffset])
+
+    useEffect(() => {
+        console.log(toBlueprint(behaviors, connections))
+    }, [connections])
 
     function handleCanvasOnMouseDown(event) {
         event.preventDefault()
@@ -224,10 +250,27 @@ export default function App() {
         const maxBehaviorId = behaviors.map(b => b.id).sort().slice(-1)[0]
         const nextBehaviorId = maxBehaviorId + 1
 
+        function defaultValueForOptionType(type) {
+            if (type === 'boolean') {
+                return false
+            } else if (type === 'number') {
+                return 0
+            } else if (typeof type === 'number') { // enumeration
+                return 0
+            }
+            return undefined
+        }
+
         const newBehavior = {
             schema: schema.name,
             id: nextBehaviorId,
-            position: mousePosition
+            position: mousePosition,
+            options: schema.options && Object.fromEntries(
+                Object.entries(schema.options).map(([key, type]) => [
+                    key,
+                    defaultValueForOptionType(type)
+                ])
+            )
         }
 
         setBehaviors([...behaviors, newBehavior])
