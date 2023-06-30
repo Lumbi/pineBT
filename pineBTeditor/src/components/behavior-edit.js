@@ -1,7 +1,11 @@
 import Offcanvas from 'react-bootstrap/Offcanvas'
 import Stack from 'react-bootstrap/Stack'
 import ToggleButton from 'react-bootstrap/ToggleButton'
+import Button from 'react-bootstrap/Button'
 import Dropdown from 'react-bootstrap/Dropdown'
+import bem from '../bem'
+
+import './behavior-edit.less'
 
 function BehaviorEditOption(props) {
     const {
@@ -53,12 +57,12 @@ export function BehaviorEdit(props) {
     const options = schema && schema.options && Object.entries(schema.options) || []
 
     return (
-        <Offcanvas show={show} onHide={onHide} placement='end'>
+        <Offcanvas id='behavior-edit' show={show} onHide={onHide} placement='end'>
             <Offcanvas.Header closeButton>
                 <Offcanvas.Title>{title}</Offcanvas.Title>
             </Offcanvas.Header>
             <Offcanvas.Body>
-                <Stack gap={3}>
+                <Stack id={bem('behavior-edit', 'list')} gap={3}>
                 {
                     options.map(option => {
                         const [key, type] = option
@@ -71,6 +75,12 @@ export function BehaviorEdit(props) {
                         )
                     })
                 }
+                <Button
+                    id={bem('behavior-edit', 'delete-button')}
+                    variant='danger'
+                >
+                    Delete
+                </Button>
                 </Stack>
             </Offcanvas.Body>
         </Offcanvas>
