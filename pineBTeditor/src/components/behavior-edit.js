@@ -8,14 +8,21 @@ import bem from '../bem'
 import './behavior-edit.less'
 
 function BehaviorEditOption(props) {
-    const {
-        key,
-        type,
-    } = props.option
+    const { option, onChange } = props
+    const { key, type, value } = option
     if (type === 'boolean') {
         return (
             <ToggleButton
+                id={`behavior-edit__${option.key}`}
                 type='checkbox'
+                variant='outline-primary'
+                checked={!!value}
+                onChange={(event) =>
+                    onChange({
+                        ...option,
+                        value: event.currentTarget.checked
+                    })
+                }
             >
                 {key}
             </ToggleButton>
@@ -51,11 +58,27 @@ export function BehaviorEdit(props) {
         schema,
         show,
         onHide,
-        onDelete
+        onEdit,
+        onDelete,
     } = props
 
     const title = (behavior && behavior.schema) || ''
     const options = schema && schema.options && Object.entries(schema.options) || []
+
+    function valueForOptionKey(key) {
+        if (!behavior || !behavior.options) { return undefined }
+        return behavior.options[key]
+    }
+
+    function updatedBehaviorWithOption(option) {
+        return {
+            ...behavior,
+            options: {
+                ...behavior.options,
+                [option.key]: option.value
+            }
+        }
+    }
 
     return (
         <Offcanvas id='behavior-edit' show={show} onHide={onHide} placement='end'>
@@ -65,13 +88,19 @@ export function BehaviorEdit(props) {
             <Offcanvas.Body>
                 <Stack id={bem('behavior-edit', 'list')} gap={3}>
                 {
-                    options.map(option => {
-                        const [key, type] = option
+                    options.map(pair => {
+                        const [key, type] = pair
                         return (
                             <BehaviorEditOption
                                 key={key}
-                                option={{ key, type }}
-                                type={type}
+                                option={{ 
+                                    key,
+                                    type,
+                                    value: valueForOptionKey(key)
+                                }}
+                                onChange={(option) => {
+                                    onEdit(updatedBehaviorWithOption(option))
+                                }}
                             />
                         )
                     })

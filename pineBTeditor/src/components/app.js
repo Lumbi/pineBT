@@ -51,7 +51,7 @@ export default function App() {
     const [isDragging, setDragging] = useState(false)
     const [showBehaviorDrawer, setShowBehaviorDrawer] = useState(false)
     const [showBehaviorEdit, setShowBehaviorEdit] = useState(false)
-    const [inEditBehavior, setInEditBehavior] = useState()
+    const [inEditBehaviorId, setInEditBehaviorId] = useState()
 
     useEffect(() => {
         async function loadSchemas() {
@@ -99,6 +99,10 @@ export default function App() {
         }
     }
 
+    function handleEditBehavior(behavior) {
+        updateBehavior(behavior)
+    }
+
     function handleDeleteBehavior(behavior) {
         setShowBehaviorEdit(false)
         setTimeout(() => {
@@ -110,7 +114,7 @@ export default function App() {
         setBehaviors(
             behaviors.map(behavior => {
                 if (behavior.id === behaviorUpdate.id) {
-                    return {... behavior, ...behaviorUpdate}
+                    return {...behavior, ...behaviorUpdate}
                 } else {
                     return behavior
                 }
@@ -221,9 +225,11 @@ export default function App() {
     }
 
     function showEditForBehavior(behavior) {
-        setInEditBehavior(behavior)
+        setInEditBehaviorId(behavior.id)
         setShowBehaviorEdit(true)
     }
+
+    const inEditBehavior = behaviors.find(b => b.id === inEditBehaviorId)
 
     return (<>
         <div 
@@ -284,6 +290,7 @@ export default function App() {
             show={showBehaviorEdit}
             onHide={() => setShowBehaviorEdit(false)}
             onDelete={handleDeleteBehavior}
+            onEdit={handleEditBehavior}
         />
     </>)
 }
