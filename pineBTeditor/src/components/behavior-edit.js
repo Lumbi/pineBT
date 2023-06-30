@@ -31,17 +31,28 @@ function BehaviorEditOption(props) {
         return <p>Not supported yet</p>
     } else if (typeof type === 'number') { // enumeration case
         const count = type
+        function caseName(value) { return `${key}_${value}` }
         const cases = [...Array(count).keys()]
-            .map(n => n + 1)
-            .map(i => ({ name: `${key}_${i}` }))
         return (
             <Dropdown>
-                <Dropdown.Toggle>{key}</Dropdown.Toggle>
+                <Dropdown.Toggle>
+                {
+                    value !== undefined
+                        ? caseName(value)
+                        : caseName(0)
+                }
+                </Dropdown.Toggle>
                 <Dropdown.Menu>
                     {
-                        cases.map(c => 
-                            <Dropdown.Item key={c.name}>
-                                {c.name}
+                        cases.map(value =>
+                            <Dropdown.Item
+                                key={value}
+                                onClick={() => onChange({
+                                    ...option,
+                                    value: value
+                                })}
+                            >
+                                {caseName(value)}
                             </Dropdown.Item>
                         )
                     }
