@@ -99,6 +99,13 @@ export default function App() {
         }
     }
 
+    function handleDeleteBehavior(behavior) {
+        setShowBehaviorEdit(false)
+        setTimeout(() => {
+            deleteBehaviorById(behavior.id)
+        }, 300)
+    }
+
     function updateBehavior(behaviorUpdate) {
         setBehaviors(
             behaviors.map(behavior => {
@@ -108,6 +115,16 @@ export default function App() {
                     return behavior
                 }
             })
+        )
+    }
+
+    function deleteBehaviorById(behaviorId) {
+        setConnections(
+            connections.filter(c => c.from !== behaviorId && c.to !== behaviorId)
+        )
+
+        setBehaviors(
+            behaviors.filter(b => b.id !== behaviorId)
         )
     }
 
@@ -266,6 +283,7 @@ export default function App() {
             schema={schemaForBehavior(inEditBehavior)}
             show={showBehaviorEdit}
             onHide={() => setShowBehaviorEdit(false)}
+            onDelete={handleDeleteBehavior}
         />
     </>)
 }

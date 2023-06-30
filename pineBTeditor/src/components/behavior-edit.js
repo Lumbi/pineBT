@@ -50,7 +50,8 @@ export function BehaviorEdit(props) {
         behavior,
         schema,
         show,
-        onHide
+        onHide,
+        onDelete
     } = props
 
     const title = (behavior && behavior.schema) || ''
@@ -78,6 +79,7 @@ export function BehaviorEdit(props) {
                 <Button
                     id={bem('behavior-edit', 'delete-button')}
                     variant='danger'
+                    onClick={() => onDelete(behavior)}
                 >
                     Delete
                 </Button>
