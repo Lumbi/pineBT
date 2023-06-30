@@ -39,22 +39,22 @@ function BehaviorEditOption(props) {
                 { t(`${schema.name}_${key}`) + ' ' }
                 <Dropdown.Toggle>
                 {
-                    value !== undefined
-                        ? caseName(value)
+                    value && value.case
+                        ? caseName(value.case)
                         : caseName(0)
                 }
                 </Dropdown.Toggle>
                 <Dropdown.Menu>
                     {
-                        cases.map(value =>
+                        cases.map(c =>
                             <Dropdown.Item
-                                key={value}
+                                key={c}
                                 onClick={() => onChange({
                                     ...option,
-                                    value: value
+                                    value: { case: c }
                                 })}
                             >
-                                {caseName(value)}
+                                {caseName(c)}
                             </Dropdown.Item>
                         )
                     }

@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { Button } from 'react-bootstrap'
 import BehaviorCard from './behavior-card'
 import BehaviorConnection from './behavior-connection'
 import BehaviorDrawer from './behavior-drawer'
@@ -9,46 +10,11 @@ import bem from '../bem'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import './app.less'
 
-const testBehaviors = [
-    {
-        schema: 'Root',
-        id: 0,
-        status: 'running',
-        position: { x: 50, y: 50 }
-    },
-    {
-        schema: 'Parallel',
-        id: 2,
-        status: 'failure',
-        position: { x: 50, y: 200 }
-    },
-    {
-        schema: 'Selector',
-        id: 100,
-        status: 'success',
-        position: { x: 50, y: 400 }
-    },
-    {
-        schema: 'Sequence',
-        id: 3,
-        status: 'aborted',
-        position: { x: 300, y: 200 }
-    },
-    {
-        schema: 'MockCondition',
-        id: 4,
-        position: { x: 600, y: 200 }
-    },
-    {
-        schema: 'MockTask',
-        id: 5,
-        position: { x: 600, y: 400 }
-    }
-]
-
-const testConnections = [
-    { from: 0, to: 2 }
-]
+const rootBehavior = {
+    schema: 'Root',
+    id: 0,
+    position: { x: 400, y: 100 }
+}
 
 function toBlueprint(behaviors, connections) {
     const entryConnection = connections.find(c => c.from === 0)
@@ -74,8 +40,8 @@ function toBlueprint(behaviors, connections) {
 
 export default function App() {
     const [schemas, setSchemas] = useState([])
-    const [behaviors, setBehaviors] = useState(testBehaviors)
-    const [connections, setConnections] = useState(testConnections)
+    const [behaviors, setBehaviors] = useState([rootBehavior])
+    const [connections, setConnections] = useState([])
     const [newConnection, setNewConnection] = useState()
     const [mousePosition, setMousePosition] = useState()
     const [scrollOffset, setScrollOffset] = useState({ x: 0, y: 0 })
@@ -256,7 +222,7 @@ export default function App() {
             } else if (type === 'number') {
                 return 0
             } else if (typeof type === 'number') { // enumeration
-                return 0
+                return { case: 0 }
             }
             return undefined
         }
@@ -286,6 +252,37 @@ export default function App() {
     }
 
     const inEditBehavior = behaviors.find(b => b.id === inEditBehaviorId)
+
+    function handleRunOnClick() {
+        const blueprint = toBlueprint(behaviors, connections)
+        if (blueprint) {
+            const handle = pineBT.create(JSON.stringify(blueprint))
+            console.log('created ', handle)
+            pineBT.run(handle)
+            const statuses = pineBT.status(handle)
+            console.log('status', statuses)
+            pineBT.destroy(handle)
+
+            setBehaviors(
+                behaviors.map(b => {
+                    const found = statuses.find(s => s.id === b.id)
+                    return { ...b, status: found && found.status && found.status.toLowerCase() }
+                })
+            )
+        } else {
+            alert('Invald blueprint')
+        }
+    }
+
+    // NOTE: There's a bug where Selector status is INVALID wit the following configuration
+    /*
+                    Root
+                    |
+                    v
+           ------- Selector  ------
+        /             |            \ 
+    Task (fail)   Task (success)   Task (invalid)
+    */
 
     return (<>
         <div 
@@ -349,5 +346,11 @@ export default function App() {
             onDelete={handleDeleteBehavior}
             onEdit={handleEditBehavior}
         />
+        <Button 
+            id='run-button'
+            onClick={handleRunOnClick}
+        >
+            Run
+        </Button>
     </>)
 }
