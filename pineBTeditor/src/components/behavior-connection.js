@@ -13,6 +13,7 @@ export default function BehaviorConnection(props) {
 
     const [fromAnchor, setFromAnchor] = useState({ x: from.position.x, y: from.position.y })
     const [toAnchor, setToAnchor] = useState({ x: to.position.x, y: to.position.y })
+    const [ready, setReady] = useState(false)
 
     useEffect(() => {
         const fromBehaviorCard = document.getElementById(`behavior-card-${from.id}`)
@@ -32,16 +33,20 @@ export default function BehaviorConnection(props) {
         } else {
             setToAnchor(to.position)
         }
+
+        setReady(true)
     }, [from.position, to.position])
 
     return (
-        <line 
-            className={bem('behavior-connection', 'line')}
-            onClick={onClick}
-            x1={fromAnchor.x}
-            y1={fromAnchor.y} 
-            x2={toAnchor.x} 
-            y2={toAnchor.y}
-        />
+        ready
+            ? <line
+                className={bem('behavior-connection', 'line')}
+                onClick={onClick}
+                x1={fromAnchor.x}
+                y1={fromAnchor.y}
+                x2={toAnchor.x}
+                y2={toAnchor.y}
+            />
+            : null
     )
 }
