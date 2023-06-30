@@ -13,21 +13,25 @@ const testBehaviors = [
     {
         schema: 'Root',
         id: 0,
+        status: 'running',
         position: { x: 50, y: 50 }
     },
     {
         schema: 'Parallel',
         id: 2,
+        status: 'failure',
         position: { x: 50, y: 200 }
     },
     {
         schema: 'Selector',
         id: 100,
+        status: 'success',
         position: { x: 50, y: 400 }
     },
     {
         schema: 'Sequence',
         id: 3,
+        status: 'aborted',
         position: { x: 300, y: 200 }
     },
     {

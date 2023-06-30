@@ -66,6 +66,32 @@
         }
     }
 
+    &__status {
+        position: absolute;
+        left: 8px;
+        top: 8px;
+
+        &--running {
+            color: blue;
+        }
+
+        &--failure {
+            color: red;
+        }
+
+        &--success {
+            color: green;
+        }
+
+        &--aborted {
+            color: gray;
+        }
+
+        &--hidden {
+            display: none !important;
+        }
+    }
+
     &__children-handle {
         position: absolute;
         bottom: 0;
@@ -99,7 +125,7 @@
         right: 8px;
 
         &--hidden {
-            display: none;
+            display: none !important;
         }
     }
 }

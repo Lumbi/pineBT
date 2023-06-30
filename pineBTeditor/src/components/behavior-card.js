@@ -145,6 +145,17 @@ export default function BehaviorCard(props) {
         }
     }
 
+
+    function statusIcon() {
+        switch (behavior.status) {
+            case 'running': return 'bi-stopwatch-fill'
+            case 'failure': return 'bi-dash-circle-fill'
+            case 'success': return 'bi-check-circle-fill'
+            case 'aborted': return 'bi-slash-circle-fill'
+            default: undefined
+        }
+    }
+
     return (
         <div 
             ref={self}
@@ -183,6 +194,14 @@ export default function BehaviorCard(props) {
                     onMouseDown={(event) => event.stopPropagation()}
                     onMouseMove={(event) => event.stopPropagation()}
                 />
+            </div>
+            <div className={bem('behavior-card', 'status', { 
+                hidden: !statusIcon(),
+                [behavior.status]: true
+            })}>
+            {
+                <i className={`${statusIcon()}`}></i>
+            }
             </div>
             <div className={bem('behavior-card', 'edit', { hidden: !canEdit() })}>
                 <Button 
