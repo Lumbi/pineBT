@@ -122,6 +122,10 @@ export default function App() {
         )
     }
 
+    function updateBehaviors(behaviors) {
+        setBehaviors(behaviors)
+    }
+
     function deleteBehaviorById(behaviorId) {
         setConnections(
             connections.filter(c => c.from !== behaviorId && c.to !== behaviorId)
@@ -247,7 +251,8 @@ export default function App() {
                             key={behavior.id}
                             behavior={behavior}
                             schema={schemas.find(s => s.name === behavior.schema)}
-                            updateBehavior={updateBehavior}
+                            updateBehaviors={updateBehaviors}
+                            behaviors={behaviors}
                             connections={connections}
                             newConnection={newConnection}
                             beginNewConnection={beginNewConnection}

@@ -8,7 +8,8 @@ export default function BehaviorCard(props) {
     const { 
         behavior,
         schema,
-        updateBehavior,
+        behaviors,
+        updateBehaviors,
         connections,
         newConnection,
         beginNewConnection,
@@ -81,10 +82,34 @@ export default function BehaviorCard(props) {
                 x: event.screenX - lastMousePosition.x,
                 y: event.screenY - lastMousePosition.y 
             }
-            updateBehavior({
-                id: behavior.id,
-                position: { x: position.x + delta.x, y: position.y + delta.y }
-            })
+
+            function isDescendantOf(ancestor, descendant) {
+                if (connections.find(c => c.from === ancestor && c.to === descendant)) {
+                    return true
+                }
+
+                const parentConnection = connections.find(c => c.to === descendant)
+                if (parentConnection) {
+                    return isDescendantOf(ancestor, parentConnection.from)
+                }
+
+                return false
+            }
+
+            updateBehaviors(
+                behaviors.map(b => {
+                    const flag = b.id === behavior.id || isDescendantOf(behavior.id, b.id)
+                    if (flag) {
+                        return {
+                            ...b,
+                            position: { x: b.position.x + delta.x, y: b.position.y + delta.y }
+                        }
+                    } else {
+                        return b
+                    }
+                })
+            )
+
             updateLastMousePosition(event)
         }
     }
