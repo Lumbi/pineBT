@@ -4,11 +4,12 @@ import ToggleButton from 'react-bootstrap/ToggleButton'
 import Button from 'react-bootstrap/Button'
 import Dropdown from 'react-bootstrap/Dropdown'
 import bem from '../bem'
+import { t } from 'i18next'
 
 import './behavior-edit.less'
 
 function BehaviorEditOption(props) {
-    const { option, onChange } = props
+    const { option, schema, onChange } = props
     const { key, type, value } = option
     if (type === 'boolean') {
         return (
@@ -24,17 +25,18 @@ function BehaviorEditOption(props) {
                     })
                 }
             >
-                {key}
+                {t(`${schema.name}_${key}_${!!value}`)}
             </ToggleButton>
         )
     } else if (type === 'number') {
         return <p>Not supported yet</p>
     } else if (typeof type === 'number') { // enumeration case
         const count = type
-        function caseName(value) { return `${key}_${value}` }
+        function caseName(value) { return t(`${schema.name}_${key}_${value}`) }
         const cases = [...Array(count).keys()]
         return (
             <Dropdown>
+                { t(`${schema.name}_${key}`) + ' ' }
                 <Dropdown.Toggle>
                 {
                     value !== undefined
@@ -104,6 +106,7 @@ export function BehaviorEdit(props) {
                         return (
                             <BehaviorEditOption
                                 key={key}
+                                schema={schema}
                                 option={{ 
                                     key,
                                     type,

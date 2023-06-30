@@ -26,14 +26,19 @@ const testBehaviors = [
         position: { x: 50, y: 400 }
     },
     {
-        schema: 'MockTask',
+        schema: 'Sequence',
         id: 3,
-        position: { x: 400, y: 200 }
+        position: { x: 300, y: 200 }
+    },
+    {
+        schema: 'MockCondition',
+        id: 4,
+        position: { x: 600, y: 200 }
     },
     {
         schema: 'MockTask',
-        id: 4,
-        position: { x: 400, y: 400 }
+        id: 5,
+        position: { x: 600, y: 400 }
     }
 ]
 

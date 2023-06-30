@@ -1,0 +1,24 @@
+{
+    "translation": {
+        "Selector_live_true": "Live",
+        "Selector_live_false": "Live",
+        "Parallel_success_policy": "Succeed when",
+        "Parallel_success_policy_0": "any succeed",
+        "Parallel_success_policy_1": "all succeed",
+        "Parallel_failure_policy": "Fail when",
+        "Parallel_failure_policy_0": "any fail",
+        "Parallel_failure_policy_1": "all fail",
+        "MockCondition_mode": "Mode",
+        "MockCondition_mode_0": "Instant",
+        "MockCondition_mode_1": "Continuous",
+        "MockCondition_negate_true": "Negate",
+        "MockCondition_negate_false": "Negate",
+        "MockCondition_force_check_true": "Always succeed",
+        "MockCondition_force_check_false": "Always fail",
+        "MockTask_force_result": "Always",
+        "MockTask_force_result_0": "running",
+        "MockTask_force_result_1": "failure",
+        "MockTask_force_result_2": "success",
+        "MockTask_force_result_3": "aborted"
+    }
+}
