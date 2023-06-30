@@ -152,6 +152,9 @@ export default function BehaviorCard(props) {
             className={bem('behavior-card', null, { 
                 grabbing: isDragging
             })}
+            style={{
+                zIndex: position.y
+            }}
         >
             <div 
                 className={bem('behavior-card', 'background')}
