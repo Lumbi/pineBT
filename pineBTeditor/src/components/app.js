@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Button } from 'react-bootstrap'
+import { Button, Toast, ToastContainer } from 'react-bootstrap'
 import BehaviorCard from './behavior-card'
 import BehaviorConnection from './behavior-connection'
 import BehaviorDrawer from './behavior-drawer'
@@ -49,6 +49,7 @@ export default function App() {
     const [showBehaviorDrawer, setShowBehaviorDrawer] = useState(false)
     const [showBehaviorEdit, setShowBehaviorEdit] = useState(false)
     const [inEditBehaviorId, setInEditBehaviorId] = useState()
+    const [notifications, setNotifications] = useState([])
 
     useEffect(() => {
         async function loadSchemas() {
@@ -66,10 +67,6 @@ export default function App() {
             behavior: 'instant'
         })
     }, [scrollOffset])
-
-    useEffect(() => {
-        console.log(toBlueprint(behaviors, connections))
-    }, [connections])
 
     function handleCanvasOnMouseDown(event) {
         event.preventDefault()
@@ -253,36 +250,43 @@ export default function App() {
 
     const inEditBehavior = behaviors.find(b => b.id === inEditBehaviorId)
 
+    function updateBehaviorStatuses(statuses) {
+        setBehaviors(
+            behaviors.map(b => {
+                const found = statuses.find(s => s.id === b.id)
+                return { ...b, status: found && found.status && found.status.toLowerCase() }
+            })
+        )
+    }
+
     function handleRunOnClick() {
         const blueprint = toBlueprint(behaviors, connections)
         if (blueprint) {
             const handle = pineBT.create(JSON.stringify(blueprint))
-            console.log('created ', handle)
             pineBT.run(handle)
             const statuses = pineBT.status(handle)
-            console.log('status', statuses)
+            updateBehaviorStatuses(statuses)
             pineBT.destroy(handle)
-
-            setBehaviors(
-                behaviors.map(b => {
-                    const found = statuses.find(s => s.id === b.id)
-                    return { ...b, status: found && found.status && found.status.toLowerCase() }
-                })
-            )
         } else {
-            alert('Invald blueprint')
+            showNotification({
+                title: 'Error',
+                body: 'Invalid behavior tree configuration',
+                variant: 'warning'
+            })
         }
     }
 
-    // NOTE: There's a bug where Selector status is INVALID wit the following configuration
-    /*
-                    Root
-                    |
-                    v
-           ------- Selector  ------
-        /             |            \ 
-    Task (fail)   Task (success)   Task (invalid)
-    */
+    function showNotification(notification) {
+        const notificationWithId = {
+            ...notification,
+            id: Date.now()
+        }
+        setNotifications([...notifications, notificationWithId])
+    }
+
+    function hideNotification(id) {
+        setNotifications(notifications.filter(n => n.id !== id))
+    }
 
     return (<>
         <div 
@@ -352,5 +356,28 @@ export default function App() {
         >
             Run
         </Button>
+        <ToastContainer
+            id='notification-container'
+            className='p-3'
+            position='top-end'
+        >
+        {
+            notifications.map(notification => 
+                <Toast
+                    key={notification.id}
+                    bg={notification.variant}
+                    show={true}
+                    autohide={false}
+                    delay={7000}
+                    onClose={() => hideNotification(notification.id)}
+                >
+                    <Toast.Header>
+                        <strong className='me-auto'>{notification.title}</strong>
+                    </Toast.Header>
+                    <Toast.Body>{notification.body}</Toast.Body>
+                </Toast>
+            )
+        }
+        </ToastContainer>
     </>)
 }
