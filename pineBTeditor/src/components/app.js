@@ -24,12 +24,17 @@ function toBlueprint(behaviors, connections) {
 
     function recursively(behavior) {
         const childConnections = connections.filter(c => c.from === behavior.id)
-        const childBehaviors = childConnections.map(c => behaviors.find(b => b.id === c.to))
+        const childBehaviors = childConnections
+            .map(c => behaviors.find(b => b.id === c.to))
+            .filter(b => !!b)
+            .sort((a, b) => a.position.x < b.position.x)
+            .map(recursively)
+
         return {
             id: behavior.id,
             schema: behavior.schema,
             options: behavior.options,
-            children: childBehaviors.map(recursively)
+            children: childBehaviors
         }
     }
 
