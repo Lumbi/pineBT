@@ -1,14 +1,24 @@
-console.log('preload.js')
+const { contextBridge, ipcRenderer } = require('electron')
+const ffi = require('ffi-napi')
 
-const { contextBridge } = require('electron')
+function subscribe(channel) {
+  return (callback) => {
+    ipcRenderer.on(channel, callback)
+    return () => ipcRenderer.removeListener(channel, callback)
+  }
+} 
 
-contextBridge.exposeInMainWorld('versions', {
-  node: () => process.versions.node,
-  chrome: () => process.versions.chrome,
-  electron: () => process.versions.electron
+contextBridge.exposeInMainWorld('electron', {
+  saveFile: (file) => ipcRenderer.invoke('save-file', file),
 })
 
-const ffi = require('ffi-napi')
+contextBridge.exposeInMainWorld('menu', {
+  on: {
+    file: {
+      save: subscribe('menu/file/save'),
+    }
+  }
+})
 
 const pineBT = ffi.Library('pineBT', {
   pineBT_create: [ 'int', [ 'string' ] ],

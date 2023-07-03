@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { Button, Toast, ToastContainer } from 'react-bootstrap'
 import BehaviorCard from './behavior-card'
 import BehaviorConnection from './behavior-connection'
@@ -55,6 +55,14 @@ export default function App() {
     const [showBehaviorEdit, setShowBehaviorEdit] = useState(false)
     const [inEditBehaviorId, setInEditBehaviorId] = useState()
     const [notifications, setNotifications] = useState([])
+
+    const [documentFilePath, setDocumentFilePath] = useState() 
+    const documentData = useMemo(() => {
+        return JSON.stringify({
+            behaviors,
+            connections,
+        }, undefined, 4)
+    }, [behaviors, connections])
 
     useEffect(() => {
         async function loadSchemas() {
@@ -292,6 +300,28 @@ export default function App() {
     function hideNotification(id) {
         setNotifications(notifications.filter(n => n.id !== id))
     }
+
+    useEffect(() => {
+        return window.menu.on.file.save(() => {
+            window.electron
+                .saveFile({
+                    path: documentFilePath,
+                    data: documentData
+                })
+                .then(result => {
+                    if (result.path) {
+                        setDocumentFilePath(result.path)
+                    }
+                })
+                .catch((error) => {
+                    showNotification({
+                        title: 'Error',
+                        body: error.message,
+                        variant: 'danger'
+                    })
+                })
+        })
+    }, [documentFilePath, documentData])
 
     return (<>
         <div 
