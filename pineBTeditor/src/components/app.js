@@ -317,17 +317,34 @@ export default function App() {
         setScrollOffset({ x: 0, y: 0 })
     }
 
+    function showUnsavedChangesModal(next) {
+        setModal({
+            title: 'Unsaved changes',
+            body: 'The current behavior tree has unsaved changes.',
+            buttons: [
+                {
+                    title: 'Discard',
+                    variant: 'danger'
+                },
+                {
+                    title: 'Save',
+                    variant: 'primary',
+                    onClick: saveDocument,
+                },
+            ],
+            next,
+        })
+    }
+
     useEffect(() => {
         return window.menu.on.file.new(() => {
             if (isDirty) {
-                setModal({
-                    next: () => newDocument()
-                })
+                showUnsavedChangesModal(() => newDocument())
             } else {
                 newDocument()
             }
         })
-    }, [isDirty])
+    }, [isDirty, documentData, documentFilePath])
 
     function openDocument(document) {
         try {
@@ -350,14 +367,12 @@ export default function App() {
     useEffect(() => {
         return window.menu.on.file.open((_, document) => {
             if (isDirty) {
-                setModal({
-                    next: () => openDocument(document)
-                })
+                showUnsavedChangesModal(() => openDocument(document))
             } else {
                 openDocument(document)
             }
         })
-    }, [isDirty])
+    }, [isDirty, documentData, documentFilePath])
 
     async function saveDocument() {
         try {
@@ -489,30 +504,25 @@ export default function App() {
             backdrop='static'
         >
             <Modal.Header closeButton>
-                <Modal.Title>Unsaved changes</Modal.Title>
+                <Modal.Title>{modal && modal.title}</Modal.Title>
             </Modal.Header>
-            <Modal.Body>The current behavior tree has unsaved changes.</Modal.Body>
+            <Modal.Body>{modal && modal.body}</Modal.Body>
             <Modal.Footer>
-            <Button 
-                variant='danger' 
-                onClick={() => {
-                    setModal(null)
-                    if (modal.next) {
-                        modal.next()
-                    }
-                }}
-            >
-                Discard
-            </Button>
-            <Button variant='primary' onClick={async () => {
-                setModal(null)
-                await saveDocument()
-                if (modal.next) {
-                    modal.next()
-                }
-            }}>
-                Save
-            </Button>
+            {
+                modal && modal.buttons.map((button, index) => 
+                    <Button
+                        key={index}
+                        variant={button.variant || 'secondary'}
+                        onClick={async () => {
+                            button.onClick && (await button.onClick())
+                            setModal(null)
+                            modal.next && modal.next()
+                        }}
+                    >
+                        {button.title}
+                    </Button>
+                )
+            }
             </Modal.Footer>
         </Modal>
     </>)
