@@ -329,7 +329,7 @@ export default function App() {
                 {
                     title: 'Save',
                     variant: 'primary',
-                    onClick: saveDocument,
+                    onClick: () => saveDocument(documentFilePath),
                 },
             ],
             next,
@@ -374,10 +374,10 @@ export default function App() {
         })
     }, [isDirty, documentData, documentFilePath])
 
-    async function saveDocument() {
+    async function saveDocument(path) {
         try {
             const result = await window.electron.saveFile({
-                path: documentFilePath,
+                path: path,
                 data: documentData
             })
             if (result.path) {
@@ -394,8 +394,12 @@ export default function App() {
     }
 
     useEffect(() => {
-        return window.menu.on.file.save(() => {
-            saveDocument()
+        return window.menu.on.file.save((_, path) => {
+            if (path) {
+                saveDocument(path)
+            } else {
+                saveDocument(documentFilePath)
+            }
         })
     }, [documentFilePath, documentData])
 

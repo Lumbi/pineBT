@@ -57,7 +57,13 @@ app.whenReady().then(() => {
             {
               label: 'Save as...',
               accelerator: 'Ctrl+Shift+S',
-              click: () => {},
+              click: async () => {
+                const result = await dialog.showSaveDialog({
+                  defaultPath: 'untitled.json',
+                  filters: [ { name: 'JSON', extensions: ['json'] } ],
+                })
+                appWindow.webContents.send('menu/file/save', result.filePath)
+              },
             },
             { type: 'separator' },
             { role: 'quit' },
