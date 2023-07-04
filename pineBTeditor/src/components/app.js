@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from 'react'
-import { Button, Toast, ToastContainer } from 'react-bootstrap'
+import { Button, Toast, ToastContainer, Modal } from 'react-bootstrap'
 import BehaviorCard from './behavior-card'
 import BehaviorConnection from './behavior-connection'
 import BehaviorDrawer from './behavior-drawer'
@@ -55,6 +55,7 @@ export default function App() {
     const [showBehaviorEdit, setShowBehaviorEdit] = useState(false)
     const [inEditBehaviorId, setInEditBehaviorId] = useState()
     const [notifications, setNotifications] = useState([])
+    const [modal, setModal] = useState(null)
 
     const [documentFilePath, setDocumentFilePath] = useState()
 
@@ -308,47 +309,80 @@ export default function App() {
         setNotifications(notifications.filter(n => n.id !== id))
     }
 
+    function newDocument() {
+        setBehaviors([rootBehavior])
+        setConnections([])
+        setDocumentFilePath(undefined)
+        setSavedDocumentData(undefined)
+        setScrollOffset({ x: 0, y: 0 })
+    }
+
     useEffect(() => {
-        return window.menu.on.file.save(() => {
-            window.electron
-                .saveFile({
-                    path: documentFilePath,
-                    data: documentData
+        return window.menu.on.file.new(() => {
+            if (isDirty) {
+                setModal({
+                    next: () => newDocument()
                 })
-                .then(result => {
-                    if (result.path) {
-                        setDocumentFilePath(result.path)
-                        setSavedDocumentData(documentData)
-                    }
-                })
-                .catch((error) => {
-                    showNotification({
-                        title: 'Failed to save file',
-                        body: error.message,
-                        variant: 'danger'
-                    })
-                })
+            } else {
+                newDocument()
+            }
         })
-    }, [documentFilePath, documentData])
+    }, [isDirty])
+
+    function openDocument(document) {
+        try {
+            const { path, data } = document
+            const { behaviors, connections } = JSON.parse(data)
+            setBehaviors(behaviors)
+            setConnections(connections)
+            setDocumentFilePath(path)
+            setSavedDocumentData(undefined)
+            setScrollOffset({ x: 0, y: 0 })
+        } catch (error) {
+            showNotification({
+                title: 'Failed to open document',
+                body: error.message,
+                variant: 'danger',
+            })
+        }
+    }
 
     useEffect(() => {
         return window.menu.on.file.open((_, document) => {
-            try {
-                const { path, data } = document
-                const { behaviors, connections } = JSON.parse(data)
-                setBehaviors(behaviors)
-                setConnections(connections)
-                setDocumentFilePath(path)
-                setSavedDocumentData(undefined)
-            } catch (error) {
-                showNotification({
-                    title: 'Failed to open document',
-                    body: error.message,
-                    variant: 'danger',
+            if (isDirty) {
+                setModal({
+                    next: () => openDocument(document)
                 })
+            } else {
+                openDocument(document)
             }
         })
-    }, [])
+    }, [isDirty])
+
+    async function saveDocument() {
+        try {
+            const result = await window.electron.saveFile({
+                path: documentFilePath,
+                data: documentData
+            })
+            if (result.path) {
+                setDocumentFilePath(result.path)
+                setSavedDocumentData(documentData)
+            }
+        } catch (error) {
+            showNotification({
+                title: 'Failed to save file',
+                body: error.message,
+                variant: 'danger'
+            })
+        }
+    }
+
+    useEffect(() => {
+        return window.menu.on.file.save(() => {
+            saveDocument()
+        })
+    }, [documentFilePath, documentData])
 
     useEffect(() => {
         if (documentFilePath) {
@@ -449,5 +483,37 @@ export default function App() {
             )
         }
         </ToastContainer>
+        <Modal 
+            show={!!modal} 
+            onHide={() => setModal(null)}
+            backdrop='static'
+        >
+            <Modal.Header closeButton>
+                <Modal.Title>Unsaved changes</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>The current behavior tree has unsaved changes.</Modal.Body>
+            <Modal.Footer>
+            <Button 
+                variant='danger' 
+                onClick={() => {
+                    setModal(null)
+                    if (modal.next) {
+                        modal.next()
+                    }
+                }}
+            >
+                Discard
+            </Button>
+            <Button variant='primary' onClick={async () => {
+                setModal(null)
+                await saveDocument()
+                if (modal.next) {
+                    modal.next()
+                }
+            }}>
+                Save
+            </Button>
+            </Modal.Footer>
+        </Modal>
     </>)
 }
