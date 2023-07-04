@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from 'react'
 import { Button } from 'react-bootstrap'
 import bem from '../bem'
+import { updateBehaviors } from '../models/document'
 
 import './behavior-card.less'
 
@@ -8,14 +9,18 @@ export default function BehaviorCard(props) {
     const { 
         behavior,
         schema,
-        behaviors,
-        updateBehaviors,
-        connections,
+        document,
         newConnection,
         beginNewConnection,
         commitNewConnection,
         onEdit,
     } = props
+
+    const {
+        behaviors,
+        connections,
+    } = document
+
     const self = useRef()
     const isRoot = behavior.id === 0
     const position = behavior.position;
@@ -97,6 +102,7 @@ export default function BehaviorCard(props) {
             }
 
             updateBehaviors(
+                document,
                 behaviors.map(b => {
                     const flag = b.id === behavior.id || isDescendantOf(behavior.id, b.id)
                     if (flag) {

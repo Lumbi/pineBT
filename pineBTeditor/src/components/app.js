@@ -5,47 +5,17 @@ import BehaviorConnection from './behavior-connection'
 import BehaviorDrawer from './behavior-drawer'
 import { BehaviorEdit } from './behavior-edit'
 import { loadBehaviorSchemas } from '../behavior-schema'
+import { rootBehavior } from '../models/behavior'
+import { toBlueprint } from '../models/blueprint'
+import { resetDocument, toDocumentData } from '../models/document'
 import bem from '../bem'
 
 import 'bootstrap/dist/css/bootstrap.min.css'
 import './app.less'
 
-const rootBehavior = {
-    schema: 'Root',
-    id: 0,
-    position: { x: 400, y: 100 }
-}
-
-function toBlueprint(behaviors, connections) {
-    const entryConnection = connections.find(c => c.from === 0)
-    if (!entryConnection) return undefined
-    const entryBehavior= behaviors.find(b => b.id === entryConnection.to)
-    if (!entryBehavior) return undefined
-
-    function recursively(behavior) {
-        const childConnections = connections.filter(c => c.from === behavior.id)
-        const childBehaviors = childConnections
-            .map(c => behaviors.find(b => b.id === c.to))
-            .filter(b => !!b)
-            .sort((a, b) => a.position.x < b.position.x)
-            .map(recursively)
-
-        return {
-            id: behavior.id,
-            schema: behavior.schema,
-            options: behavior.options,
-            children: childBehaviors
-        }
-    }
-
-    return {
-        root: recursively(entryBehavior)
-    }
-}
-
 export default function App() {
     const [schemas, setSchemas] = useState([])
-    const [behaviors, setBehaviors] = useState([rootBehavior])
+    const [behaviors, setBehaviors] = useState([rootBehavior()])
     const [connections, setConnections] = useState([])
     const [newConnection, setNewConnection] = useState()
     const [mousePosition, setMousePosition] = useState()
@@ -59,12 +29,17 @@ export default function App() {
 
     const [documentFilePath, setDocumentFilePath] = useState()
 
-    const documentData = useMemo(() => {
-        return JSON.stringify({
-            behaviors,
-            connections,
-        }, undefined, 4)
-    }, [behaviors, connections])
+    const document = {
+        behaviors,
+        setBehaviors,
+        connections,
+        setConnections
+    }
+
+    const documentData = useMemo(
+        () => toDocumentData(document), 
+        [behaviors, connections]
+    )
 
     const [savedDocumentData, setSavedDocumentData] = useState()
     if (!savedDocumentData) {
@@ -116,43 +91,6 @@ export default function App() {
             event.preventDefault()
             setDragging(false)
         }
-    }
-
-    function handleEditBehavior(behavior) {
-        updateBehavior(behavior)
-    }
-
-    function handleDeleteBehavior(behavior) {
-        setShowBehaviorEdit(false)
-        setTimeout(() => {
-            deleteBehaviorById(behavior.id)
-        }, 300)
-    }
-
-    function updateBehavior(behaviorUpdate) {
-        setBehaviors(
-            behaviors.map(behavior => {
-                if (behavior.id === behaviorUpdate.id) {
-                    return {...behavior, ...behaviorUpdate}
-                } else {
-                    return behavior
-                }
-            })
-        )
-    }
-
-    function updateBehaviors(behaviors) {
-        setBehaviors(behaviors)
-    }
-
-    function deleteBehaviorById(behaviorId) {
-        setConnections(
-            connections.filter(c => c.from !== behaviorId && c.to !== behaviorId)
-        )
-
-        setBehaviors(
-            behaviors.filter(b => b.id !== behaviorId)
-        )
     }
 
     function beginNewConnection(from) {
@@ -310,8 +248,7 @@ export default function App() {
     }
 
     function newDocument() {
-        setBehaviors([rootBehavior])
-        setConnections([])
+        resetDocument(document)
         setDocumentFilePath(undefined)
         setSavedDocumentData(undefined)
         setScrollOffset({ x: 0, y: 0 })
@@ -427,9 +364,7 @@ export default function App() {
                             key={behavior.id}
                             behavior={behavior}
                             schema={schemas.find(s => s.name === behavior.schema)}
-                            updateBehaviors={updateBehaviors}
-                            behaviors={behaviors}
-                            connections={connections}
+                            document={document}
                             newConnection={newConnection}
                             beginNewConnection={beginNewConnection}
                             commitNewConnection={commitNewConnection}
@@ -469,9 +404,8 @@ export default function App() {
             behavior={inEditBehavior}
             schema={schemaForBehavior(inEditBehavior)}
             show={showBehaviorEdit}
+            document={document}
             onHide={() => setShowBehaviorEdit(false)}
-            onDelete={handleDeleteBehavior}
-            onEdit={handleEditBehavior}
         />
         <Button 
             id='run-button'

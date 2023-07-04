@@ -3,8 +3,10 @@ import Stack from 'react-bootstrap/Stack'
 import ToggleButton from 'react-bootstrap/ToggleButton'
 import Button from 'react-bootstrap/Button'
 import Dropdown from 'react-bootstrap/Dropdown'
-import bem from '../bem'
 import { t } from 'i18next'
+import bem from '../bem'
+import { updatedBehaviorWithOption } from '../models/behavior'
+import { updateBehavior, deleteBehaviorById } from '../models/document'
 
 import './behavior-edit.less'
 
@@ -70,9 +72,8 @@ export function BehaviorEdit(props) {
         behavior,
         schema,
         show,
+        document,
         onHide,
-        onEdit,
-        onDelete,
     } = props
 
     const title = (behavior && behavior.schema) || ''
@@ -83,14 +84,18 @@ export function BehaviorEdit(props) {
         return behavior.options[key]
     }
 
-    function updatedBehaviorWithOption(option) {
-        return {
-            ...behavior,
-            options: {
-                ...behavior.options,
-                [option.key]: option.value
-            }
-        }
+    function handleOnEditOption(option) {
+        updateBehavior(
+            document, 
+            updatedBehaviorWithOption(behavior, option)
+        )
+    }
+
+    function handleOnDeleteBehavior(behavior) {
+        onHide()
+        setTimeout(() => {
+            deleteBehaviorById(document, behavior.id)
+        }, 300)
     }
 
     return (
@@ -112,9 +117,7 @@ export function BehaviorEdit(props) {
                                     type,
                                     value: valueForOptionKey(key)
                                 }}
-                                onChange={(option) => {
-                                    onEdit(updatedBehaviorWithOption(option))
-                                }}
+                                onChange={(option) => handleOnEditOption(option)}
                             />
                         )
                     })
@@ -122,7 +125,7 @@ export function BehaviorEdit(props) {
                 <Button
                     id={bem('behavior-edit', 'delete-button')}
                     variant='danger'
-                    onClick={() => onDelete(behavior)}
+                    onClick={() => handleOnDeleteBehavior(behavior)}
                 >
                     Delete
                 </Button>
