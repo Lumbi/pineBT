@@ -62,11 +62,19 @@ app.whenReady().then(() => {
             { type: 'separator' },
             { role: 'quit' },
           ]
+        },
+        {
+          label: '&Develop',
+          submenu: [
+            {
+              label: 'Inspect',
+              accelerator: 'Ctrl+Shift+I',
+              click: () => appWindow.webContents.openDevTools(),
+            }
+          ]
         }
       ])
     )
-
-    appWindow.webContents.openDevTools()
 
     ipcMain.on('set-title', (_, title) => {
       appWindow.setTitle(title)
