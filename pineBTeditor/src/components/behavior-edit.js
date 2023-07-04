@@ -37,7 +37,7 @@ function BehaviorEditOption(props) {
         return (
             <Dropdown>
                 { t(`${schema.name}_${key}`) + ' ' }
-                <Dropdown.Toggle>
+                <Dropdown.Toggle style={{ verticalAlign: 'baseline' }}>
                 {
                     value && value.case
                         ? caseName(value.case)
