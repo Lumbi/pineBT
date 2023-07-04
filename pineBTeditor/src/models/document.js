@@ -1,8 +1,56 @@
-import { rootBehavior } from './behavior'
+import { rootBehavior, isRoot } from './behavior'
 
 export function resetDocument(document) {
     document.setBehaviors([rootBehavior()])
     document.setConnections([])
+}
+
+export function findBehaviorWithId(document, id) {
+    const { behaviors } = document
+    return behaviors.find(b => b.id === id)
+}
+
+export function schemaForBehavior(document, behavior) {
+    const { schemas } = document
+    if (!behavior) { return undefined }
+    return schemas.find(s => s.name === behavior.schema)
+}
+
+export function newBehaviorFromSchema(document, schema) {
+    const { behaviors } = document
+
+    const maxBehaviorId = behaviors.map(b => b.id).sort().slice(-1)[0]
+    const nextBehaviorId = maxBehaviorId + 1
+
+    function defaultValueForOptionType(type) {
+        if (type === 'boolean') {
+            return false
+        } else if (type === 'number') {
+            return 0
+        } else if (typeof type === 'number') { // enumeration
+            return { case: 0 }
+        }
+        return undefined
+    }
+
+    const newBehavior = {
+        schema: schema.name,
+        id: nextBehaviorId,
+        position: { x: 0, y: 0 },
+        options: schema.options && Object.fromEntries(
+            Object.entries(schema.options).map(([key, type]) => [
+                key,
+                defaultValueForOptionType(type)
+            ])
+        )
+    }
+
+    return newBehavior
+}
+
+export function addBehavior(document, behavior) {
+    const { setBehaviors, behaviors } = document
+    setBehaviors([...behaviors, behavior])
 }
 
 export function updateBehavior(document, update) {
@@ -27,11 +75,76 @@ export function updateBehaviors(document, behaviors) {
 export function deleteBehaviorById(document, behaviorId) {
     const { behaviors, setBehaviors } = document
     const { connections, setConnections } = document
+
     setConnections(
         connections.filter(c => c.from !== behaviorId && c.to !== behaviorId)
     )
+
     setBehaviors(
         behaviors.filter(b => b.id !== behaviorId)
+    )
+}
+
+export function childrenOfBehavior(document, behavior) {
+    const { behaviors, connections } = document
+    if (!behavior) { return [] }
+
+    const childConnections = connections
+        .filter(c => c.from === behavior.id)
+
+    const childBehaviors = childConnections
+        .map(c => c.to)
+        .flatMap(to => behaviors.filter(b => b.id === to))
+
+    return childBehaviors
+}
+
+export function canAddChildToBehavior(document, behavior) {
+    const { schemas } = document
+
+    if (!behavior) { return false }
+    if (isRoot(behavior)) { return childrenOfBehavior(document, behavior).length === 0 }
+
+    const schema = schemas.find(s => s.name === behavior.schema)
+    if (!schema) { return false }
+
+    if (schema.hierarchy === 'none') {
+        return false
+    } else if (schema.hierarchy === 'one') {
+        return childrenOfBehavior(document, behavior).length === 0
+    } else if (schema.hierarchy === 'many') {
+        return true
+    }
+
+    return false
+}
+
+export function canAddConnection(document, connection) {
+    const { connections } = document
+    const alreadyExists = !!connections.find(c => c.from === connection.from && c.to === connection.to)
+    const connectionToSelf = connection.from === connection.to
+    const alreadyHasParent = !!connections.find(c => c.to === connection.to)
+    const parentBehavior = findBehaviorWithId(document, connection.from)
+    const canAddChild = canAddChildToBehavior(document, parentBehavior)
+    const isValid = !alreadyExists && 
+                    !connectionToSelf && 
+                    !alreadyHasParent &&
+                    canAddChild
+    return isValid
+}
+
+export function addConnection(document, connection) {
+    const { connections, setConnections } = document
+    if (canAddConnection(document, connection)) {
+        setConnections([...connections, connection])
+    }
+}
+
+export function deleteConnection(document, connection) {
+    const { setConnections, connections } = document
+    const { from, to } = connection
+    setConnections(
+        connections.filter(c => c.from !== from || c.to !== to)
     )
 }
 

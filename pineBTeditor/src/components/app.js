@@ -7,7 +7,7 @@ import { BehaviorEdit } from './behavior-edit'
 import { loadBehaviorSchemas } from '../behavior-schema'
 import { rootBehavior } from '../models/behavior'
 import { toBlueprint } from '../models/blueprint'
-import { resetDocument, toDocumentData } from '../models/document'
+import { addBehavior, newBehaviorFromSchema, addConnection, deleteConnection, resetDocument, toDocumentData } from '../models/document'
 import bem from '../bem'
 
 import 'bootstrap/dist/css/bootstrap.min.css'
@@ -33,7 +33,8 @@ export default function App() {
         behaviors,
         setBehaviors,
         connections,
-        setConnections
+        setConnections,
+        schemas
     }
 
     const documentData = useMemo(
@@ -97,58 +98,9 @@ export default function App() {
         setNewConnection({ from })
     }
 
-    function schemaForBehavior(behavior) {
-        if (!behavior) { return undefined }
-        return schemas.find(s => s.name === behavior.schema)
-    }
-
-    function childrenOfBehavior(behaviorId) {
-        const behavior = behaviors.filter(b => b.id === behaviorId)[0]
-        if (!behavior) { return [] }
-
-        const childConnections = connections.filter(c => c.from === behaviorId)
-        const childBehaviors = childConnections
-            .map(c => c.to)
-            .flatMap(to => behaviors.filter(b => b.id === to))
-
-        return childBehaviors
-    }
-
-    function canBehaviorAddChild(behaviorId) {
-        const behavior = behaviors.filter(b => b.id === behaviorId)[0]
-        if (!behavior) { return false }
-
-        if (behavior.id === 0) { // root
-            return childrenOfBehavior(behaviorId).length === 0
-        }
-
-        const behaviorSchema = schemas.find(s => s.name === behavior.schema)
-        if (!behaviorSchema) { return false }
-
-        if (behaviorSchema.hierarchy === "none") {
-            return false
-        } else if (behaviorSchema.hierarchy === "one") {
-            return childrenOfBehavior(behaviorId).length === 0
-        } else if (behaviorSchema.hierarchy === "many") {
-            return true
-        }
-
-        return false
-    }
-
     function commitNewConnection(to) {
         if (newConnection) {
-            const connection = { ...newConnection, to }
-            const alreadyExists = !!connections.find(c => c.from === connection.from && c.to === connection.to)
-            const connectionToSelf = connection.from === connection.to
-            const alreadyHasParent = !!connections.find(c => c.to === connection.to)
-            const isValid = !alreadyExists && 
-                            !connectionToSelf && 
-                            !alreadyHasParent &&
-                            canBehaviorAddChild(connection.from)
-            if (isValid) {
-                setConnections([...connections, connection])
-            }
+            addConnection(document, { ...newConnection, to })
         }
         setNewConnection(undefined)
     }
@@ -157,49 +109,25 @@ export default function App() {
         setNewConnection(undefined)
     }
 
-    function deleteConnection(from, to) {
-        setConnections(
-            connections.filter(c => c.from !== from || c.to !== to)
-        )
+    function handleBehaviorDrawerOnSelectSchema(schema) {
+        const newBehavior = newBehaviorFromSchema(document, schema)
+        const newBehaviorAtMousePosition = {
+            ...newBehavior,
+            position: mousePosition
+        }
+        addBehavior(document, newBehaviorAtMousePosition)
+        if (newConnection) {
+            commitNewConnection(newBehavior.id)
+        }
+    }
+
+    function handleConnectionOnClick(connection) {
+        deleteConnection(document, connection)
     }
 
     function hideBehaviorDrawer() {
         cancelNewConnection()
         setShowBehaviorDrawer(false)
-    }
-
-    function createBehaviorFromSchema(schema) {
-        const maxBehaviorId = behaviors.map(b => b.id).sort().slice(-1)[0]
-        const nextBehaviorId = maxBehaviorId + 1
-
-        function defaultValueForOptionType(type) {
-            if (type === 'boolean') {
-                return false
-            } else if (type === 'number') {
-                return 0
-            } else if (typeof type === 'number') { // enumeration
-                return { case: 0 }
-            }
-            return undefined
-        }
-
-        const newBehavior = {
-            schema: schema.name,
-            id: nextBehaviorId,
-            position: mousePosition,
-            options: schema.options && Object.fromEntries(
-                Object.entries(schema.options).map(([key, type]) => [
-                    key,
-                    defaultValueForOptionType(type)
-                ])
-            )
-        }
-
-        setBehaviors([...behaviors, newBehavior])
-
-        if (newConnection) {
-            commitNewConnection(newBehavior.id)
-        }
     }
 
     function showEditForBehavior(behavior) {
@@ -379,7 +307,7 @@ export default function App() {
                             key={`${connection.from}->${connection.to}`}
                             from={behaviors.find(b => b.id == connection.from)}
                             to={behaviors.find(b => b.id == connection.to)}
-                            onClick={() => deleteConnection(connection.from, connection.to)}
+                            onClick={() => handleConnectionOnClick(connection)}
                         />
                     )
                 }
@@ -398,11 +326,10 @@ export default function App() {
             schemas={schemas}
             show={showBehaviorDrawer}
             onHide={hideBehaviorDrawer}
-            onSelectSchema={createBehaviorFromSchema}
+            onSelectSchema={handleBehaviorDrawerOnSelectSchema}
         />
         <BehaviorEdit
             behavior={inEditBehavior}
-            schema={schemaForBehavior(inEditBehavior)}
             show={showBehaviorEdit}
             document={document}
             onHide={() => setShowBehaviorEdit(false)}
