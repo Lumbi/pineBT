@@ -1,5 +1,6 @@
 import { useState, useEffect, useMemo } from 'react'
 import { Button, Toast, ToastContainer, Modal } from 'react-bootstrap'
+import Canvas from './canvas'
 import BehaviorCard from './behavior-card'
 import BehaviorConnection from './behavior-connection'
 import BehaviorDrawer from './behavior-drawer'
@@ -34,7 +35,19 @@ export default function App() {
         setBehaviors,
         connections,
         setConnections,
-        schemas
+        schemas,
+    }
+
+    const editor = {
+        mousePosition,
+        setMousePosition,
+        scrollOffset,
+        setScrollOffset,
+        isDragging,
+        setDragging,
+        newConnection,
+        setNewConnection,
+        setShowBehaviorDrawer,
     }
 
     const documentData = useMemo(
@@ -56,43 +69,6 @@ export default function App() {
         loadSchemas()
             .catch(console.error)
     }, [])
-
-    useEffect(() => {
-        window.scrollTo({
-            left: -scrollOffset.x, 
-            top: -scrollOffset.y,
-            behavior: 'instant'
-        })
-    }, [scrollOffset])
-
-    function handleCanvasOnMouseDown(event) {
-        event.preventDefault()
-        setDragging(true)
-
-        if (newConnection) {
-            setShowBehaviorDrawer(true)
-            setDragging(false)
-        }
-    }
-
-    function handleCanvasOnMouseMove(event) {
-        setMousePosition({ x: event.pageX, y: event.pageY })
-
-        if (isDragging) {
-            event.preventDefault()
-            setScrollOffset({
-                x: scrollOffset.x + event.movementX,
-                y: scrollOffset.y + event.movementY
-            })
-        }
-    }
-
-    function handleCanvasOnMouseUp(event) {
-        if (isDragging) {
-            event.preventDefault()
-            setDragging(false)
-        }
-    }
 
     function beginNewConnection(from) {
         setNewConnection({ from })
@@ -277,15 +253,9 @@ export default function App() {
     }, [documentFilePath, isDirty])
 
     return (<>
-        <div 
-            className={bem('canvas', null, { connecting: !!newConnection })}
-            onMouseDown={handleCanvasOnMouseDown}
-            onMouseMove={handleCanvasOnMouseMove}
-            onMouseUp={handleCanvasOnMouseUp}
+        <Canvas
+            editor={editor}
         >
-            <div 
-                className={bem('canvas', 'viewport')}
-            >
                 {
                     behaviors.map(behavior =>
                         <BehaviorCard 
@@ -320,8 +290,7 @@ export default function App() {
                         : null
                 }
                 </svg>
-            </div>
-        </div>
+        </Canvas>
         <BehaviorDrawer
             schemas={schemas}
             show={showBehaviorDrawer}
