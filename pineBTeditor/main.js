@@ -71,7 +71,10 @@ app.whenReady().then(() => {
     ipcMain.handle('save-file', async (_, file) => {
       let filePath = file.path
       if (!filePath) {
-        const result = await dialog.showSaveDialog()
+        const result = await dialog.showSaveDialog({
+          defaultPath: 'untitled.json',
+          filters: [ { name: 'JSON', extensions: ['json'] } ],
+        })
         filePath = result.filePath
       }
       if (filePath) {
