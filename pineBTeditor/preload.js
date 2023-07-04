@@ -15,6 +15,7 @@ contextBridge.exposeInMainWorld('electron', {
 contextBridge.exposeInMainWorld('menu', {
   on: {
     file: {
+      open: subscribe('menu/file/open'),
       save: subscribe('menu/file/save'),
     }
   }

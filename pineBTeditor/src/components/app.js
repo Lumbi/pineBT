@@ -56,7 +56,8 @@ export default function App() {
     const [inEditBehaviorId, setInEditBehaviorId] = useState()
     const [notifications, setNotifications] = useState([])
 
-    const [documentFilePath, setDocumentFilePath] = useState() 
+    const [documentFilePath, setDocumentFilePath] = useState()
+
     const documentData = useMemo(() => {
         return JSON.stringify({
             behaviors,
@@ -315,13 +316,32 @@ export default function App() {
                 })
                 .catch((error) => {
                     showNotification({
-                        title: 'Error',
+                        title: 'Failed to save file',
                         body: error.message,
                         variant: 'danger'
                     })
                 })
         })
     }, [documentFilePath, documentData])
+
+    useEffect(() => {
+        return window.menu.on.file.open((_, document) => {
+            console.log(document)
+            try {
+                const { path, data } = document
+                const { behaviors, connections } = JSON.parse(data)
+                setBehaviors(behaviors)
+                setConnections(connections)
+                setDocumentFilePath(path)
+            } catch (error) {
+                showNotification({
+                    title: 'Failed to open document',
+                    body: error.message,
+                    variant: 'danger',
+                })
+            }
+        })
+    })
 
     return (<>
         <div 

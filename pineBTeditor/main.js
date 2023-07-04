@@ -42,10 +42,11 @@ app.whenReady().then(() => {
                   properties: ['openFile'],
                   filters: [ { name: 'JSON', extensions: ['json'] } ],
                 })
-                const filePath = result.filePaths[0]
-                if (!result.canceled) {
-                  console.log(filePath)
-                }
+                const path = result.filePaths[0]
+                if (result.canceled || !path) { return }
+                const data = await fs.readFile(path, 'utf8')
+                const document = { path, data }
+                appWindow.webContents.send('menu/file/open', document)
               },
             },
             {
