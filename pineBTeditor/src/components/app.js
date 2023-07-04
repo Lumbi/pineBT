@@ -326,7 +326,6 @@ export default function App() {
 
     useEffect(() => {
         return window.menu.on.file.open((_, document) => {
-            console.log(document)
             try {
                 const { path, data } = document
                 const { behaviors, connections } = JSON.parse(data)
@@ -342,6 +341,14 @@ export default function App() {
             }
         })
     })
+
+    useEffect(() => {
+        if (documentFilePath) {
+            window.electron.setTitle(`pineBT Editor - ${documentFilePath}`)
+        } else {
+            window.electron.setTitle(`pineBT Editor - New file`)
+        }
+    }, [documentFilePath])
 
     return (<>
         <div 

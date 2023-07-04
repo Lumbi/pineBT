@@ -9,6 +9,7 @@ function subscribe(channel) {
 } 
 
 contextBridge.exposeInMainWorld('electron', {
+  setTitle: (title) => ipcRenderer.send('set-title', title),
   saveFile: (file) => ipcRenderer.invoke('save-file', file),
 })
 

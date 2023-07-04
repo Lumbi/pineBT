@@ -68,6 +68,10 @@ app.whenReady().then(() => {
 
     appWindow.webContents.openDevTools()
 
+    ipcMain.on('set-title', (_, title) => {
+      appWindow.setTitle(title)
+    })
+
     ipcMain.handle('save-file', async (_, file) => {
       let filePath = file.path
       if (!filePath) {
