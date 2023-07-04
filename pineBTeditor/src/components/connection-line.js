@@ -2,9 +2,9 @@ import { useEffect, useState } from 'react'
 
 import bem from '../bem'
 
-import './behavior-connection.less'
+import './connection-line.less'
 
-export default function BehaviorConnection(props) {
+export default function ConnectionLine(props) {
     const {
         from,
         to,

@@ -2,7 +2,7 @@ import { useState, useEffect, useMemo } from 'react'
 import { Button, Toast, ToastContainer, Modal } from 'react-bootstrap'
 import Canvas from './canvas'
 import BehaviorCard from './behavior-card'
-import BehaviorConnection from './behavior-connection'
+import ConnectionLine from './connection-line'
 import BehaviorDrawer from './behavior-drawer'
 import { BehaviorEdit } from './behavior-edit'
 import { loadBehaviorSchemas } from '../behavior-schema'
@@ -273,7 +273,7 @@ export default function App() {
                 <svg className={bem('canvas', 'connections')}>
                 {
                     connections.map(connection => 
-                        <BehaviorConnection
+                        <ConnectionLine
                             key={`${connection.from}->${connection.to}`}
                             from={behaviors.find(b => b.id == connection.from)}
                             to={behaviors.find(b => b.id == connection.to)}
@@ -283,7 +283,7 @@ export default function App() {
                 }
                 {
                     newConnection
-                        ? <BehaviorConnection
+                        ? <ConnectionLine
                             from={behaviors.find(b => b.id == newConnection.from)}
                             to={{ position: { x: mousePosition.x - 1, y: mousePosition.y - 3 } }}
                             />
