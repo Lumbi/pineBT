@@ -65,6 +65,12 @@ export default function App() {
         }, undefined, 4)
     }, [behaviors, connections])
 
+    const [savedDocumentData, setSavedDocumentData] = useState()
+    if (!savedDocumentData) {
+        setSavedDocumentData(documentData)
+    }
+    const isDirty = savedDocumentData != documentData
+
     useEffect(() => {
         async function loadSchemas() {
             setSchemas(await loadBehaviorSchemas())
@@ -312,6 +318,7 @@ export default function App() {
                 .then(result => {
                     if (result.path) {
                         setDocumentFilePath(result.path)
+                        setSavedDocumentData(documentData)
                     }
                 })
                 .catch((error) => {
@@ -332,6 +339,7 @@ export default function App() {
                 setBehaviors(behaviors)
                 setConnections(connections)
                 setDocumentFilePath(path)
+                setSavedDocumentData(undefined)
             } catch (error) {
                 showNotification({
                     title: 'Failed to open document',
@@ -340,15 +348,15 @@ export default function App() {
                 })
             }
         })
-    })
+    }, [])
 
     useEffect(() => {
         if (documentFilePath) {
-            window.electron.setTitle(`pineBT Editor - ${documentFilePath}`)
+            window.electron.setTitle(`pineBT Editor - ${documentFilePath}${isDirty ? '*' : ''}`)
         } else {
             window.electron.setTitle(`pineBT Editor - New file`)
         }
-    }, [documentFilePath])
+    }, [documentFilePath, isDirty])
 
     return (<>
         <div 
