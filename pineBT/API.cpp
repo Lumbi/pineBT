@@ -23,6 +23,12 @@ static BehaviorTreeHandle nextHandle()
 	return ++handle;
 }
 
+void pineBT_schemas(char* buffer)
+{
+	const std::string dump = schemaLibrary.toJSON();
+	memcpy(buffer, dump.c_str(), dump.size());
+}
+
 BehaviorTreeHandle pineBT_create(const char* json)
 {
 	auto behaviorTree = std::make_unique<BehaviorTree>(allocator);
@@ -66,7 +72,5 @@ void pineBT_status(BehaviorTreeHandle handle, char* buffer)
 	}
 
 	const std::string dump = resultsJSON.dump();
-
-	// TODO: Dangerous stuff, revisit
 	memcpy(buffer, dump.c_str(), dump.size());
 }

@@ -5,7 +5,6 @@ import BehaviorCard from './behavior-card'
 import ConnectionLine from './connection-line'
 import BehaviorDrawer from './behavior-drawer'
 import { BehaviorEdit } from './behavior-edit'
-import { loadBehaviorSchemas } from '../behavior-schema'
 import { rootBehavior } from '../models/behavior'
 import { toBlueprint } from '../models/blueprint'
 import * as Document from '../models/document'
@@ -39,6 +38,7 @@ export default function App() {
         connections,
         setConnections,
         schemas,
+        setSchemas,
         savedData: savedDocumentData,
         setSavedData: setSavedDocumentData,
     }
@@ -72,12 +72,11 @@ export default function App() {
     }
 
     useEffect(() => {
-        async function loadSchemas() {
-            setSchemas(await loadBehaviorSchemas())
+        try {
+            Document.loadSchemas(document)
+        } catch (error) {
+            console.error(error)
         }
-
-        loadSchemas()
-            .catch(console.error)
     }, [])
 
     function handleBehaviorDrawerOnSelectSchema(schema) {

@@ -6,6 +6,8 @@ extern "C"
 {
 	using BehaviorTreeHandle = int;
 
+	EXPORT void pineBT_schemas(char*);
+
 	EXPORT BehaviorTreeHandle pineBT_create(const char* json);
 
 	EXPORT void pineBT_destroy(BehaviorTreeHandle);

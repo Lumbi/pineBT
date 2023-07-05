@@ -22,27 +22,44 @@ contextBridge.exposeInMainWorld('menu', {
 })
 
 const pineBT = ffi.Library('pineBT', {
+  pineBT_schemas: [ 'void', [ 'char *' ] ],
   pineBT_create: [ 'int', [ 'string' ] ],
   pineBT_destroy: [ 'void', [ 'int' ] ],
   pineBT_run: [ 'void', [ 'int' ] ],
   pineBT_status: [ 'void', [ 'int', 'char *' ] ],
 })
 
+function stringFromBuffer(buffer) {
+  var result = buffer.toString('utf-8')
+  var nullTerminator = result.indexOf('\u0000')
+  if (nullTerminator >= 0) { 
+    result = result.substring(0, nullTerminator)
+  }
+  return result
+}
+
 contextBridge.exposeInMainWorld('pineBT', {
-  create: pineBT.pineBT_create,
+  schemas: () => {
+    const buffer = Buffer.alloc(5000, 0) // TODO: Use a sensible value for the buffer?
+    pineBT.pineBT_schemas(buffer)
+    return JSON.parse(stringFromBuffer(buffer))
+  },
 
-  destroy: pineBT.pineBT_destroy,
+  create: () => {
+    return pineBT.pineBT_create()
+  },
 
-  run: pineBT.pineBT_run,
+  destroy: (handle) => {
+    return pineBT.pineBT_destroy(handle)
+  },
+
+  run: (handle) => {
+    return pineBT.pineBT_run(handle)
+  },
 
   status: (handle) => {
     const buffer = Buffer.alloc(5000, 0) // TODO: Use a sensible value for the buffer?
     pineBT.pineBT_status(handle, buffer)
-    var result = buffer.toString('utf-8')
-    var nullTerminator = result.indexOf('\u0000')
-    if (nullTerminator >= 0) { 
-      result = result.substring(0, nullTerminator)
-    }
-    return JSON.parse(result)
+    return JSON.parse(stringFromBuffer(buffer))
   }
 })
