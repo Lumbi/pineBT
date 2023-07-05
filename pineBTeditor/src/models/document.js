@@ -183,10 +183,13 @@ export function deleteConnection(document, connection) {
 
 export function toData(document) {
     const { behaviors, connections } = document
-    // TODO: Strip transient data like 'status'
+    const persistentBehaviors = behaviors.map(b => ({
+        ...b,
+        status: undefined
+    }))
     return JSON.stringify(
         {
-            behaviors,
+            behaviors: persistentBehaviors,
             connections,
         },
         undefined,
