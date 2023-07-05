@@ -10,63 +10,6 @@ import * as Document from '../models/document'
 
 import './behavior-edit.less'
 
-function BehaviorEditOption(props) {
-    const { option, schema, onChange } = props
-    const { key, type, value } = option
-    if (type === 'boolean') {
-        return (
-            <ToggleButton
-                id={`behavior-edit__${option.key}`}
-                type='checkbox'
-                variant='outline-primary'
-                checked={!!value}
-                onChange={(event) =>
-                    onChange({
-                        ...option,
-                        value: event.currentTarget.checked
-                    })
-                }
-            >
-                {t(`${schema.name}_${key}_${!!value}`)}
-            </ToggleButton>
-        )
-    } else if (type === 'number') {
-        return <p>Not supported yet</p>
-    } else if (typeof type === 'number') { // enumeration case
-        const count = type
-        function caseName(value) { return t(`${schema.name}_${key}_${value}`) }
-        const cases = [...Array(count).keys()]
-        return (
-            <Dropdown>
-                { t(`${schema.name}_${key}`) + ' ' }
-                <Dropdown.Toggle style={{ verticalAlign: 'baseline' }}>
-                {
-                    value && value.case
-                        ? caseName(value.case)
-                        : caseName(0)
-                }
-                </Dropdown.Toggle>
-                <Dropdown.Menu>
-                    {
-                        cases.map(c =>
-                            <Dropdown.Item
-                                key={c}
-                                onClick={() => onChange({
-                                    ...option,
-                                    value: { case: c }
-                                })}
-                            >
-                                {caseName(c)}
-                            </Dropdown.Item>
-                        )
-                    }
-                </Dropdown.Menu>
-            </Dropdown>
-        )
-    }
-    return null
-}
-
 export function BehaviorEdit(props) {
     const {
         behavior,
@@ -133,4 +76,61 @@ export function BehaviorEdit(props) {
             </Offcanvas.Body>
         </Offcanvas>
     )
+}
+
+function BehaviorEditOption(props) {
+    const { option, schema, onChange } = props
+    const { key, type, value } = option
+    if (type === 'boolean') {
+        return (
+            <ToggleButton
+                id={`behavior-edit__${option.key}`}
+                type='checkbox'
+                variant='outline-primary'
+                checked={!!value}
+                onChange={(event) =>
+                    onChange({
+                        ...option,
+                        value: event.currentTarget.checked
+                    })
+                }
+            >
+                {t(`${schema.name}_${key}_${!!value}`)}
+            </ToggleButton>
+        )
+    } else if (type === 'number') {
+        return <p>Not supported yet</p>
+    } else if (typeof type === 'number') { // enumeration case
+        const count = type
+        function caseName(value) { return t(`${schema.name}_${key}_${value}`) }
+        const cases = [...Array(count).keys()]
+        return (
+            <Dropdown>
+                { t(`${schema.name}_${key}`) + ' ' }
+                <Dropdown.Toggle style={{ verticalAlign: 'baseline' }}>
+                {
+                    value && value.case
+                        ? caseName(value.case)
+                        : caseName(0)
+                }
+                </Dropdown.Toggle>
+                <Dropdown.Menu>
+                    {
+                        cases.map(c =>
+                            <Dropdown.Item
+                                key={c}
+                                onClick={() => onChange({
+                                    ...option,
+                                    value: { case: c }
+                                })}
+                            >
+                                {caseName(c)}
+                            </Dropdown.Item>
+                        )
+                    }
+                </Dropdown.Menu>
+            </Dropdown>
+        )
+    }
+    return null
 }
