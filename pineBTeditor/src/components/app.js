@@ -231,7 +231,6 @@ export default function App() {
                         <BehaviorCard 
                             key={behavior.id}
                             behavior={behavior}
-                            schema={schemas.find(s => s.name === behavior.schema)}
                             document={document}
                             editor={editor}
                             onEdit={() => handleBehaviorCardEdit(behavior)}

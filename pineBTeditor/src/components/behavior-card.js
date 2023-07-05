@@ -10,7 +10,6 @@ import './behavior-card.less'
 export default function BehaviorCard(props) {
     const { 
         behavior,
-        schema,
         document,
         editor,
         onEdit,
