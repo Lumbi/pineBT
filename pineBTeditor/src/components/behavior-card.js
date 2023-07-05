@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from 'react'
 import { Button } from 'react-bootstrap'
 import bem from '../bem'
+import * as Behavior from '../models/behavior'
 import * as Document from '../models/document'
 import * as Editor from '../models/editor'
 
@@ -21,13 +22,16 @@ export default function BehaviorCard(props) {
     } = document
 
     const self = useRef()
-    const isRoot = behavior.id === 0
+    const isRoot = Behavior.isRoot(behavior)
     const position = behavior.position;
     const [isDragging, setDragging] = useState(false)
     const [lastMousePosition, setLastMousePosition] = useState({ x: 0, y: 0 })
 
     const hasParent = !!connections.find(c => c.to === behavior.id)
     const hasChildren = !!connections.find(c => c.from === behavior.id)
+    const canEdit = !isRoot
+    const allowsChildren = Document.allowsChildren(document, behavior)
+    const canAddChild = Document.canAddChildToBehavior(document, behavior)
 
     useEffect(() => {
       if (self.current) {
@@ -37,38 +41,6 @@ export default function BehaviorCard(props) {
 
     function updateLastMousePosition(event) {
         setLastMousePosition({ x: event.screenX, y: event.screenY })
-    }
-
-    function canEdit() {
-        return !isRoot
-    }
-
-    function allowsChildren() {
-        if (isRoot) {
-            return true
-        } if (!schema || !schema.hierarchy) {
-            return false
-        } else if (schema.hierarchy === "none") {
-            return false
-        }
-        return true
-    }
-
-    function canAddChild() {
-        if (isRoot) {
-            const hasChild = connections.find(c => c.from === behavior.id)
-            return !hasChild
-        } else if (!schema || !schema.hierarchy) {
-            return false
-        } else if (schema.hierarchy === "none") {
-            return false
-        } else if (schema.hierarchy === "one") {
-            const hasChild = connections.find(c => c.from === behavior.id)
-            return !hasChild
-        } else if (schema.hierarchy === "many") {
-            return true
-        }
-        return false
     }
 
     function handleMouseDown(event) {
@@ -148,7 +120,7 @@ export default function BehaviorCard(props) {
 
     function handleChildrenHandleClick(event) {
         const { newConnection } = editor
-        if (!newConnection && canAddChild()) {
+        if (!newConnection && canAddChild) {
             event.preventDefault()
             event.stopPropagation()
             Editor.beginNewConnection(editor, behavior.id)
@@ -197,7 +169,7 @@ export default function BehaviorCard(props) {
                 <div 
                     className={bem('behavior-card', 'children-handle', { 
                         connected: hasChildren,
-                        hidden: !allowsChildren(),
+                        hidden: !allowsChildren,
                     })}
                     onClick={handleChildrenHandleClick}
                     onMouseDown={(event) => event.stopPropagation()}
@@ -212,7 +184,7 @@ export default function BehaviorCard(props) {
                 <i className={`${statusIcon()}`}></i>
             }
             </div>
-            <div className={bem('behavior-card', 'edit', { hidden: !canEdit() })}>
+            <div className={bem('behavior-card', 'edit', { hidden: !canEdit })}>
                 <Button 
                     variant='outline-secondary' 
                     size='sm'

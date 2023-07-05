@@ -106,6 +106,18 @@ export function deleteBehaviorById(document, behaviorId) {
     )
 }
 
+export function allowsChildren(document, behavior) {
+    const schema = schemaForBehavior(document, behavior)
+    if (isRoot(behavior)) {
+        return true
+    } if (!schema || !schema.hierarchy) {
+        return false
+    } else if (schema.hierarchy === 'none') {
+        return false
+    }
+    return true
+}
+
 export function childrenOfBehavior(document, behavior) {
     const { behaviors, connections } = document
     if (!behavior) { return [] }

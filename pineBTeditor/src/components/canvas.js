@@ -1,5 +1,6 @@
 import { useEffect } from 'react'
 import bem from '../bem'
+import * as Editor from '../models/editor'
 
 import './canvas.less'
 
