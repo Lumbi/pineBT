@@ -180,7 +180,7 @@ export default function App() {
     }
 
     useEffect(() => {
-        return window.menu.on.file.new(() => {
+        return window.menu.file.new(() => {
             if (isDirty) {
                 showUnsavedChangesModal(() => newDocument())
             } else {
@@ -203,11 +203,11 @@ export default function App() {
     }
 
     useEffect(() => {
-        return window.menu.on.file.open((_, document) => {
+        return window.menu.file.open((_, file) => {
             if (isDirty) {
-                showUnsavedChangesModal(() => handleOpenDocument(document))
+                showUnsavedChangesModal(() => handleOpenDocument(file))
             } else {
-                handleOpenDocument(document)
+                handleOpenDocument(file)
             }
         })
     }, [isDirty, documentData, documentFilePath])
@@ -225,7 +225,7 @@ export default function App() {
     }
 
     useEffect(() => {
-        return window.menu.on.file.save((_, path) => {
+        return window.menu.file.save((_, path) => {
             if (path) {
                 handleSaveDocument(path)
             } else {
