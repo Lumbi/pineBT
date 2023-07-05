@@ -55,6 +55,7 @@ export default function App() {
     const isDirty = savedDocumentData != documentData
 
     const editor = {
+        document,
         mousePosition,
         setMousePosition,
         scrollOffset,
@@ -101,12 +102,9 @@ export default function App() {
         setShowBehaviorDrawer(false)
     }
 
-    function showEditForBehavior(behavior) {
-        setInEditBehaviorId(behavior.id)
-        setShowBehaviorEdit(true)
+    function handleBehaviorCardEdit(behavior) {
+        Editor.beginEditBehavior(editor, behavior)
     }
-
-    const inEditBehavior = behaviors.find(b => b.id === inEditBehaviorId)
 
     function handleRunOnClick() {
         const blueprint = toBlueprint(behaviors, connections)
@@ -236,7 +234,7 @@ export default function App() {
                             schema={schemas.find(s => s.name === behavior.schema)}
                             document={document}
                             editor={editor}
-                            onEdit={() => showEditForBehavior(behavior)}
+                            onEdit={() => handleBehaviorCardEdit(behavior)}
                         />
                     )
                 }
@@ -268,10 +266,10 @@ export default function App() {
             onSelectSchema={handleBehaviorDrawerOnSelectSchema}
         />
         <BehaviorEdit
-            behavior={inEditBehavior}
+            behavior={Editor.inEditBehavior(editor)}
             show={showBehaviorEdit}
             document={document}
-            onHide={() => setShowBehaviorEdit(false)}
+            onHide={() => Editor.endEditBehavior(editor)}
         />
         <Button 
             id='run-button'
