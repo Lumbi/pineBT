@@ -226,37 +226,37 @@ export default function App() {
         <Canvas
             editor={editor}
         >
-                {
-                    behaviors.map(behavior =>
-                        <BehaviorCard 
-                            key={behavior.id}
-                            behavior={behavior}
-                            document={document}
-                            editor={editor}
-                            onEdit={() => handleBehaviorCardEdit(behavior)}
+        {
+            behaviors.map(behavior =>
+                <BehaviorCard 
+                    key={behavior.id}
+                    behavior={behavior}
+                    document={document}
+                    editor={editor}
+                    onEdit={() => handleBehaviorCardEdit(behavior)}
+                />
+            )
+        }
+            <svg className={bem('canvas', 'connections')}>
+            {
+                connections.map(connection => 
+                    <ConnectionLine
+                        key={`${connection.from}->${connection.to}`}
+                        from={behaviors.find(b => b.id == connection.from)}
+                        to={behaviors.find(b => b.id == connection.to)}
+                        onClick={() => handleConnectionOnClick(connection)}
+                    />
+                )
+            }
+            {
+                newConnection
+                    ? <ConnectionLine
+                        from={behaviors.find(b => b.id == newConnection.from)}
+                        to={{ position: { x: mousePosition.x - 1, y: mousePosition.y - 3 } }}
                         />
-                    )
-                }
-                <svg className={bem('canvas', 'connections')}>
-                {
-                    connections.map(connection => 
-                        <ConnectionLine
-                            key={`${connection.from}->${connection.to}`}
-                            from={behaviors.find(b => b.id == connection.from)}
-                            to={behaviors.find(b => b.id == connection.to)}
-                            onClick={() => handleConnectionOnClick(connection)}
-                        />
-                    )
-                }
-                {
-                    newConnection
-                        ? <ConnectionLine
-                            from={behaviors.find(b => b.id == newConnection.from)}
-                            to={{ position: { x: mousePosition.x - 1, y: mousePosition.y - 3 } }}
-                            />
-                        : null
-                }
-                </svg>
+                    : null
+            }
+            </svg>
         </Canvas>
         <BehaviorDrawer
             schemas={schemas}
