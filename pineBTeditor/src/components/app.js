@@ -9,6 +9,7 @@ import { loadBehaviorSchemas } from '../behavior-schema'
 import { rootBehavior } from '../models/behavior'
 import { toBlueprint } from '../models/blueprint'
 import * as Document from '../models/document'
+import * as Editor from '../models/editor'
 import bem from '../bem'
 
 import 'bootstrap/dist/css/bootstrap.min.css'
@@ -63,6 +64,10 @@ export default function App() {
         newConnection,
         setNewConnection,
         setShowBehaviorDrawer,
+        showBehaviorEdit,
+        setShowBehaviorEdit,
+        inEditBehaviorId,
+        setInEditBehaviorId
     }
 
     useEffect(() => {
@@ -74,21 +79,6 @@ export default function App() {
             .catch(console.error)
     }, [])
 
-    function beginNewConnection(from) {
-        setNewConnection({ from })
-    }
-
-    function commitNewConnection(to) {
-        if (newConnection) {
-            Document.addConnection(document, { ...newConnection, to })
-        }
-        setNewConnection(undefined)
-    }
-
-    function cancelNewConnection() {
-        setNewConnection(undefined)
-    }
-
     function handleBehaviorDrawerOnSelectSchema(schema) {
         const newBehavior = Document.newBehaviorFromSchema(document, schema)
         const newBehaviorAtMousePosition = {
@@ -97,7 +87,8 @@ export default function App() {
         }
         Document.addBehavior(document, newBehaviorAtMousePosition)
         if (newConnection) {
-            commitNewConnection(newBehavior.id)
+            Document.addConnection(document, { ...newConnection, to: newBehavior.id })
+            Editor.endNewConnection(editor)
         }
     }
 
@@ -106,7 +97,7 @@ export default function App() {
     }
 
     function hideBehaviorDrawer() {
-        cancelNewConnection()
+        Editor.endNewConnection(editor)
         setShowBehaviorDrawer(false)
     }
 
@@ -117,22 +108,13 @@ export default function App() {
 
     const inEditBehavior = behaviors.find(b => b.id === inEditBehaviorId)
 
-    function updateBehaviorStatuses(statuses) {
-        setBehaviors(
-            behaviors.map(b => {
-                const found = statuses.find(s => s.id === b.id)
-                return { ...b, status: found && found.status && found.status.toLowerCase() }
-            })
-        )
-    }
-
     function handleRunOnClick() {
         const blueprint = toBlueprint(behaviors, connections)
         if (blueprint) {
             const handle = pineBT.create(JSON.stringify(blueprint))
             pineBT.run(handle)
             const statuses = pineBT.status(handle)
-            updateBehaviorStatuses(statuses)
+            Document.updateBehaviorStatuses(document, statuses)
             pineBT.destroy(handle)
         } else {
             showNotification({
@@ -157,7 +139,7 @@ export default function App() {
 
     function handleNewDocument() {
         Document.reset(document)
-        setScrollOffset({ x: 0, y: 0 })
+        Editor.reset(editor)
     }
 
     function showUnsavedChangesModal(next) {
@@ -192,7 +174,7 @@ export default function App() {
     function handleOpenDocument(file) {
         try {
             Document.open(document, file)
-            setScrollOffset({ x: 0, y: 0 })
+            Editor.reset(editor)
         } catch (error) {
             showNotification({
                 title: 'Failed to open document',
@@ -253,9 +235,7 @@ export default function App() {
                             behavior={behavior}
                             schema={schemas.find(s => s.name === behavior.schema)}
                             document={document}
-                            newConnection={newConnection}
-                            beginNewConnection={beginNewConnection}
-                            commitNewConnection={commitNewConnection}
+                            editor={editor}
                             onEdit={() => showEditForBehavior(behavior)}
                         />
                     )

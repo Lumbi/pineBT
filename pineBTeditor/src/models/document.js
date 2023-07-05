@@ -83,6 +83,16 @@ export function updateBehaviors(document, behaviors) {
     setBehaviors(behaviors)
 }
 
+export function updateBehaviorStatuses(document, statuses) {
+    const { behaviors, setBehaviors } = document
+    setBehaviors(
+        behaviors.map(b => {
+            const found = statuses.find(s => s.id === b.id)
+            return { ...b, status: found && found.status && found.status.toLowerCase() }
+        })
+    )
+}
+
 export function deleteBehaviorById(document, behaviorId) {
     const { behaviors, setBehaviors } = document
     const { connections, setConnections } = document

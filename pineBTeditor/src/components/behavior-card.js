@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from 'react'
 import { Button } from 'react-bootstrap'
 import bem from '../bem'
 import * as Document from '../models/document'
+import * as Editor from '../models/editor'
 
 import './behavior-card.less'
 
@@ -10,9 +11,7 @@ export default function BehaviorCard(props) {
         behavior,
         schema,
         document,
-        newConnection,
-        beginNewConnection,
-        commitNewConnection,
+        editor,
         onEdit,
     } = props
 
@@ -136,21 +135,25 @@ export default function BehaviorCard(props) {
     }
 
     function handleParentHandleClick(event) {
+        const { newConnection } = editor
         if (newConnection) {
             event.preventDefault()
             event.stopPropagation()
-            commitNewConnection(behavior.id)
+            if (newConnection) {
+                Document.addConnection(document, { ...newConnection, to: behavior.id })
+            }
+            Editor.endNewConnection()
         }
     }
 
     function handleChildrenHandleClick(event) {
+        const { newConnection } = editor
         if (!newConnection && canAddChild()) {
             event.preventDefault()
             event.stopPropagation()
-            beginNewConnection(behavior.id)
+            Editor.beginNewConnection(editor, behavior.id)
         }
     }
-
 
     function statusIcon() {
         switch (behavior.status) {
