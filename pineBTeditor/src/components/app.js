@@ -8,7 +8,7 @@ import { BehaviorEdit } from './behavior-edit'
 import { loadBehaviorSchemas } from '../behavior-schema'
 import { rootBehavior } from '../models/behavior'
 import { toBlueprint } from '../models/blueprint'
-import { addBehavior, newBehaviorFromSchema, addConnection, deleteConnection, resetDocument, toDocumentData } from '../models/document'
+import { addBehavior, newBehaviorFromSchema, addConnection, deleteConnection, resetDocument, toDocumentData, saveDocument, openDocument } from '../models/document'
 import bem from '../bem'
 
 import 'bootstrap/dist/css/bootstrap.min.css'
@@ -27,16 +27,31 @@ export default function App() {
     const [inEditBehaviorId, setInEditBehaviorId] = useState()
     const [notifications, setNotifications] = useState([])
     const [modal, setModal] = useState(null)
-
     const [documentFilePath, setDocumentFilePath] = useState()
+    const [savedDocumentData, setSavedDocumentData] = useState()
 
     const document = {
+        filePath: documentFilePath,
+        setFilePath: setDocumentFilePath, 
         behaviors,
         setBehaviors,
         connections,
         setConnections,
         schemas,
+        savedData: savedDocumentData,
+        setSavedData: setSavedDocumentData,
     }
+
+    const documentData = useMemo(
+        () => toDocumentData(document), 
+        [behaviors, connections]
+    )
+
+    if (!savedDocumentData) {
+        setSavedDocumentData(documentData)
+    }
+
+    const isDirty = savedDocumentData != documentData
 
     const editor = {
         mousePosition,
@@ -49,17 +64,6 @@ export default function App() {
         setNewConnection,
         setShowBehaviorDrawer,
     }
-
-    const documentData = useMemo(
-        () => toDocumentData(document), 
-        [behaviors, connections]
-    )
-
-    const [savedDocumentData, setSavedDocumentData] = useState()
-    if (!savedDocumentData) {
-        setSavedDocumentData(documentData)
-    }
-    const isDirty = savedDocumentData != documentData
 
     useEffect(() => {
         async function loadSchemas() {
@@ -153,8 +157,6 @@ export default function App() {
 
     function newDocument() {
         resetDocument(document)
-        setDocumentFilePath(undefined)
-        setSavedDocumentData(undefined)
         setScrollOffset({ x: 0, y: 0 })
     }
 
@@ -170,7 +172,7 @@ export default function App() {
                 {
                     title: 'Save',
                     variant: 'primary',
-                    onClick: () => saveDocument(documentFilePath),
+                    onClick: () => handleSaveDocument(),
                 },
             ],
             next,
@@ -187,14 +189,9 @@ export default function App() {
         })
     }, [isDirty, documentData, documentFilePath])
 
-    function openDocument(document) {
+    function handleOpenDocument(file) {
         try {
-            const { path, data } = document
-            const { behaviors, connections } = JSON.parse(data)
-            setBehaviors(behaviors)
-            setConnections(connections)
-            setDocumentFilePath(path)
-            setSavedDocumentData(undefined)
+            openDocument(document, file)
             setScrollOffset({ x: 0, y: 0 })
         } catch (error) {
             showNotification({
@@ -208,23 +205,16 @@ export default function App() {
     useEffect(() => {
         return window.menu.on.file.open((_, document) => {
             if (isDirty) {
-                showUnsavedChangesModal(() => openDocument(document))
+                showUnsavedChangesModal(() => handleOpenDocument(document))
             } else {
-                openDocument(document)
+                handleOpenDocument(document)
             }
         })
     }, [isDirty, documentData, documentFilePath])
 
-    async function saveDocument(path) {
+    async function handleSaveDocument(path) {
         try {
-            const result = await window.electron.saveFile({
-                path: path,
-                data: documentData
-            })
-            if (result.path) {
-                setDocumentFilePath(result.path)
-                setSavedDocumentData(documentData)
-            }
+            await saveDocument(document, path)
         } catch (error) {
             showNotification({
                 title: 'Failed to save file',
@@ -237,9 +227,9 @@ export default function App() {
     useEffect(() => {
         return window.menu.on.file.save((_, path) => {
             if (path) {
-                saveDocument(path)
+                handleSaveDocument(path)
             } else {
-                saveDocument(documentFilePath)
+                handleSaveDocument()
             }
         })
     }, [documentFilePath, documentData])

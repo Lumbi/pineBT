@@ -1,8 +1,19 @@
 import { rootBehavior, isRoot } from './behavior'
 
 export function resetDocument(document) {
+    document.setFilePath(undefined)
+    document.setSavedData(undefined)
     document.setBehaviors([rootBehavior()])
     document.setConnections([])
+}
+
+export function openDocument(document, file) {
+    const { path, data } = file
+    const { behaviors, connections } = JSON.parse(data)
+    document.setBehaviors(behaviors)
+    document.setConnections(connections)
+    document.setFilePath(path)
+    document.setSavedData(undefined)
 }
 
 export function findBehaviorWithId(document, id) {
@@ -159,4 +170,17 @@ export function toDocumentData(document) {
         undefined,
         4
     )
+}
+
+export async function saveDocument(document, newPath) {
+    const documentData = toDocumentData(document)
+    const path = newPath || document.filePath
+    const result = await window.electron.saveFile({
+        path: path,
+        data: documentData
+    })
+    if (result.path) {
+        document.setFilePath(result.path)
+        document.setSavedData(documentData)
+    }
 }
