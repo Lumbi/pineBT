@@ -288,7 +288,7 @@ export default function App() {
                     key={notification.id}
                     bg={notification.variant}
                     show={true}
-                    autohide={false}
+                    autohide={true}
                     delay={7000}
                     onClose={() => hideNotification(notification.id)}
                 >
