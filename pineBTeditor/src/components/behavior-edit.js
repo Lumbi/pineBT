@@ -6,7 +6,7 @@ import Dropdown from 'react-bootstrap/Dropdown'
 import { t } from 'i18next'
 import bem from '../bem'
 import { updatedBehaviorWithOption } from '../models/behavior'
-import { updateBehavior, deleteBehaviorById, schemaForBehavior } from '../models/document'
+import * as Document from '../models/document'
 
 import './behavior-edit.less'
 
@@ -76,7 +76,7 @@ export function BehaviorEdit(props) {
     } = props
 
     const title = (behavior && behavior.schema) || ''
-    const schema = schemaForBehavior(document, behavior)
+    const schema = Document.schemaForBehavior(document, behavior)
     const options = schema && schema.options && Object.entries(schema.options) || []
 
     function valueForOptionKey(key) {
@@ -85,7 +85,7 @@ export function BehaviorEdit(props) {
     }
 
     function handleOnEditOption(option) {
-        updateBehavior(
+        Document.updateBehavior(
             document, 
             updatedBehaviorWithOption(behavior, option)
         )
@@ -94,7 +94,7 @@ export function BehaviorEdit(props) {
     function handleOnDeleteBehavior(behavior) {
         onHide()
         setTimeout(() => {
-            deleteBehaviorById(document, behavior.id)
+            Document.deleteBehaviorById(document, behavior.id)
         }, 300)
     }
 

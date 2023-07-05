@@ -1,13 +1,13 @@
 import { rootBehavior, isRoot } from './behavior'
 
-export function resetDocument(document) {
+export function reset(document) {
     document.setFilePath(undefined)
     document.setSavedData(undefined)
     document.setBehaviors([rootBehavior()])
     document.setConnections([])
 }
 
-export function openDocument(document, file) {
+export function open(document, file) {
     const { path, data } = file
     const { behaviors, connections } = JSON.parse(data)
     document.setBehaviors(behaviors)
@@ -159,7 +159,7 @@ export function deleteConnection(document, connection) {
     )
 }
 
-export function toDocumentData(document) {
+export function toData(document) {
     const { behaviors, connections } = document
     // TODO: Strip transient data like 'status'
     return JSON.stringify(
@@ -172,8 +172,8 @@ export function toDocumentData(document) {
     )
 }
 
-export async function saveDocument(document, newPath) {
-    const documentData = toDocumentData(document)
+export async function save(document, newPath) {
+    const documentData = toData(document)
     const path = newPath || document.filePath
     const result = await window.electron.saveFile({
         path: path,

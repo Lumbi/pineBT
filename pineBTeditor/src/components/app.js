@@ -8,7 +8,7 @@ import { BehaviorEdit } from './behavior-edit'
 import { loadBehaviorSchemas } from '../behavior-schema'
 import { rootBehavior } from '../models/behavior'
 import { toBlueprint } from '../models/blueprint'
-import { addBehavior, newBehaviorFromSchema, addConnection, deleteConnection, resetDocument, toDocumentData, saveDocument, openDocument } from '../models/document'
+import * as Document from '../models/document'
 import bem from '../bem'
 
 import 'bootstrap/dist/css/bootstrap.min.css'
@@ -43,7 +43,7 @@ export default function App() {
     }
 
     const documentData = useMemo(
-        () => toDocumentData(document), 
+        () => Document.toData(document), 
         [behaviors, connections]
     )
 
@@ -80,7 +80,7 @@ export default function App() {
 
     function commitNewConnection(to) {
         if (newConnection) {
-            addConnection(document, { ...newConnection, to })
+            Document.addConnection(document, { ...newConnection, to })
         }
         setNewConnection(undefined)
     }
@@ -90,19 +90,19 @@ export default function App() {
     }
 
     function handleBehaviorDrawerOnSelectSchema(schema) {
-        const newBehavior = newBehaviorFromSchema(document, schema)
+        const newBehavior = Document.newBehaviorFromSchema(document, schema)
         const newBehaviorAtMousePosition = {
             ...newBehavior,
             position: mousePosition
         }
-        addBehavior(document, newBehaviorAtMousePosition)
+        Document.addBehavior(document, newBehaviorAtMousePosition)
         if (newConnection) {
             commitNewConnection(newBehavior.id)
         }
     }
 
     function handleConnectionOnClick(connection) {
-        deleteConnection(document, connection)
+        Document.deleteConnection(document, connection)
     }
 
     function hideBehaviorDrawer() {
@@ -155,8 +155,8 @@ export default function App() {
         setNotifications(notifications.filter(n => n.id !== id))
     }
 
-    function newDocument() {
-        resetDocument(document)
+    function handleNewDocument() {
+        Document.reset(document)
         setScrollOffset({ x: 0, y: 0 })
     }
 
@@ -182,16 +182,16 @@ export default function App() {
     useEffect(() => {
         return window.menu.file.new(() => {
             if (isDirty) {
-                showUnsavedChangesModal(() => newDocument())
+                showUnsavedChangesModal(() => handleNewDocument())
             } else {
-                newDocument()
+                handleNewDocument()
             }
         })
     }, [isDirty, documentData, documentFilePath])
 
     function handleOpenDocument(file) {
         try {
-            openDocument(document, file)
+            Document.open(document, file)
             setScrollOffset({ x: 0, y: 0 })
         } catch (error) {
             showNotification({
@@ -214,7 +214,7 @@ export default function App() {
 
     async function handleSaveDocument(path) {
         try {
-            await saveDocument(document, path)
+            await Document.save(document, path)
         } catch (error) {
             showNotification({
                 title: 'Failed to save file',

@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from 'react'
 import { Button } from 'react-bootstrap'
 import bem from '../bem'
-import { updateBehaviors } from '../models/document'
+import * as Document from '../models/document'
 
 import './behavior-card.less'
 
@@ -101,7 +101,7 @@ export default function BehaviorCard(props) {
                 return false
             }
 
-            updateBehaviors(
+            Document.updateBehaviors(
                 document,
                 behaviors.map(b => {
                     const flag = b.id === behavior.id || isDescendantOf(behavior.id, b.id)
