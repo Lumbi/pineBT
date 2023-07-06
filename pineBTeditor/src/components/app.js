@@ -107,17 +107,27 @@ export default function App() {
 
     function handleRunOnClick() {
         const blueprint = toBlueprint(behaviors, connections)
-        if (blueprint) {
+        if (!blueprint) {
+            showNotification({
+                title: 'Error',
+                body: 'Invalid behavior tree configuration',
+                variant: 'warning'
+            })
+            return
+        }
+
+        try {
             const handle = pineBT.create(JSON.stringify(blueprint))
             pineBT.run(handle)
             const statuses = pineBT.status(handle)
             Document.updateBehaviorStatuses(document, statuses)
             pineBT.destroy(handle)
-        } else {
+        } catch (error) {
+            console.error(error)
             showNotification({
                 title: 'Error',
-                body: 'Invalid behavior tree configuration',
-                variant: 'warning'
+                body: error.message,
+                variant: 'danger',
             })
         }
     }
