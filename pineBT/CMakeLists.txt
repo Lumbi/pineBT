@@ -12,6 +12,7 @@ add_library(
 	"Behavior/Composite/Monitor.cpp"
 	"Behavior/Decorator/Decorator.cpp"
 	"Behavior/Decorator/Condition.cpp"
+	"Behavior/Decorator/BlackboardCondition.cpp"
 	"Behavior/Task/Task.cpp"
 	"Behavior/Mock/MockTask.cpp"
 	"Behavior/Mock/MockCondition.cpp"
