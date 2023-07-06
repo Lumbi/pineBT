@@ -20,7 +20,7 @@ const preferredOptionsOrder = [
     'target',
 ]
 
-export function BehaviorEdit(props) {
+export default function BehaviorEdit(props) {
     const {
         behavior,
         show,

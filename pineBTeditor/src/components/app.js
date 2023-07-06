@@ -4,10 +4,12 @@ import Canvas from './canvas'
 import BehaviorCard from './behavior-card'
 import ConnectionLine from './connection-line'
 import BehaviorDrawer from './behavior-drawer'
-import { BehaviorEdit } from './behavior-edit'
+import BehaviorEdit from './behavior-edit'
+import BlackboardDrawer from './blackboard-drawer'
 import { rootBehavior } from '../models/behavior'
 import { toBlueprint } from '../models/blueprint'
 import * as Document from '../models/document'
+import { newBlackboard } from '../models/blackboard'
 import * as Editor from '../models/editor'
 import bem from '../bem'
 
@@ -19,11 +21,13 @@ export default function App() {
     const [behaviors, setBehaviors] = useState([rootBehavior()])
     const [connections, setConnections] = useState([])
     const [newConnection, setNewConnection] = useState()
+    const [blackboard, setBlackboard] = useState(newBlackboard())
     const [mousePosition, setMousePosition] = useState()
     const [scrollOffset, setScrollOffset] = useState({ x: 0, y: 0 })
     const [isDragging, setDragging] = useState(false)
     const [showBehaviorDrawer, setShowBehaviorDrawer] = useState(false)
     const [showBehaviorEdit, setShowBehaviorEdit] = useState(false)
+    const [showBlackboardDrawer, setShowBlackboardDrawer] = useState(false)
     const [inEditBehaviorId, setInEditBehaviorId] = useState()
     const [notifications, setNotifications] = useState([])
     const [modal, setModal] = useState(null)
@@ -39,6 +43,8 @@ export default function App() {
         setConnections,
         schemas,
         setSchemas,
+        blackboard,
+        setBlackboard,
         savedData: savedDocumentData,
         setSavedData: setSavedDocumentData,
     }
@@ -279,11 +285,22 @@ export default function App() {
             document={document}
             onHide={() => Editor.endEditBehavior(editor)}
         />
+        <BlackboardDrawer
+            document={document}
+            show={showBlackboardDrawer}
+            onHide={() => setShowBlackboardDrawer(false)}
+        />
         <Button 
             id='run-button'
             onClick={handleRunOnClick}
         >
             Run
+        </Button>
+        <Button
+            id='blackboard-button'
+            onClick={() => setShowBlackboardDrawer(true)}
+        >
+            Blackboard
         </Button>
         <ToastContainer
             id='notification-container'

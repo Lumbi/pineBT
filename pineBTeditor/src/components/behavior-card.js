@@ -189,7 +189,7 @@ export default function BehaviorCard(props) {
                     size='sm'
                     onClick={onEdit}
                 >
-                    <i className='bi bi-gear-fill'></i>
+                    <i className='bi bi-gear-fill'/>
                 </Button>
             </div>
         </div>
