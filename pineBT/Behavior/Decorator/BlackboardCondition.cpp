@@ -20,6 +20,8 @@ BehaviorSchema BlackboardCondition::schema = BehaviorSchema::inherit(
 
 void BlackboardCondition::configure(const Option& option)
 {
+	Condition::configure(option);
+
 	if (option.key == OPT_KEY)
 	{
 		assert(option.value.tag == Option::Value::Type::NUMBER);
