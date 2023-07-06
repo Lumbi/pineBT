@@ -9,7 +9,7 @@ import BlackboardDrawer from './blackboard-drawer'
 import { rootBehavior } from '../models/behavior'
 import { toBlueprint } from '../models/blueprint'
 import * as Document from '../models/document'
-import { newBlackboard } from '../models/blackboard'
+import * as Blackboard from '../models/blackboard'
 import * as Editor from '../models/editor'
 import bem from '../bem'
 
@@ -21,7 +21,7 @@ export default function App() {
     const [behaviors, setBehaviors] = useState([rootBehavior()])
     const [connections, setConnections] = useState([])
     const [newConnection, setNewConnection] = useState()
-    const [blackboard, setBlackboard] = useState(newBlackboard())
+    const [blackboard, setBlackboard] = useState(Blackboard.create())
     const [mousePosition, setMousePosition] = useState()
     const [scrollOffset, setScrollOffset] = useState({ x: 0, y: 0 })
     const [isDragging, setDragging] = useState(false)

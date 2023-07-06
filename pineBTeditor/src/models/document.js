@@ -1,4 +1,5 @@
 import { rootBehavior, isRoot } from './behavior'
+import * as Blackboard from './blackboard'
 
 export function loadSchemas(document) {
     const schemas = Object.values(pineBT.schemas())
@@ -184,6 +185,16 @@ export function deleteConnection(document, connection) {
     setConnections(
         connections.filter(c => c.from !== from || c.to !== to)
     )
+}
+
+export function addBlackboardEntry(document) {
+    const { blackboard, setBlackboard } = document
+    setBlackboard(Blackboard.addingNewEntry(blackboard))
+}
+
+export function deleteBlackboardEntry(document, key) {
+    const { blackboard, setBlackboard } = document
+    setBlackboard(Blackboard.removingEntry(blackboard, key))
 }
 
 export function toData(document) {
