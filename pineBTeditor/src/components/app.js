@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from 'react'
-import { Button, Toast, ToastContainer, Modal } from 'react-bootstrap'
+import { Button, Toast, ToastContainer, Modal, Stack } from 'react-bootstrap'
 import Canvas from './canvas'
 import BehaviorCard from './behavior-card'
 import ConnectionLine from './connection-line'
@@ -294,13 +294,20 @@ export default function App() {
             id='run-button'
             onClick={handleRunOnClick}
         >
-            Run
+            <Stack direction='horizontal' gap={2}>
+                <i className='bi bi-play-fill'/>
+                <span>Run</span>
+            </Stack>
         </Button>
         <Button
             id='blackboard-button'
+            variant='secondary'
             onClick={() => setShowBlackboardDrawer(true)}
         >
-            Blackboard
+            <Stack direction='horizontal' gap={2}>
+                <i className='bi bi-clipboard-fill'/>
+                <span>Blackboard</span>
+            </Stack>
         </Button>
         <ToastContainer
             id='notification-container'
