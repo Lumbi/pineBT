@@ -103,61 +103,9 @@ int main()
 	{
 		blackboard->set(BB_KEY_A, 87.f);
 		condition5b->setForceCheck(true);
-		//task5_2->setForceResult(Result::SUCCESS);
 	}
 	behaviorTree->run();
 	behaviorTree->print();
-
-	std::string serialized = R"(
-	{
-		"root" : {
-			"schema" : "Selector",
-			"id" : 1,
-			"options" : {
-				"live" : true
-			},
-			"children" : [
-				{ 
-					"schema" : "MockCondition", 
-					"id" : 11,
-					"children" : [ { 
-						"schema" : "MockTask",
-						"id" : 111
-					} ] 
-				},
-				{
-					"schema" : "Parallel",
-					"id" : 12,
-					"children" : [
-						{ "schema" : "MockTask", "id" : 121 },
-						{ "schema" : "MockTask", "id" : 122 }
-					]
-				}
-			]
-		}
-	}
-	)";
-
-	auto handle = pineBT_create(serialized.c_str());
-	char* buffer = new char[1024];
-	memset(buffer, 0, 1024);
-	pineBT_status(handle, buffer);
-	printf("TESTTESTESTEST\n%s\n", buffer);
-
-	//LinearAllocator deserializedAllocator(2048);
-	//BehaviorTree deserializedBehaviorTree(deserializedAllocator);
-
-	//try
-	//{
-	//	serialization::JSON::deserialize(serialized, schemaLibrary, deserializedBehaviorTree);
-	//	printf("\n - DESERIALIZED -\n");
-	//	deserializedBehaviorTree.print();
-	//	printf("- DESERIALIZED -\n");
-	//} 
-	//catch (exception& e)
-	//{
-	//	printf("[ERROR] %s\n", e.what());
-	//}
 
 	return 0;
 }
