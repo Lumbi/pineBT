@@ -3,12 +3,22 @@ import Stack from 'react-bootstrap/Stack'
 import ToggleButton from 'react-bootstrap/ToggleButton'
 import Button from 'react-bootstrap/Button'
 import Dropdown from 'react-bootstrap/Dropdown'
+import Form from 'react-bootstrap/Form'
 import { t } from 'i18next'
 import bem from '../bem'
 import { updatedBehaviorWithOption } from '../models/behavior'
 import * as Document from '../models/document'
+import { byPreferredOrder } from '../sort'
 
 import './behavior-edit.less'
+
+const preferredOptionsOrder = [
+    'mode',
+    'key',
+    'negate',
+    'predicate',
+    'target',
+]
 
 export function BehaviorEdit(props) {
     const {
@@ -20,7 +30,8 @@ export function BehaviorEdit(props) {
 
     const title = (behavior && behavior.schema) || ''
     const schema = Document.schemaForBehavior(document, behavior)
-    const options = schema && schema.options && Object.entries(schema.options) || []
+    const options = (schema && schema.options && Object.entries(schema.options) || [])
+        .sort(byPreferredOrder(preferredOptionsOrder, option => option[0]))
 
     function valueForOptionKey(key) {
         if (!behavior || !behavior.options) { return undefined }
@@ -65,13 +76,13 @@ export function BehaviorEdit(props) {
                         )
                     })
                 }
-                <Button
-                    id={bem('behavior-edit', 'delete-button')}
-                    variant='danger'
-                    onClick={() => handleOnDeleteBehavior(behavior)}
-                >
-                    Delete
-                </Button>
+                    <Button
+                        id={bem('behavior-edit', 'delete-button')}
+                        variant='danger'
+                        onClick={() => handleOnDeleteBehavior(behavior)}
+                    >
+                        Delete
+                    </Button>
                 </Stack>
             </Offcanvas.Body>
         </Offcanvas>
@@ -99,37 +110,46 @@ function BehaviorEditOption(props) {
             </ToggleButton>
         )
     } else if (type === 'number') {
-        return <p>Not supported yet</p>
+        const id = `${schema.name}_${option.key}`
+        return (
+            <Stack direction='horizontal' gap={2}>
+                <Form.Label htmlFor={id}>{t(id)}</Form.Label>
+                <Form.Control id={id} type="number" value={option.value}/>
+            </Stack>
+        )
     } else if (typeof type === 'number') { // enumeration case
         const count = type
+        const id = `${schema.name}_${key}`
         function caseName(value) { return t(`${schema.name}_${key}_${value}`) }
         const cases = [...Array(count).keys()]
         return (
-            <Dropdown>
-                { t(`${schema.name}_${key}`) + ' ' }
-                <Dropdown.Toggle style={{ verticalAlign: 'baseline' }}>
-                {
-                    value && value.case
-                        ? caseName(value.case)
-                        : caseName(0)
-                }
-                </Dropdown.Toggle>
-                <Dropdown.Menu>
+            <Stack direction='horizontal' gap={2}>
+                <Form.Label htmlFor={id}>{t(id)}</Form.Label>
+                <Dropdown>
+                    <Dropdown.Toggle id={id} style={{ verticalAlign: 'baseline' }}>
                     {
-                        cases.map(c =>
-                            <Dropdown.Item
-                                key={c}
-                                onClick={() => onChange({
-                                    ...option,
-                                    value: { case: c }
-                                })}
-                            >
-                                {caseName(c)}
-                            </Dropdown.Item>
-                        )
+                        value && value.case
+                            ? caseName(value.case)
+                            : caseName(0)
                     }
-                </Dropdown.Menu>
-            </Dropdown>
+                    </Dropdown.Toggle>
+                    <Dropdown.Menu>
+                        {
+                            cases.map(c =>
+                                <Dropdown.Item
+                                    key={c}
+                                    onClick={() => onChange({
+                                        ...option,
+                                        value: { case: c }
+                                    })}
+                                >
+                                    {caseName(c)}
+                                </Dropdown.Item>
+                            )
+                        }
+                    </Dropdown.Menu>
+                </Dropdown>
+            </Stack>
         )
     }
     return null

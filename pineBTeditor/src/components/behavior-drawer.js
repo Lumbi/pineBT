@@ -1,6 +1,8 @@
+import { useMemo } from 'react'
 import Offcanvas from 'react-bootstrap/Offcanvas'
 import Button from 'react-bootstrap/Button'
 import Stack from 'react-bootstrap/Stack'
+import { byPreferredOrder } from '../sort'
 
 import './behavior-drawer.less'
 
@@ -11,6 +13,20 @@ export default function BehaviorDrawer(props) {
         onHide,
         onSelectSchema
     } = props
+
+    const sortedSchemas = useMemo(
+        () => [...schemas].sort(byPreferredOrder(
+            [
+                'Selector',
+                'Sequence',
+                'Parallel',
+                'BlackboardCondition',
+                'MockCondition',
+                'MockTask'
+            ], schema => schema.name
+        )),
+        [schemas]
+    )
 
     function BehaviorButton(props) {
         const { schema, onClick } = props
@@ -33,7 +49,7 @@ export default function BehaviorDrawer(props) {
             <Offcanvas.Body>
                 <Stack gap={3}>
                 {
-                    schemas.map(schema => 
+                    sortedSchemas.map(schema => 
                         <BehaviorButton
                             key={schema.name}
                             schema={schema}

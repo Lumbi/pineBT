@@ -2,20 +2,6 @@ import { rootBehavior, isRoot } from './behavior'
 
 export function loadSchemas(document) {
     const schemas = Object.values(pineBT.schemas())
-    const naturalOrder = [
-        'Selector',
-        'Sequence',
-        'Parallel',
-        'MockCondition',
-        'MockTask'
-    ]
-    schemas.sort((a, b) => {
-        const aOrder = naturalOrder.indexOf(a.name)
-        const bOrder = naturalOrder.indexOf(b.name)
-        if (aOrder >= 0 && bOrder >= 0) { return aOrder - bOrder }
-        if (aOrder >= 0) { return -1 }
-        if (bOrder >= 0) { return 1 }
-    })
     document.setSchemas(schemas)
 }
 
