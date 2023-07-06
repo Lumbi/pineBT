@@ -27,6 +27,8 @@ const pineBT = ffi.Library('pineBT', {
   pineBT_destroy: [ 'void', [ 'int' ] ],
   pineBT_run: [ 'void', [ 'int' ] ],
   pineBT_status: [ 'void', [ 'int', 'char *' ] ],
+  pineBT_blackboard_setf: [ 'void', [ 'int', 'short', 'float' ] ],
+  pineBT_blackboard_clear: [ 'void', [ 'int', 'short' ] ],
 })
 
 function stringFromBuffer(buffer) {
@@ -61,5 +63,19 @@ contextBridge.exposeInMainWorld('pineBT', {
     const buffer = Buffer.alloc(5000, 0) // TODO: Use a sensible value for the buffer?
     pineBT.pineBT_status(handle, buffer)
     return JSON.parse(stringFromBuffer(buffer))
+  },
+
+  blackboard: {
+    set: (handle, key, value) => {
+      if (typeof value === 'number')  {
+        pineBT.pineBT_blackboard_setf(handle, key, value)
+      } else {
+        throw new Error(`Unsupported blackboard value: ${value} for key ${key}`)
+      }
+    },
+
+    clear: (handle, key) => {
+      pineBT.pineBT_blackboard_clear(handle, key)
+    }
   }
 })
