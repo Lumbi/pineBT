@@ -17,6 +17,7 @@ int main()
 	using Result = Behavior::Result;
 	using Mode = Condition::Mode;
 	using Logic = Condition::Logic;
+	using Predicate = BlackboardCondition::Predicate;
 
 	auto allocator = make_unique<LinearAllocator>(2048);
 	auto blackboard = make_unique<Blackboard>();
@@ -44,7 +45,10 @@ int main()
 	auto task5_1 = allocator->allocate<MockTask>(Result::FAILURE);
 	auto task5_2 = allocator->allocate<MockTask>(Result::RUNNING);
 
-	auto behaviorTree = BehaviorTree::build(*allocator)
+	auto condition6 = allocator->allocate<BlackboardCondition>(*blackboard);
+	condition6->set(BB_KEY_A, Predicate::GREATER_THAN, 42.17f);
+	auto task6 = allocator->allocate<MockTask>(Result::SUCCESS);
+
 	auto behaviorTree = BehaviorTree::build(*allocator, *blackboard)
 		.selectLive()
 			.condition(condition1a).condition(condition1b)
@@ -76,6 +80,9 @@ int main()
 						.task(task5_2)
 					.close()
 				.close()
+
+			.condition(condition6)
+				.task(task6)
 		.close()
 	.end();
 
@@ -94,6 +101,7 @@ int main()
 
 	printf("\nRun 3\n");
 	{
+		blackboard->set(BB_KEY_A, 87.f);
 		condition5b->setForceCheck(true);
 		//task5_2->setForceResult(Result::SUCCESS);
 	}
