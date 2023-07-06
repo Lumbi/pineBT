@@ -1,6 +1,7 @@
 #include "API.h"
 
 #include "BehaviorTree.h"
+#include "Blackboard/Blackboard.h"
 #include "Query/BehaviorTreeQuery.h"
 #include "Memory/LinearAllocator.h"
 #include "Behavior/Schema/BehaviorSchemaLibrary.h"
@@ -14,6 +15,7 @@
 using namespace pineBT;
 
 static std::unordered_map<BehaviorTreeHandle, std::unique_ptr<BehaviorTree>> trees;
+static std::unordered_map<BehaviorTreeHandle, std::unique_ptr<Blackboard>> blackboards;
 static LinearAllocator allocator(64'000);
 static BehaviorSchemaLibrary schemaLibrary;
 
@@ -31,16 +33,19 @@ void pineBT_schemas(char* buffer)
 
 BehaviorTreeHandle pineBT_create(const char* json)
 {
-	auto behaviorTree = std::make_unique<BehaviorTree>(allocator);
+	auto blackboard = std::make_unique<Blackboard>();
+	auto behaviorTree = std::make_unique<BehaviorTree>(allocator, *blackboard);
 	try
 	{
 		serialization::JSON::deserialize(json, schemaLibrary, *behaviorTree);
 		const BehaviorTreeHandle handle = nextHandle();
 		trees[handle] = std::move(behaviorTree);
+		blackboards[handle] = std::move(blackboard);
 		return handle;
 	}
 	catch (std::exception& e)
 	{
+		printf("%s\n", e.what());
 		return 0;
 	}
 }
@@ -48,6 +53,7 @@ BehaviorTreeHandle pineBT_create(const char* json)
 void pineBT_destroy(BehaviorTreeHandle handle)
 {
 	trees.erase(handle);
+	blackboards.erase(handle);
 }
 
 void pineBT_run(BehaviorTreeHandle handle)
@@ -73,4 +79,14 @@ void pineBT_status(BehaviorTreeHandle handle, char* buffer)
 
 	const std::string dump = resultsJSON.dump();
 	memcpy(buffer, dump.c_str(), dump.size());
+}
+
+void pineBT_blackboard_setf(BehaviorTreeHandle handle, Blackboard::Key key, float value)
+{
+	blackboards[handle]->set(key, value);
+}
+
+void pineBT_blackboard_clear(BehaviorTreeHandle handle, Blackboard::Key key)
+{
+	blackboards[handle]->clear(key);
 }

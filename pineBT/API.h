@@ -1,5 +1,9 @@
 #pragma once
 
+#include "Blackboard/Blackboard.h"
+
+using namespace pineBT;
+
 #define EXPORT __declspec(dllexport)
 
 extern "C"
@@ -15,6 +19,10 @@ extern "C"
 	EXPORT void pineBT_run(BehaviorTreeHandle);
 
 	EXPORT void pineBT_status(BehaviorTreeHandle, char*);
+
+	EXPORT void pineBT_blackboard_setf(BehaviorTreeHandle, Blackboard::Key, float value);
+
+	EXPORT void pineBT_blackboard_clear(BehaviorTreeHandle, Blackboard::Key);
 }
 
 #undef EXPORT
