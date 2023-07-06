@@ -11,9 +11,9 @@
 
 using namespace pineBT;
 
-BehaviorTreeBuilder BehaviorTree::build(Allocator& allocator)
+BehaviorTreeBuilder BehaviorTree::build(Allocator& allocator, const Blackboard& blackboard)
 {
-	return BehaviorTreeBuilder(allocator);
+	return BehaviorTreeBuilder(allocator, blackboard);
 }
 
 void BehaviorTree::setRoot(Behavior* newRoot)

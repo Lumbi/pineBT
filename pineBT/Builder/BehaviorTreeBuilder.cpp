@@ -3,6 +3,7 @@
 #include "Memory/LinearAllocator.h"
 #include "BehaviorTree.h"
 #include "Behavior.h"
+#include "Blackboard/Blackboard.h"
 #include "Behavior/Composite/Composite.h"
 #include "Behavior/Composite/Selector.h"
 #include "Behavior/Composite/Sequence.h"
@@ -16,8 +17,8 @@
 
 using namespace pineBT;
 
-BehaviorTreeBuilder::BehaviorTreeBuilder(LinearAllocator& allocator)
-	: behaviorTree(std::make_unique<BehaviorTree>(allocator))
+BehaviorTreeBuilder::BehaviorTreeBuilder(LinearAllocator& allocator, const Blackboard& blackboard)
+	: behaviorTree(std::make_unique<BehaviorTree>(allocator, blackboard))
 {
 }
 

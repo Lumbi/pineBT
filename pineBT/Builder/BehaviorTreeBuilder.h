@@ -11,7 +11,7 @@ namespace pineBT
 	struct BehaviorTreeBuilder
 	{
 	public:
-		BehaviorTreeBuilder(class LinearAllocator&);
+		BehaviorTreeBuilder(class LinearAllocator&, const class Blackboard&);
 
 		BehaviorTreeBuilder& behavior(class Composite*);
 

@@ -19,6 +19,8 @@ int main()
 	using Logic = Condition::Logic;
 
 	auto allocator = make_unique<LinearAllocator>(2048);
+	auto blackboard = make_unique<Blackboard>();
+	Blackboard::Key BB_KEY_A = 1;
 
 	auto condition1a = allocator->allocate<MockCondition>();
 	auto condition1b = allocator->allocate<MockCondition>();
@@ -43,6 +45,7 @@ int main()
 	auto task5_2 = allocator->allocate<MockTask>(Result::RUNNING);
 
 	auto behaviorTree = BehaviorTree::build(*allocator)
+	auto behaviorTree = BehaviorTree::build(*allocator, *blackboard)
 		.selectLive()
 			.condition(condition1a).condition(condition1b)
 				.task(task1)
