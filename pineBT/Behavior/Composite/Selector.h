@@ -31,6 +31,6 @@ namespace pineBT
 		Behaviors::iterator currentChild;
 
 	private:
-		bool live;
+		bool live = false;
 	};
 }
