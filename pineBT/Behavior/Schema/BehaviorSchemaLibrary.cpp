@@ -4,6 +4,8 @@
 #include "Behavior/Composite/Sequence.h"
 #include "Behavior/Composite/Parallel.h"
 
+#include "Behavior/Decorator/BlackboardCondition.h"
+
 #include "Behavior/Mock/MockCondition.h"
 #include "Behavior/Mock/MockTask.h"
 
@@ -14,6 +16,8 @@ BehaviorSchemaLibrary::BehaviorSchemaLibrary()
 	add<Selector>();
 	add<Sequence>();
 	add<Parallel>();
+
+	add<BlackboardCondition>();
 
 	add<MockCondition>();
 	add<MockTask>();

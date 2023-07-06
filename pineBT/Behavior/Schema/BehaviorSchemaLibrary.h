@@ -2,6 +2,7 @@
 
 #include "BehaviorTree.h"
 #include "BehaviorSchema.h"
+#include "Behavior/Decorator/BlackboardCondition.h"
 
 #include <string>
 #include <unordered_map>
@@ -26,6 +27,18 @@ namespace pineBT
 			schemas[name] = BehaviorType::schema;
 			BehaviorCreator creator = [](const std::string& name, BehaviorTree& tree) {
 				return tree.getAllocator().allocate<BehaviorType>();
+			};
+			creators[name] = creator;
+		}
+
+		template<>
+		void add<BlackboardCondition>()
+		{
+			std::string name = BlackboardCondition::schema.name;
+			assert(schemas.find(name) == schemas.end());
+			schemas[name] = BlackboardCondition::schema;
+			BehaviorCreator creator = [](const std::string& name, BehaviorTree& tree) {
+				return tree.getAllocator().allocate<BlackboardCondition>(tree.getBlackboard());
 			};
 			creators[name] = creator;
 		}
