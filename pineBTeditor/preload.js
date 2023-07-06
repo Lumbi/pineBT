@@ -45,8 +45,8 @@ contextBridge.exposeInMainWorld('pineBT', {
     return JSON.parse(stringFromBuffer(buffer))
   },
 
-  create: () => {
-    return pineBT.pineBT_create()
+  create: (blueprint) => {
+    return pineBT.pineBT_create(blueprint)
   },
 
   destroy: (handle) => {
