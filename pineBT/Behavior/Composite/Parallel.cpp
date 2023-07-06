@@ -6,14 +6,13 @@ using namespace pineBT;
 
 const char* OPT_POLICY_SUCCESS = "success_policy";
 const char* OPT_POLICY_FAILURE = "failure_policy";
-const static int OPT_POLICY_COUNT = 2;
 
 BehaviorSchema Parallel::schema = BehaviorSchema::inherit(
 	"Parallel",
 	Composite::schema,
 	BehaviorSchema::Options().build()
-		.enumeration(OPT_POLICY_SUCCESS, OPT_POLICY_COUNT)
-		.enumeration(OPT_POLICY_FAILURE, OPT_POLICY_COUNT)
+		.enumeration(OPT_POLICY_SUCCESS, 2)
+		.enumeration(OPT_POLICY_FAILURE, 2)
 	.end()
 );
 

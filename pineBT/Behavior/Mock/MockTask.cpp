@@ -5,13 +5,12 @@
 using namespace pineBT;
 
 static const char* OPT_FORCE_RESULT = "force_result";
-static const int OPT_FORCE_RESULT_COUNT = 4;
 
 BehaviorSchema MockTask::schema = BehaviorSchema::inherit(
 	"MockTask",
 	Task::schema,
 	BehaviorSchema::Options().build()
-		.enumeration(OPT_FORCE_RESULT, OPT_FORCE_RESULT_COUNT)
+		.enumeration(OPT_FORCE_RESULT, 4)
 	.end()
 );
 
