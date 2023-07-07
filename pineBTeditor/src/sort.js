@@ -1,3 +1,7 @@
+export function numericallyAscending(a ,b) {
+    return a - b
+}
+
 export function byPreferredOrder(preferredOrder, key) {
     return ((a, b) => {
         const aOrder = preferredOrder.indexOf((key && key(a)) || a)

@@ -1,3 +1,5 @@
+import { numericallyAscending } from '../sort'
+
 export function create() {
     return {
         entries: [...Array(20).keys()].map(i => ({
@@ -11,7 +13,7 @@ export function create() {
 export function addingNewEntry(blackboard) {
     const nextAvailableKey = blackboard.entries
         .map(_ => _.key)
-        .sort()
+        .sort(numericallyAscending)
         .reduce((previous, current) => previous == current ? current + 1 : previous, 1)
 
     const newEntry = {
