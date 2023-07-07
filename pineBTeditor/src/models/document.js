@@ -192,6 +192,11 @@ export function addBlackboardEntry(document) {
     setBlackboard(Blackboard.addingNewEntry(blackboard))
 }
 
+export function updateBlackboardEntry(document, entryUpdate) {
+    const { blackboard, setBlackboard } = document
+    setBlackboard(Blackboard.updatingEntry(blackboard, entryUpdate))
+}
+
 export function deleteBlackboardEntry(document, key) {
     const { blackboard, setBlackboard } = document
     setBlackboard(Blackboard.removingEntry(blackboard, key))

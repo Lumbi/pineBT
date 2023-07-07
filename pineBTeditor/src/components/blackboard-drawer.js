@@ -23,7 +23,15 @@ export default function BlackboardDrawer(props) {
         bottomRef.current.scrollIntoView({ behavior: 'smooth' })
     }
 
-    function handleRowDeleteOnClick(entry) {
+    function handleEntryNameOnChange(entry, event) {
+        Document.updateBlackboardEntry(document, { ...entry, name: event.target.value })
+    }
+
+    function handleEntryValueOnChange(entry, event) {
+        Document.updateBlackboardEntry(document, { ...entry, value: event.target.valueAsNumber })
+    }
+
+    function handleEntryDeleteOnClick(entry) {
         Document.deleteBlackboardEntry(document, entry.key)
     }
 
@@ -52,11 +60,20 @@ export default function BlackboardDrawer(props) {
                                 gap={2}
                             >
                                 <Form.Label htmlFor={id}>{key}</Form.Label>
-                                <Form.Control id={id} type='text' value={name}/>
-                                <Form.Control type='number' value={value}/>
+                                <Form.Control
+                                    id={id}
+                                    type='text'
+                                    value={name}
+                                    onChange={(event) => handleEntryNameOnChange(entry, event)}
+                                />
+                                <Form.Control
+                                    type='number'
+                                    value={isNaN(value) ? '' : value}
+                                    onChange={(event) => handleEntryValueOnChange(entry, event)}
+                                />
                                 <Button
                                     variant='outline-danger'
-                                    onClick={() => handleRowDeleteOnClick(entry)}
+                                    onClick={() => handleEntryDeleteOnClick(entry)}
                                 >
                                     <i className='bi bi-trash3'/>
                                 </Button>

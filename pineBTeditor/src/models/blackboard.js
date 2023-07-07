@@ -28,6 +28,17 @@ export function addingNewEntry(blackboard) {
     }
 }
 
+export function updatingEntry(blackboard, entryUpdate) {
+    return {
+        ...blackboard,
+        entries: blackboard.entries.map(entry =>
+            entry.key === entryUpdate.key 
+                ? { ...entry, ...entryUpdate }
+                : entry
+        )
+    }
+}
+
 export function removingEntry(blackboard, key) {
     return {
         ...blackboard,
