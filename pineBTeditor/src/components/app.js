@@ -155,6 +155,16 @@ export default function App() {
         }
 
         try {
+            // Synchronize blackboard with execution
+            blackboard.entries.forEach(entry => {
+                const { key, value } = entry
+                if (isNaN(value)) {
+                    pineBT.blackboard.clear(handle, key)
+                } else {
+                    pineBT.blackboard.set(handle, key, value)
+                }
+            })
+
             pineBT.run(handle)
             const statuses = pineBT.status(handle)
             Document.updateBehaviorStatuses(document, statuses)
@@ -211,6 +221,12 @@ export default function App() {
 
     function handleStopOnClick() {
         stopBlueprint()
+    }
+
+    // TODO: Refactor into different model
+    function handleBlackboardDrawerOnDeleteEntry(entry) {
+        if (!runningBehaviorTreeHandle) { return }
+        pineBT.blackboard.clear(runningBehaviorTreeHandle, entry.key)
     }
 
     function showNotification(notification) {
@@ -363,6 +379,7 @@ export default function App() {
         <BlackboardDrawer
             document={document}
             show={showBlackboardDrawer}
+            onDeleteEntry={handleBlackboardDrawerOnDeleteEntry}
             onHide={() => setShowBlackboardDrawer(false)}
         />
         <Stack id='controls' direction='horizontal' gap={3}>

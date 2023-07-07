@@ -8,8 +8,9 @@ import { useRef } from 'react'
 export default function BlackboardDrawer(props) {
     const {
         show,
+        document,
         onHide,
-        document
+        onDeleteEntry,
     } = props
 
     const {
@@ -33,6 +34,7 @@ export default function BlackboardDrawer(props) {
 
     function handleEntryDeleteOnClick(entry) {
         Document.deleteBlackboardEntry(document, entry.key)
+        onDeleteEntry(entry)
     }
 
     return (
