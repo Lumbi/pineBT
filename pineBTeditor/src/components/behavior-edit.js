@@ -118,11 +118,13 @@ function BehaviorEditOption(props) {
                     id={id} 
                     type="number" 
                     value={isNaN(option.value) ? '' : option.value}
-                    onChange={(event) => 
+                    onChange={(event) => {
+                        const value = Number(event.currentTarget.value)
                         onChange({
                             ...option,
-                            value: isNaN(event.currentTarget.value) ? undefined : event.currentTarget.value,
+                            value: isNaN(value) ? undefined : value,
                         })
+                    }
                     }
                 />
             </Stack>
