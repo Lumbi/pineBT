@@ -3,6 +3,7 @@ import * as Document from '../models/document'
 import bem from '../bem'
 
 import './blackboard-drawer.less'
+import { useRef } from 'react'
 
 export default function BlackboardDrawer(props) {
     const {
@@ -14,6 +15,17 @@ export default function BlackboardDrawer(props) {
     const {
         blackboard
     } = document
+
+    const bottomRef = useRef()
+
+    function handleAddOnClick() {
+        Document.addBlackboardEntry(document)
+        bottomRef.current.scrollIntoView({ behavior: 'smooth' })
+    }
+
+    function handleRowDeleteOnClick(entry) {
+        Document.deleteBlackboardEntry(document, entry.key)
+    }
 
     return (
         <Offcanvas 
@@ -44,7 +56,7 @@ export default function BlackboardDrawer(props) {
                                 <Form.Control type='number' value={value}/>
                                 <Button
                                     variant='outline-danger'
-                                    onClick={() => Document.deleteBlackboardEntry(document, key)}
+                                    onClick={() => handleRowDeleteOnClick(entry)}
                                 >
                                     <i className='bi bi-trash3'/>
                                 </Button>
@@ -53,9 +65,10 @@ export default function BlackboardDrawer(props) {
                     })
                 }
                 </Stack>
+                <div ref={bottomRef} />
                 <Button 
                     className={bem('blackboard-drawer', 'add-entry-button')}
-                    onClick={() => Document.addBlackboardEntry(document)}
+                    onClick={handleAddOnClick}
                 >
                     <Stack direction='horizontal' gap={2}>
                         <i className='bi bi-plus-square'/>
