@@ -11,6 +11,7 @@ import * as Blueprint from '../models/blueprint'
 import * as Document from '../models/document'
 import * as Blackboard from '../models/blackboard'
 import * as Editor from '../models/editor'
+import * as Execution from '../models/execution'
 import bem from '../bem'
 
 import 'bootstrap/dist/css/bootstrap.min.css'
@@ -19,6 +20,7 @@ import './app.less'
 export default function App() {
     const [schemas, setSchemas] = useState([])
     const [behaviors, setBehaviors] = useState([rootBehavior()])
+    const [statuses, setStatuses] = useState({})
     const [connections, setConnections] = useState([])
     const [newConnection, setNewConnection] = useState()
     const [blackboard, setBlackboard] = useState(Blackboard.create())
@@ -79,6 +81,16 @@ export default function App() {
         setInEditBehaviorId
     }
 
+    const execution = {
+        document,
+        statuses,
+        setStatuses,
+        runningBehaviorTreeHandle,
+        setRunningBehaviorTreeHandle,
+        runningBlueprint, 
+        setRunningBlueprint,
+    }
+
     useEffect(() => {
         try {
             Document.loadSchemas(document)
@@ -118,7 +130,25 @@ export default function App() {
         [behaviors, connections]
     )
 
-    function runBlueprint() {
+    const blueprintChanged = useMemo(
+        () => !Blueprint.areEqual(blueprint, runningBlueprint),
+        [blueprint, runningBlueprint]
+    )
+
+    if (runningBlueprint && blueprintChanged) {
+        try {
+            Execution.stop(execution)
+        } catch (error) {
+            console.error(error)
+            showNotification({
+                title: 'Failed to stop execution',
+                body: error.message,
+                variant: 'danger',
+            })
+        }
+    }
+
+    function handleRunOnClick() {
         if (runningBehaviorTreeHandle) { 
             console.warn('Already running behavior tree with handle:', runningBehaviorTreeHandle)
             return
@@ -126,7 +156,7 @@ export default function App() {
 
         if (!blueprint) {
             showNotification({
-                title: 'Error',
+                title: 'Failed to start execution',
                 body: 'Invalid behavior tree configuration',
                 variant: 'warning'
             })
@@ -134,99 +164,49 @@ export default function App() {
         }
 
         try {
-            const handle = pineBT.create(JSON.stringify(blueprint))
-            setRunningBehaviorTreeHandle(handle)
-            setRunningBlueprint(blueprint)
-            return handle
+            const handle = Execution.run(execution, blueprint)
+            if (handle) {
+                Execution.step(execution, handle)
+            }
         } catch (error) {
             console.error(error)
             showNotification({
-                title: 'Error',
+                title: 'Failed to start execution',
                 body: error.message,
                 variant: 'danger',
             })
         }
     }
 
-    function stepBlueprint(handle) {
-        if (!handle) { 
+    function handleStepOnClick() {
+        if (!runningBehaviorTreeHandle) { 
             console.warn('Attempted to step but no currently running behavior tree')
             return
         }
 
         try {
-            // Synchronize blackboard with execution
-            blackboard.entries.forEach(entry => {
-                const { key, value } = entry
-                if (isNaN(value)) {
-                    pineBT.blackboard.clear(handle, key)
-                } else {
-                    pineBT.blackboard.set(handle, key, value)
-                }
-            })
-
-            pineBT.run(handle)
-            const statuses = pineBT.status(handle)
-            Document.updateBehaviorStatuses(document, statuses)
+            Execution.step(execution, runningBehaviorTreeHandle)
         } catch (error) {
             console.error(error)
             showNotification({
-                title: 'Error',
+                title: 'Failed to execute step',
                 body: error.message,
                 variant: 'danger',
             })
         }
-    }
-
-    function stopBlueprint() {
-        if (!runningBehaviorTreeHandle) {
-            console.warn('Attempted to stop but no running behavior tree')
-            return
-        }
-
-        try {
-            pineBT.destroy(runningBehaviorTreeHandle)
-            setRunningBehaviorTreeHandle(null)
-            setRunningBlueprint(null)
-            Document.clearBehaviorStatuses(document)
-        } catch (error) {
-            console.error(error)
-            showNotification({
-                title: 'Error',
-                body: error.message,
-                variant: 'danger',
-            })
-        }
-    }
-
-    const blueprintChanged = useMemo(
-        () => !Blueprint.areEqual(blueprint, runningBlueprint),
-        [blueprint, runningBlueprint]
-    )
-
-    if (runningBlueprint && blueprintChanged) {
-        stopBlueprint()
-    }
-
-    function handleRunOnClick() {
-        const handle = runBlueprint()
-        if (handle) {
-            stepBlueprint(handle)
-        }
-    }
-
-    function handleStepOnClick() {
-        stepBlueprint(runningBehaviorTreeHandle)
     }
 
     function handleStopOnClick() {
-        stopBlueprint()
-    }
-
-    // TODO: Refactor into different model
-    function handleBlackboardDrawerOnDeleteEntry(entry) {
-        if (!runningBehaviorTreeHandle) { return }
-        pineBT.blackboard.clear(runningBehaviorTreeHandle, entry.key)
+        try {
+            Execution.stop(execution)
+        } catch (error) {
+            console.error(error)
+            showNotification({
+                title: 'Failed to stop executio',
+                body: error.message,
+                variant: 'danger',
+            })
+        }
     }
 
     function showNotification(notification) {
@@ -242,6 +222,7 @@ export default function App() {
     }
 
     function handleNewDocument() {
+        Execution.stop(execution)
         Document.reset(document)
         Editor.reset(editor)
     }
@@ -277,6 +258,7 @@ export default function App() {
 
     function handleOpenDocument(file) {
         try {
+            Execution.stop(execution)
             Document.open(document, file)
             Editor.reset(editor)
         } catch (error) {
@@ -338,6 +320,7 @@ export default function App() {
                     key={behavior.id}
                     behavior={behavior}
                     document={document}
+                    execution={execution}
                     editor={editor}
                     onEdit={() => handleBehaviorCardEdit(behavior)}
                 />
@@ -378,8 +361,8 @@ export default function App() {
         />
         <BlackboardDrawer
             document={document}
+            execution={execution}
             show={showBlackboardDrawer}
-            onDeleteEntry={handleBlackboardDrawerOnDeleteEntry}
             onHide={() => setShowBlackboardDrawer(false)}
         />
         <Stack id='controls' direction='horizontal' gap={3}>

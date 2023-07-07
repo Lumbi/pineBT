@@ -4,6 +4,7 @@ import bem from '../bem'
 import * as Behavior from '../models/behavior'
 import * as Document from '../models/document'
 import * as Editor from '../models/editor'
+import * as Execution from '../models/execution'
 
 import './behavior-card.less'
 
@@ -12,6 +13,7 @@ export default function BehaviorCard(props) {
         behavior,
         document,
         editor,
+        execution,
         onEdit,
     } = props
 
@@ -23,6 +25,7 @@ export default function BehaviorCard(props) {
     const self = useRef()
     const isRoot = Behavior.isRoot(behavior)
     const position = behavior.position;
+    const status = Execution.statusForBehavior(execution, behavior)
     const [isDragging, setDragging] = useState(false)
     const [lastMousePosition, setLastMousePosition] = useState({ x: 0, y: 0 })
 
@@ -127,7 +130,7 @@ export default function BehaviorCard(props) {
     }
 
     function statusIcon() {
-        switch (behavior.status) {
+        switch (status) {
             case 'running': return 'bi-stopwatch-fill'
             case 'failure': return 'bi-dash-circle-fill'
             case 'success': return 'bi-check-circle-fill'
@@ -177,7 +180,7 @@ export default function BehaviorCard(props) {
             </div>
             <div className={bem('behavior-card', 'status', { 
                 hidden: !statusIcon(),
-                [behavior.status]: true
+                [status]: true
             })}>
             {
                 <i className={`${statusIcon()}`}></i>

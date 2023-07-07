@@ -1,5 +1,6 @@
 import { Stack, Offcanvas, Form, Button } from 'react-bootstrap'
 import * as Document from '../models/document'
+import * as Execution from '../models/execution'
 import bem from '../bem'
 
 import './blackboard-drawer.less'
@@ -9,8 +10,8 @@ export default function BlackboardDrawer(props) {
     const {
         show,
         document,
+        execution,
         onHide,
-        onDeleteEntry,
     } = props
 
     const {
@@ -34,7 +35,7 @@ export default function BlackboardDrawer(props) {
 
     function handleEntryDeleteOnClick(entry) {
         Document.deleteBlackboardEntry(document, entry.key)
-        onDeleteEntry(entry)
+        Execution.clearBlackboardKey(execution, entry.key)
     }
 
     return (
