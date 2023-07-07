@@ -99,6 +99,15 @@ export function updateBehaviorStatuses(document, statuses) {
     )
 }
 
+export function clearBehaviorStatuses(document) {
+    const { behaviors, setBehaviors } = document
+    setBehaviors(
+        behaviors.map(b => {
+            return { ...b, status: undefined }
+        })
+    )
+}
+
 export function deleteBehaviorById(document, behaviorId) {
     const { behaviors, setBehaviors } = document
     const { connections, setConnections } = document

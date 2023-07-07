@@ -1,4 +1,4 @@
-export function toBlueprint(behaviors, connections) {
+export function from(behaviors, connections) {
     const entryConnection = connections.find(c => c.from === 0)
     if (!entryConnection) return undefined
     const entryBehavior= behaviors.find(b => b.id === entryConnection.to)
@@ -23,4 +23,8 @@ export function toBlueprint(behaviors, connections) {
     return {
         root: recursively(entryBehavior)
     }
+}
+
+export function areEqual(a ,b) {
+    return JSON.stringify(a) == JSON.stringify(b)
 }

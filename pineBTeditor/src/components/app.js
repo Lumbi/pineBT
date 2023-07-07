@@ -7,7 +7,7 @@ import BehaviorDrawer from './behavior-drawer'
 import BehaviorEdit from './behavior-edit'
 import BlackboardDrawer from './blackboard-drawer'
 import { rootBehavior } from '../models/behavior'
-import { toBlueprint } from '../models/blueprint'
+import * as Blueprint from '../models/blueprint'
 import * as Document from '../models/document'
 import * as Blackboard from '../models/blackboard'
 import * as Editor from '../models/editor'
@@ -33,6 +33,8 @@ export default function App() {
     const [modal, setModal] = useState(null)
     const [documentFilePath, setDocumentFilePath] = useState()
     const [savedDocumentData, setSavedDocumentData] = useState()
+    const [runningBehaviorTreeHandle, setRunningBehaviorTreeHandle] = useState(null)
+    const [runningBlueprint, setRunningBlueprint] = useState(null)
 
     const document = {
         filePath: documentFilePath,
@@ -111,8 +113,17 @@ export default function App() {
         Editor.beginEditBehavior(editor, behavior)
     }
 
-    function handleRunOnClick() {
-        const blueprint = toBlueprint(behaviors, connections)
+    const blueprint = useMemo(
+        () => Blueprint.from(behaviors, connections), 
+        [behaviors, connections]
+    )
+
+    function runBlueprint() {
+        if (runningBehaviorTreeHandle) { 
+            console.warn('Already running behavior tree with handle:', runningBehaviorTreeHandle)
+            return
+        }
+
         if (!blueprint) {
             showNotification({
                 title: 'Error',
@@ -124,10 +135,9 @@ export default function App() {
 
         try {
             const handle = pineBT.create(JSON.stringify(blueprint))
-            pineBT.run(handle)
-            const statuses = pineBT.status(handle)
-            Document.updateBehaviorStatuses(document, statuses)
-            pineBT.destroy(handle)
+            setRunningBehaviorTreeHandle(handle)
+            setRunningBlueprint(blueprint)
+            return handle
         } catch (error) {
             console.error(error)
             showNotification({
@@ -136,6 +146,71 @@ export default function App() {
                 variant: 'danger',
             })
         }
+    }
+
+    function stepBlueprint(handle) {
+        if (!handle) { 
+            console.warn('Attempted to step but no currently running behavior tree')
+            return
+        }
+
+        try {
+            pineBT.run(handle)
+            const statuses = pineBT.status(handle)
+            Document.updateBehaviorStatuses(document, statuses)
+        } catch (error) {
+            console.error(error)
+            showNotification({
+                title: 'Error',
+                body: error.message,
+                variant: 'danger',
+            })
+        }
+    }
+
+    function stopBlueprint() {
+        if (!runningBehaviorTreeHandle) {
+            console.warn('Attempted to stop but no running behavior tree')
+            return
+        }
+
+        try {
+            pineBT.destroy(runningBehaviorTreeHandle)
+            setRunningBehaviorTreeHandle(null)
+            setRunningBlueprint(null)
+            Document.clearBehaviorStatuses(document)
+        } catch (error) {
+            console.error(error)
+            showNotification({
+                title: 'Error',
+                body: error.message,
+                variant: 'danger',
+            })
+        }
+    }
+
+    const blueprintChanged = useMemo(
+        () => !Blueprint.areEqual(blueprint, runningBlueprint),
+        [blueprint, runningBlueprint]
+    )
+
+    if (runningBlueprint && blueprintChanged) {
+        stopBlueprint()
+    }
+
+    function handleRunOnClick() {
+        const handle = runBlueprint()
+        if (handle) {
+            stepBlueprint(handle)
+        }
+    }
+
+    function handleStepOnClick() {
+        stepBlueprint(runningBehaviorTreeHandle)
+    }
+
+    function handleStopOnClick() {
+        stopBlueprint()
     }
 
     function showNotification(notification) {
@@ -290,15 +365,28 @@ export default function App() {
             show={showBlackboardDrawer}
             onHide={() => setShowBlackboardDrawer(false)}
         />
-        <Button 
-            id='run-button'
-            onClick={handleRunOnClick}
-        >
-            <Stack direction='horizontal' gap={2}>
-                <i className='bi bi-play-fill'/>
-                <span>Run</span>
-            </Stack>
-        </Button>
+        <Stack id='controls' direction='horizontal' gap={3}>
+            <Button onClick={handleRunOnClick} variant='success' disabled={!!runningBehaviorTreeHandle}>
+                <Stack direction='horizontal' gap={2}>
+                    <i className='bi bi-play-fill'/>
+                    <span>Run</span>
+                </Stack>
+            </Button>
+
+            <Button onClick={handleStepOnClick} variant='primary' hidden={!runningBehaviorTreeHandle}>
+                <Stack direction='horizontal' gap={2}>
+                    <i className='bi bi-play'/>
+                    <span>Step</span>
+                </Stack>
+            </Button>
+
+            <Button onClick={handleStopOnClick} variant='danger' hidden={!runningBehaviorTreeHandle}>
+                <Stack direction='horizontal' gap={2}>
+                    <i className='bi bi-stop-fill'/>
+                    <span>Stop</span>
+                </Stack>
+            </Button>
+        </Stack>
         <Button
             id='blackboard-button'
             variant='secondary'
