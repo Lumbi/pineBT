@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import Offcanvas from 'react-bootstrap/Offcanvas'
 import Stack from 'react-bootstrap/Stack'
 import ToggleButton from 'react-bootstrap/ToggleButton'
@@ -28,7 +29,9 @@ export default function BehaviorEdit(props) {
         onHide,
     } = props
 
-    const title = (behavior && behavior.schema) || ''
+    const name = (behavior && behavior.name) || (behavior && behavior.schema) || 'Behavior'
+    const [editingName, setEditingName] = useState(false)
+
     const schema = Document.schemaForBehavior(document, behavior)
     const options = (schema && schema.options && Object.entries(schema.options) || [])
         .sort(byPreferredOrder(preferredOptionsOrder, option => option[0]))
@@ -52,10 +55,31 @@ export default function BehaviorEdit(props) {
         }, 300)
     }
 
+    function handleNameOnChange(name) {
+        Document.updateBehavior(document, { id: behavior.id, name })
+    }
+
     return (
         <Offcanvas id='behavior-edit' show={show} onHide={onHide} placement='end'>
             <Offcanvas.Header closeButton>
-                <Offcanvas.Title>{title}</Offcanvas.Title>
+                <Offcanvas.Title>
+                {
+                    !editingName
+                        ? <Stack direction='horizontal' gap={2}>
+                            <span>{name}</span>
+                            <Button variant='link' onClick={() => setEditingName(true)}>
+                                <i className='bi bi-pencil-square'/>
+                            </Button>
+                          </Stack>
+                        : <Form.Control
+                            type='text'
+                            autoFocus={true}
+                            value={behavior.name || ''}
+                            onChange={(event) => handleNameOnChange(event.currentTarget.value)}
+                            onBlur={() => setEditingName(false)}
+                          />
+                }
+                </Offcanvas.Title>
             </Offcanvas.Header>
             <Offcanvas.Body>
                 <Stack id={bem('behavior-edit', 'list')} gap={3}>

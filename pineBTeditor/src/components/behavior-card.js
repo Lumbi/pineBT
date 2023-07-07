@@ -24,6 +24,7 @@ export default function BehaviorCard(props) {
 
     const self = useRef()
     const isRoot = Behavior.isRoot(behavior)
+    const name = behavior.name || behavior.schema || 'Behavior'
     const position = behavior.position;
     const status = Execution.statusForBehavior(execution, behavior)
     const [isDragging, setDragging] = useState(false)
@@ -167,7 +168,7 @@ export default function BehaviorCard(props) {
                     onMouseDown={(event) => event.stopPropagation()}
                     onMouseMove={(event) => event.stopPropagation()}
                 />
-                <p>{behavior.schema}</p>
+                <p>{name}</p>
                 <div 
                     className={bem('behavior-card', 'children-handle', { 
                         connected: hasChildren,
