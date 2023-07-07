@@ -47,7 +47,7 @@ export default function BlackboardDrawer(props) {
                 <Offcanvas.Title>Blackboard</Offcanvas.Title>
             </Offcanvas.Header>
             <Offcanvas.Body className={bem('blackboard-drawer', 'body')}>
-                <Stack direction='vertical' gap={2}>
+                <Stack className={bem('blackboard-drawer', 'entry-list')} direction='vertical' gap={2}>
                 {
                     blackboard.entries.map(entry => {
                         const { key, name, value } = entry
