@@ -114,7 +114,17 @@ function BehaviorEditOption(props) {
         return (
             <Stack direction='horizontal' gap={2}>
                 <Form.Label htmlFor={id}>{t(id)}</Form.Label>
-                <Form.Control id={id} type="number" value={option.value}/>
+                <Form.Control 
+                    id={id} 
+                    type="number" 
+                    value={isNaN(option.value) ? '' : option.value}
+                    onChange={(event) => 
+                        onChange({
+                            ...option,
+                            value: isNaN(event.currentTarget.value) ? undefined : event.currentTarget.value,
+                        })
+                    }
+                />
             </Stack>
         )
     } else if (typeof type === 'number') { // enumeration case
