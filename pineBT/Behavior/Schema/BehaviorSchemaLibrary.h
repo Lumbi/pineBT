@@ -14,7 +14,7 @@ namespace pineBT
 	class BehaviorSchemaLibrary
 	{
 	private:
-		using BehaviorCreator = std::function<Behavior* (const std::string& name, BehaviorTree& tree)>;
+		using BehaviorCreator = std::function<std::unique_ptr<Behavior> (const std::string& name, BehaviorTree& tree)>;
 
 	public:
 		BehaviorSchemaLibrary();
@@ -26,7 +26,7 @@ namespace pineBT
 			assert(schemas.find(name) == schemas.end());
 			schemas[name] = BehaviorType::schema;
 			BehaviorCreator creator = [](const std::string& name, BehaviorTree& tree) {
-				return tree.getAllocator().allocate<BehaviorType>();
+				return std::make_unique<BehaviorType>();
 			};
 			creators[name] = creator;
 		}
@@ -38,12 +38,12 @@ namespace pineBT
 			assert(schemas.find(name) == schemas.end());
 			schemas[name] = BlackboardCondition::schema;
 			BehaviorCreator creator = [](const std::string& name, BehaviorTree& tree) {
-				return tree.getAllocator().allocate<BlackboardCondition>(tree.getBlackboard());
+				return std::make_unique<BlackboardCondition>(tree.getBlackboard());
 			};
 			creators[name] = creator;
 		}
 
-		Behavior* create(const std::string& name, BehaviorTree& tree) const;
+		std::unique_ptr<Behavior> create(const std::string& name, BehaviorTree& tree) const;
 
 		std::string toJSON(int indent = -1) const;
 

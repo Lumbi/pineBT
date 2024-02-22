@@ -11,19 +11,19 @@
 
 using namespace pineBT;
 
-BehaviorTreeBuilder BehaviorTree::build(Allocator& allocator, const Blackboard& blackboard)
+BehaviorTreeBuilder BehaviorTree::build(const Blackboard& blackboard)
 {
-	return BehaviorTreeBuilder(allocator, blackboard);
+	return BehaviorTreeBuilder(blackboard);
 }
 
-void BehaviorTree::setRoot(Behavior* newRoot)
+void BehaviorTree::setRoot(std::unique_ptr<Behavior> newRoot)
 {
-	root = newRoot;
+	root.swap(newRoot);
 }
 
 Behavior* BehaviorTree::getRoot() const
 {
-	return root;
+	return root.get();
 }
 
 void BehaviorTree::run()
@@ -64,14 +64,14 @@ BehaviorTree::iterator& BehaviorTree::iterator::operator++()
 
 	// TODO: Maybe all behaviors should have a child array
 
-	if (auto composite = dynamic_cast<Composite*>(current); composite)
+	if (auto composite = dynamic_cast<Composite*>(current))
 	{
 		for (auto&& child : composite->getChildren())
-			pointers.push(child);
+			pointers.push(child.get());
 	}
-	else if (auto decorator = dynamic_cast<Decorator*>(current); decorator)
+	else if (auto decorator = dynamic_cast<Decorator*>(current))
 	{
-		if (auto child = decorator->getChild(); child)
+		if (auto child = decorator->getChild())
 			pointers.push(child);
 	}
 

@@ -11,11 +11,11 @@ namespace pineBT
 	struct BehaviorTreeBuilder
 	{
 	public:
-		BehaviorTreeBuilder(class LinearAllocator&, const class Blackboard&);
+		BehaviorTreeBuilder(const class Blackboard&);
 
-		BehaviorTreeBuilder& behavior(class Composite*);
+		BehaviorTreeBuilder& behavior(std::unique_ptr<class Composite>);
 
-		BehaviorTreeBuilder& behavior(class Decorator*);
+		BehaviorTreeBuilder& behavior(std::unique_ptr<class Decorator>);
 
 		BehaviorTreeBuilder& select();
 
@@ -29,9 +29,9 @@ namespace pineBT
 
 		BehaviorTreeBuilder& close();
 
-		BehaviorTreeBuilder& condition(class Condition*);
+		BehaviorTreeBuilder& condition(std::unique_ptr<class Condition>);
 
-		BehaviorTreeBuilder& task(class Task*);
+		BehaviorTreeBuilder& task(std::unique_ptr<class Task>);
 
 		std::unique_ptr<class BehaviorTree> end();
 
@@ -39,6 +39,6 @@ namespace pineBT
 		std::unique_ptr<class BehaviorTree> behaviorTree;
 		std::stack<std::unique_ptr<BehaviorTreeBuilderContext>> context;
 
-		void addChild(Behavior*);
+		void addChild(std::unique_ptr<Behavior>);
 	};
 }

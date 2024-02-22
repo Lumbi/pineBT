@@ -66,5 +66,7 @@ bool BlackboardCondition::check()
 		blackboard.get(key, value);
 		return value > target;
 	}
+	default:
+		return false;
 	}
 }

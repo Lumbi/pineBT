@@ -1,5 +1,7 @@
 #pragma once
 
+#include <memory>
+
 namespace pineBT
 {
 	struct BehaviorTreeBuilderContext
@@ -8,7 +10,7 @@ namespace pineBT
 
 		BehaviorTreeBuilderContext(BehaviorTreeBuilder& builder) : builder(builder) {}
 
-		virtual void addChild(class Behavior*) = 0;
+		virtual void addChild(std::unique_ptr<class Behavior>) = 0;
 	};
 
 	struct CompositeContext : public BehaviorTreeBuilderContext
@@ -18,7 +20,7 @@ namespace pineBT
 		CompositeContext(BehaviorTreeBuilder& builder, Composite* composite) 
 			: BehaviorTreeBuilderContext(builder), composite(composite) {}
 
-		void addChild(class Behavior*) override;
+		void addChild(std::unique_ptr<class Behavior>) override;
 	};
 
 	struct DecoratorContext : public BehaviorTreeBuilderContext
@@ -28,6 +30,6 @@ namespace pineBT
 		DecoratorContext(BehaviorTreeBuilder& builder, Decorator* decorator) 
 			: BehaviorTreeBuilderContext(builder), decorator(decorator) {}
 
-		void addChild(class Behavior*) override;
+		void addChild(std::unique_ptr<class Behavior>) override;
 	};
 }

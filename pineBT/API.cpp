@@ -3,7 +3,6 @@
 #include "BehaviorTree.h"
 #include "Blackboard/Blackboard.h"
 #include "Query/BehaviorTreeQuery.h"
-#include "Memory/LinearAllocator.h"
 #include "Behavior/Schema/BehaviorSchemaLibrary.h"
 #include "Serialization/JSONSerialization.h"
 
@@ -16,7 +15,6 @@ using namespace pineBT;
 
 static std::unordered_map<BehaviorTreeHandle, std::unique_ptr<BehaviorTree>> trees;
 static std::unordered_map<BehaviorTreeHandle, std::unique_ptr<Blackboard>> blackboards;
-static LinearAllocator allocator(64'000);
 static BehaviorSchemaLibrary schemaLibrary;
 
 static BehaviorTreeHandle nextHandle()
@@ -34,7 +32,7 @@ void pineBT_schemas(char* buffer)
 BehaviorTreeHandle pineBT_create(const char* json)
 {
 	auto blackboard = std::make_unique<Blackboard>();
-	auto behaviorTree = std::make_unique<BehaviorTree>(allocator, *blackboard);
+	auto behaviorTree = std::make_unique<BehaviorTree>(*blackboard);
 	try
 	{
 		serialization::JSON::deserialize(json, schemaLibrary, *behaviorTree);

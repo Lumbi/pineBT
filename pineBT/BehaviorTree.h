@@ -2,7 +2,6 @@
 
 #include "Behavior.h"
 #include "Blackboard/Blackboard.h"
-#include "Memory/LinearAllocator.h"
 
 #include <memory>
 #include <iterator>
@@ -12,25 +11,22 @@ namespace pineBT
 {
 	class BehaviorTree
 	{
-		using Allocator = LinearAllocator;
-
 	public:
-		BehaviorTree(Allocator& allocator, const Blackboard& blackboard)
+		BehaviorTree(const Blackboard& blackboard)
 			: root(nullptr),
-			  allocator(allocator),
 			  blackboard(blackboard)
 		{};
 
 		BehaviorTree(BehaviorTree&) = delete;
 		BehaviorTree& operator=(BehaviorTree) = delete;
 
-		static struct BehaviorTreeBuilder build(Allocator&, const Blackboard&);
+		~BehaviorTree() = default;
+
+		static struct BehaviorTreeBuilder build(const Blackboard&);
 
 		Behavior* getRoot() const;
 
-		void setRoot(Behavior*);
-
-		Allocator& getAllocator() { return allocator; };
+		void setRoot(std::unique_ptr<Behavior>);
 
 		const Blackboard& getBlackboard() const { return blackboard; };
 
@@ -41,9 +37,8 @@ namespace pineBT
 		struct BehaviorTreeQuery query();
 
 	private:
-		Behavior* root;
-		Allocator& allocator;
-		const Blackboard& blackboard;
+		std::unique_ptr<Behavior> root;
+		const Blackboard& blackboard; // TODO: Make blackboard an std::shared_ptr
 
 		// Iterator support
 
@@ -56,7 +51,7 @@ namespace pineBT
 			using reference = value_type&;
 
 			iterator(pointer start) : pointers({ start }) {}
-			iterator() {}
+			iterator() = default;
 
 			reference operator*() const;
 			pointer operator->();
@@ -71,9 +66,9 @@ namespace pineBT
 			std::queue<pointer> pointers;
 		};
 
-		iterator begin() { return iterator(root); };
+		iterator begin() { return iterator(root.get()); };
 		iterator end() { return iterator(); };
-		iterator begin() const { return iterator(root); };
+		iterator begin() const { return iterator(root.get()); };
 		iterator end() const { return iterator(); };
 	};
 }

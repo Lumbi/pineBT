@@ -23,13 +23,13 @@ BehaviorSchemaLibrary::BehaviorSchemaLibrary()
 	add<MockTask>();
 }
 
-Behavior* BehaviorSchemaLibrary::create(const std::string& name, BehaviorTree& tree) const
+std::unique_ptr<Behavior> BehaviorSchemaLibrary::create(const std::string& name, BehaviorTree& tree) const
 {
 	if (auto found = creators.find(name); found != creators.end())
 	{
 		return found->second(name, tree);
 	}
-	return nullptr;
+	return {};
 }
 
 #include <nlohmann/json.hpp>

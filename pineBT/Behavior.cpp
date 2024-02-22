@@ -33,5 +33,6 @@ std::string pineBT::name(Behavior::Result result)
 	case Behavior::Result::SUCCESS: return "SUCCESS";
 	case Behavior::Result::ABORTED: return "ABORTED";
 	case Behavior::Result::INVALID: return "INVALID";
+	default: return "UNKNOWN";
 	}
 }

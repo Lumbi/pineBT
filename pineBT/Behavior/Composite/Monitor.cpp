@@ -2,12 +2,12 @@
 
 using namespace pineBT;
 
-void Monitor::addCondition(Behavior* condition)
+void Monitor::addCondition(std::unique_ptr<Behavior> condition)
 {
-	children.insert(children.begin(), condition);
+	children.emplace(children.begin(), std::move(condition));
 }
 
-void Monitor::addAction(Behavior* action)
+void Monitor::addAction(std::unique_ptr<Behavior> action)
 {
-	children.push_back(action);
+	children.emplace_back(std::move(action));
 }

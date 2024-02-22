@@ -24,9 +24,9 @@ void BehaviorTreePrinter::print() {
 		if (auto composite = dynamic_cast<Composite*>(behavior); composite)
 		{
 			behaviors.push(END_INDENT);
-			auto children = composite->getChildren();
+			auto& children = composite->getChildren();
 			for (auto child = children.rbegin(); child != children.rend(); child++)
-				behaviors.push(*child);
+				behaviors.push(child->get());
 			indent += spacing;
 		}
 		else if (auto decorator = dynamic_cast<Decorator*>(behavior); decorator)

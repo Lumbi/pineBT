@@ -16,7 +16,7 @@ static void JSON_deserializeBehaviorRecursively(
 )
 {
 	auto schema = blueprint.at("schema").get<std::string>();
-	Behavior* behavior = library.create(schema, tree);
+	auto behavior = library.create(schema, tree);
 	assert(behavior);
 
 	if (blueprint.contains("id"))
@@ -41,10 +41,12 @@ static void JSON_deserializeBehaviorRecursively(
 		}
 	}
 
+	Behavior* next = behavior.get();
+
 	if (parent == nullptr)
-		tree.setRoot(behavior);
+		tree.setRoot(std::move(behavior));
 	else
-		parent->addChild(behavior);
+		parent->addChild(std::move(behavior));
 
 	if (blueprint.contains("children"))
 	{
@@ -53,7 +55,7 @@ static void JSON_deserializeBehaviorRecursively(
 		{
 			for (auto&& child : children)
 			{
-				JSON_deserializeBehaviorRecursively(child, library, tree, behavior);
+				JSON_deserializeBehaviorRecursively(child, library, tree, next);
 			}
 		}
 	}

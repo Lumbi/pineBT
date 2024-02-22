@@ -12,10 +12,10 @@ namespace pineBT
 		static BehaviorSchema schema;
 
 	public:
-		using Behaviors = std::vector<Behavior*>;
+		using Behaviors = std::vector<std::unique_ptr<Behavior>>;
 
 	public:
-		virtual void addChild(Behavior*) override;
+		virtual void addChild(std::unique_ptr<Behavior>) override;
 
 		const Behaviors& getChildren() const { return children; };
 

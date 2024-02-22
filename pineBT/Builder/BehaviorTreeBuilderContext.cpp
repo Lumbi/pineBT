@@ -6,13 +6,13 @@
 
 using namespace pineBT;
 
-void CompositeContext::addChild(Behavior* child)
+void CompositeContext::addChild(std::unique_ptr<Behavior> child)
 {
-	composite->addChild(child);
+	composite->addChild(std::move(child));
 }
 
-void DecoratorContext::addChild(Behavior* child)
+void DecoratorContext::addChild(std::unique_ptr<Behavior> child)
 {
-	decorator->setChild(child);
+	decorator->setChild(std::move(child));
 	builder.close();
 }

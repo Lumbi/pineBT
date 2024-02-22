@@ -10,9 +10,9 @@ namespace pineBT
 		static BehaviorSchema schema;
 
 	public:
-		virtual void addChild(Behavior*);
+		virtual void addChild(std::unique_ptr<Behavior>);
 
-		void setChild(Behavior*);
+		void setChild(std::unique_ptr<Behavior>);
 
 		Behavior* getChild() const;
 
@@ -21,6 +21,6 @@ namespace pineBT
 		virtual void abort() override;
 
 	protected:
-		Behavior* child = nullptr;
+		std::unique_ptr<Behavior> child;
 	};
 }

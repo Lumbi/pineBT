@@ -1,6 +1,5 @@
 #pragma once
 
-#include <vector>
 #include <memory>
 #include <string>
 #include <format>
@@ -28,7 +27,7 @@ namespace pineBT
 	public:
 		Behavior() = default;
 
-		~Behavior() {}
+		virtual ~Behavior() {}
 
 		virtual void configure(const Option&) = 0;
 
@@ -42,7 +41,7 @@ namespace pineBT
 
 		virtual std::string toString() const { return "Behavior"; }
 
-		virtual void addChild(Behavior*) = 0;
+		virtual void addChild(std::unique_ptr<Behavior>) = 0;
 
 	public:
 		ID id = 0;

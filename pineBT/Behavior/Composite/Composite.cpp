@@ -7,9 +7,9 @@ BehaviorSchema Composite::schema = {
 	BehaviorSchema::Hierarchy::MANY
 };
 
-void Composite::addChild(Behavior* child)
+void Composite::addChild(std::unique_ptr<Behavior> child)
 {
-	children.push_back(child);
+	children.emplace_back(std::move(child));
 }
 
 void Composite::abort()

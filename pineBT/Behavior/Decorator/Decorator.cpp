@@ -9,19 +9,19 @@ BehaviorSchema Decorator::schema = {
 	BehaviorSchema::Hierarchy::ONE
 };
 
-void Decorator::addChild(Behavior* newChild)
+void Decorator::addChild(std::unique_ptr<Behavior> newChild)
 {
-	this->child = newChild;
+	child.swap(newChild);
 }
 
-void Decorator::setChild(Behavior* newChild)
+void Decorator::setChild(std::unique_ptr<Behavior> newChild)
 {
-	addChild(newChild);
+	addChild(std::move(newChild));
 }
 
 Behavior* Decorator::getChild() const
 {
-	return child;
+	return child.get();
 }
 
 void Decorator::abort()

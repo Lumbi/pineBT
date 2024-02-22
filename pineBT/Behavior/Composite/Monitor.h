@@ -11,11 +11,11 @@ namespace pineBT
 
 		std::string toString() const override { return std::format("Monitor [{}]", name(getResult())); }
 
-		void addCondition(Behavior*);
+		void addCondition(std::unique_ptr<Behavior>);
 
-		void addAction(Behavior*);
+		void addAction(std::unique_ptr<Behavior>);
 
 	private:
-		void addChild(Behavior* child) override { Parallel::addChild(child); }
+		void addChild(std::unique_ptr<Behavior> child) override { Parallel::addChild(std::move(child)); }
 	};
 }
