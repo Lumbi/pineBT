@@ -42,3 +42,9 @@ target_include_directories(
 if (CMAKE_VERSION VERSION_GREATER 3.12)
   set_property(TARGET ${TARGET_LIB_NAME} PROPERTY CXX_STANDARD 20)
 endif()
+
+if(MSVC)
+  target_compile_options(${TARGET_LIB_NAME} PRIVATE /W4 /WX)
+else()
+  target_compile_options(${TARGET_LIB_NAME} PRIVATE -Wall -Wextra -Wpedantic -Werror)
+endif()
