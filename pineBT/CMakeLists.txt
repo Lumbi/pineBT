@@ -43,8 +43,16 @@ if (CMAKE_VERSION VERSION_GREATER 3.12)
   set_property(TARGET ${TARGET_LIB_NAME} PROPERTY CXX_STANDARD 20)
 endif()
 
+# Set warning flags
 if(MSVC)
   target_compile_options(${TARGET_LIB_NAME} PRIVATE /W4 /WX)
 else()
   target_compile_options(${TARGET_LIB_NAME} PRIVATE -Wall -Wextra -Wpedantic -Werror)
+endif()
+
+# Copy the library to the editor
+if(MSVC)
+	add_custom_command(TARGET ${TARGET_LIB_NAME} POST_BUILD
+		COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/${TARGET_LIB_NAME}.dll ${PROJECT_SOURCE_DIR}/pineBTeditor/${TARGET_LIB_NAME}.dll
+	)
 endif()
