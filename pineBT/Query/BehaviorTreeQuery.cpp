@@ -9,8 +9,7 @@ using namespace pineBT;
 
 std::unordered_map<Behavior::ID, Behavior::Result> BehaviorTreeQuery::resultsByBehaviorID() const
 {
-	Behavior* root = tree.getRoot();
-	assert(root);
+	assert(tree.getRoot());
 	std::unordered_map<Behavior::ID, Behavior::Result> map;
 	for (auto&& child : tree) map[child.id] = child.getResult();
 	return map;
