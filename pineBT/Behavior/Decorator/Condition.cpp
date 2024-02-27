@@ -34,14 +34,14 @@ void Condition::configure(const Option& option)
 	}
 }
 
-void Condition::setMode(Mode mode)
+void Condition::setMode(Mode newMode)
 {
-	this->mode = mode;
+	this->mode = newMode;
 }
 
-void Condition::setLogic(Logic logic)
+void Condition::setLogic(Logic newLogic)
 {
-	this->logic = logic;
+	this->logic = newLogic;
 }
 
 Behavior::Result Condition::update()

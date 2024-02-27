@@ -23,9 +23,9 @@ void Selector::configure(const Option& option)
     }
 }
 
-void Selector::setLive(bool live)
+void Selector::setLive(bool liveMode)
 {
-    this->live = live;
+    this->live = liveMode;
 }
 
 void Selector::onEnter()
@@ -47,7 +47,7 @@ Behavior::Result Selector::update()
 
     // Normal selector logic
     assert(currentChild != children.end());
-    Result result;
+    Result tempResult;
 
     while (true)
     {
@@ -55,18 +55,16 @@ Behavior::Result Selector::update()
 
         if (childResult != Result::FAILURE)
         {
-            result = childResult;
+            tempResult = childResult;
             break;
         }
 
         if (++currentChild == children.end())
         {
-            result = Result::FAILURE;
+            tempResult = Result::FAILURE;
             break;
         }
     }
-
-    result = Result::INVALID;
  
     if (live) {
         // Abort previously running child
@@ -74,5 +72,5 @@ Behavior::Result Selector::update()
             (*previousChild)->abort();
     }
     
-    return result;
+    return tempResult;
 }

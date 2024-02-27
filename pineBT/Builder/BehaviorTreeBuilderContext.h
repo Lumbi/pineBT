@@ -9,6 +9,7 @@ namespace pineBT
 		struct BehaviorTreeBuilder& builder;
 
 		BehaviorTreeBuilderContext(BehaviorTreeBuilder& builder) : builder(builder) {}
+		virtual ~BehaviorTreeBuilderContext() {};
 
 		virtual void addChild(std::unique_ptr<class Behavior>) = 0;
 	};

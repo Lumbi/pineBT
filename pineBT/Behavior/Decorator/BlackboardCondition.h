@@ -32,11 +32,7 @@ namespace pineBT
 			  target(target)
 		{}
 
-		void set(Blackboard::Key key, Predicate predicate, float target) { 
-			this->key = key;
-			this->predicate = predicate;
-			this->target = target;
-		}
+		void set(Blackboard::Key, Predicate, float target);
 
 		virtual void configure(const Option&) override;
 

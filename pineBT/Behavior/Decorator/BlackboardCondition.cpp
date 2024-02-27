@@ -39,6 +39,13 @@ void BlackboardCondition::configure(const Option& option)
 	}
 }
 
+void BlackboardCondition::set(Blackboard::Key newKey, Predicate newPredicate, float newTarget)
+{
+	this->key = newKey;
+	this->predicate = newPredicate;
+	this->target = newTarget;
+}
+
 bool BlackboardCondition::check()
 {
 	switch (predicate)

@@ -14,7 +14,7 @@ namespace pineBT
 
 		virtual void configure(const Option&) override;
 
-		void setForceCheck(bool forceCheck) { this->forceCheck = forceCheck; }
+		void setForceCheck(bool value) { this->forceCheck = value; }
 
 	private:
 		bool forceCheck = false;

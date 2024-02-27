@@ -37,13 +37,13 @@ Behavior::Result Parallel::update()
 	for (auto&& child : children)
 	{
 		if (!child->isCompleted()) child->run();
-		const Result result = child->getResult();
-		if (result == Result::SUCCESS)
+		const Result childResult = child->getResult();
+		if (childResult == Result::SUCCESS)
 		{
 			if (successPolicy == Policy::ANY) return Result::SUCCESS;
 			successCount++;
 		}
-		if (result == Result::FAILURE)
+		if (childResult == Result::FAILURE)
 		{
 			if (failurePolicy == Policy::ANY) return Result::FAILURE;
 			failureCount++;

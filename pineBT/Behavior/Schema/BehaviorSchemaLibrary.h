@@ -25,7 +25,7 @@ namespace pineBT
 			std::string name = BehaviorType::schema.name;
 			assert(schemas.find(name) == schemas.end());
 			schemas[name] = BehaviorType::schema;
-			BehaviorCreator creator = [](const std::string& name, BehaviorTree& tree) {
+			BehaviorCreator creator = [](const std::string&, BehaviorTree&) {
 				return std::make_unique<BehaviorType>();
 			};
 			creators[name] = creator;
@@ -37,7 +37,7 @@ namespace pineBT
 			std::string name = BlackboardCondition::schema.name;
 			assert(schemas.find(name) == schemas.end());
 			schemas[name] = BlackboardCondition::schema;
-			BehaviorCreator creator = [](const std::string& name, BehaviorTree& tree) {
+			BehaviorCreator creator = [](const std::string&, BehaviorTree& tree) {
 				return std::make_unique<BlackboardCondition>(tree.getBlackboard());
 			};
 			creators[name] = creator;

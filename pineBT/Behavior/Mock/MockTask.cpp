@@ -28,7 +28,7 @@ Behavior::Result MockTask::update()
 	return forceResult;
 }
 
-void MockTask::setForceResult(Result forceResult)
+void MockTask::setForceResult(Result newForceResult)
 {
-	this->forceResult = forceResult;
+	this->forceResult = newForceResult;
 }

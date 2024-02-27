@@ -80,11 +80,11 @@ namespace pineBT
 			};
 			Value value;
 
-			template<Value::Type valueType, typename ValueType>
+			template<Value::Type, typename ValueType>
 			static Option from(const Key& key, ValueType value);
 
 			template<>
-			static Option from<Value::Type::BOOLEAN, bool>(const Key& key, bool value)
+			Option from<Value::Type::BOOLEAN, bool>(const Key& key, bool value)
 			{
 				Option option { key };
 				option.value.tag = Value::Type::BOOLEAN;
@@ -93,7 +93,7 @@ namespace pineBT
 			}
 
 			template<>
-			static Option from<Value::Type::NUMBER, float>(const Key& key, float value)
+			Option from<Value::Type::NUMBER, float>(const Key& key, float value)
 			{
 				Option option { key };
 				option.value.tag = Value::Type::NUMBER;
@@ -102,7 +102,7 @@ namespace pineBT
 			}
 
 			template<>
-			static Option from<Value::Type::CASE, int>(const Key& key, int value)
+			Option from<Value::Type::CASE, int>(const Key& key, int value)
 			{
 				Option option{ key };
 				option.value.tag = Value::Type::CASE;

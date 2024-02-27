@@ -30,9 +30,9 @@ namespace pineBT
 			return std::format("Parallel #{} [{}]", id, name(getResult()));
 		}
 
-		void setSuccessPolicy(Policy successPolicy) { this->successPolicy = successPolicy; }
+		void setSuccessPolicy(Policy policy) { this->successPolicy = policy; }
 
-		void setFailurePolicy(Policy failurePolicy) { this->failurePolicy = failurePolicy; }
+		void setFailurePolicy(Policy policy) { this->failurePolicy = policy; }
 
 	protected:
 		Result update() override;

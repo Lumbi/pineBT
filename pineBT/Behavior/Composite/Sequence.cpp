@@ -24,10 +24,10 @@ Behavior::Result Sequence::update()
 
 	while (true)
 	{
-		const Result result = (*currentChild)->run();
+		const Result childResult = (*currentChild)->run();
 
-		if (result != Result::SUCCESS)
-			return result;
+		if (childResult != Result::SUCCESS)
+			return childResult;
 
 		if (++currentChild == children.end())
 			return Result::SUCCESS;
